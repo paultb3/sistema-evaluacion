@@ -1,0 +1,24 @@
+Estructura del proyecto SED (Sistema de Evaluación Docente)
+
+├── manage.py                         ← Comando principal para gestionar el proyecto
+├── db.sqlite3                        ← Base de datos local (SQLite, temporal para desarrollo)
+├── mi_entorno/                       ← Carpeta del entorno virtual (NO se sube a Git)
+│
+├── sed/                              ← Configuración global del proyecto Django
+│   ├── __init__.py
+│   ├── settings.py                   ← Configuración general del proyecto (bases de datos, apps, etc.)
+│   ├── urls.py                       ← Enrutamiento global (admin y otras apps)
+│   ├── asgi.py
+│   └── wsgi.py
+│
+├── apps/                             ← Carpeta principal que agrupa todas las aplicaciones del sistema
+│   ├── alumnos/                      ← Funciones específicas para los estudiantes
+│   ├── api/                          ← API REST del sistema para integración externa
+│   ├── comision/                     ← Administración del sistema por la Comisión de Evaluación
+│   ├── configuracion/               ← Parámetros, semestres, condiciones del sistema
+│   ├── core/                         ← Página principal, home, redirecciones por rol
+│   ├── docentes/                     ← Funcionalidades para los docentes (resultados, autoevaluación)
+│   └── roles/                        ← Gestión de roles y permisos del sistema
+│
+├── documents/                        ← Carpeta de documentación del proyecto
+│   └── estructura.txt                ← Este archivo con la estructura actual del proyecto
