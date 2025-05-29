@@ -55,7 +55,7 @@ def agregar_pregunta(request, id_modulo):
         form = PreguntaModuloForm(request.POST)
         if form.is_valid():
             pregunta = form.save(commit=False)
-            pregunta.modulo = modulo
+            pregunta.id_modulo = modulo
             pregunta.save()
             return redirect("comision:realizar_encuesta")
     else:
