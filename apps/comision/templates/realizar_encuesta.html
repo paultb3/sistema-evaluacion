@@ -29,7 +29,7 @@
           {{ modulo.nombre }}
         </span>
         <a
-          href="{ % url '' % }"
+          href="{% url 'comision:agregar_pregunta' modulo.id_modulo %}"
           class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
         >
           + Agregar Pregunta

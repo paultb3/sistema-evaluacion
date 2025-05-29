@@ -48,14 +48,14 @@ def eliminar_pregunta(request, id_pregunta):
     return redirect("comision:realizar_encuesta")
 
 
-def agregar_pregunta(request, modulo_id):
-    modulo = get_object_or_404(ModuloPreguntas, id=modulo_id)
+def agregar_pregunta(request, id_modulo):
+    modulo = get_object_or_404(ModuloPreguntas, id_modulo=id_modulo)
 
     if request.method == "POST":
         form = PreguntaModuloForm(request.POST)
         if form.is_valid():
             pregunta = form.save(commit=False)
-            pregunta.modulo = modulo  # Asociar pregunta al módulo
+            pregunta.modulo = modulo
             pregunta.save()
             return redirect("comision:realizar_encuesta")
     else:
