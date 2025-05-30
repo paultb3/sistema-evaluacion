@@ -29,20 +29,31 @@
         </h2>
 
         <form method="post" class="space-y-4">
-          {% csrf_token %} {{ form.non_field_errors }} {{ form.correo }}
+          {% csrf_token %} {% if error %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+          {% endif %}
+
+          <input
+            type="email"
+            name="correo"
+            placeholder="Correo"
+            required
+            class="w-full p-3 border border-gray-300 rounded-md"
+          />
+
           <div class="relative">
-            {{ form.password }}
+            <input
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              required
+              class="w-full p-3 border border-gray-300 rounded-md"
+            />
             <span
               class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
             >
               👁️
             </span>
-          </div>
-
-          <div class="text-right">
-            <a href="#" class="text-sm text-blue-600 hover:underline"
-              >¿Olvidaste tu contraseña?</a
-            >
           </div>
 
           <button
