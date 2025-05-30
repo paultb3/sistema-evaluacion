@@ -3,7 +3,9 @@ from apps.comision.models import Comision
 from apps.evaluacion.models import ModuloPreguntas
 from uuid import UUID
 from apps.comision.forms import PreguntaModuloForm, PreguntaModulo
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, HttpResponse
+from uuid import UUID
+
 
 # Create your views here.
 
@@ -11,21 +13,29 @@ from django.shortcuts import get_object_or_404
 usuario_id = UUID("64237ce1-a65e-45b4-a410-4c2222545ae5")
 
 
-def index(request):
-
+def index(request, usuario_id):
+    print(f"Usuario recibido: {usuario_id}")
     if Comision.objects.filter(usuario_id=usuario_id).exists():
-        return render(request, "bienvenida_comision.html")
+        return render(request, "bienvenida_comision.html", {"usuario_id": usuario_id})
     else:
-        return "No existe el usuario"
+        return HttpResponse("No existe el usuario")
 
 
-def perfil(request):
+def perfil(request, usuario_id):
+    print(f"Usuario recibido: {usuario_id}")
+    if usuario_id:
+        try:
+            usuario_id = usuario_id
+        except ValueError:
+            return HttpResponse("ID de usuario no válido")
+    else:
+        return HttpResponse("No se proporcionó ID de usuario")
 
-    list_comision = Comision.objects.get(
-        usuario_id=UUID("64237ce1-a65e-45b4-a410-4c2222545ae5")
+    list_comision = Comision.objects.filter(usuario_id=usuario_id)
+
+    return render(
+        request, "perfil.html", {"comision": list_comision, "usuario_id": usuario_id}
     )
-    print(list_comision)
-    return render(request, "perfil.html", {"list_comision": list_comision})
 
 
 def realizar_encuesta(request):
