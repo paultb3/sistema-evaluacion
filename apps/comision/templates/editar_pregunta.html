@@ -17,7 +17,7 @@
       {% endfor %}
       <div class="flex items-center justify-between mt-6">
         <a
-          href="{% url 'comision:realizar_encuesta' %}"
+          href="{% url 'comision:realizar_encuesta' usuario_id=usuario_id %}"
           class="text-sm text-blue-600 hover:underline"
         >
           ← Cancelar y volver

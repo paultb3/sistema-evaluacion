@@ -29,7 +29,7 @@
           {{ modulo.nombre }}
         </span>
         <a
-          href="{% url 'comision:agregar_pregunta' modulo.id_modulo %}"
+          href="{% url 'comision:agregar_pregunta' usuario_id modulo.id_modulo %}"
           class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
         >
           + Agregar Pregunta
@@ -45,13 +45,13 @@
           <span class="text-gray-800">{{ pregunta.pregunta }}</span>
           <div class="space-x-4">
             <a
-              href="{% url 'comision:editar_pregunta' pregunta.id_pregunta %}"
+              href="{% url 'comision:editar_pregunta' usuario_id pregunta.id_pregunta %}"
               class="text-sm text-blue-600 hover:underline font-medium"
             >
               Editar
             </a>
             <a
-              href="{% url 'comision:eliminar_pregunta' pregunta.id_pregunta %}"
+              href="{% url 'comision:eliminar_pregunta' usuario_id pregunta.id_pregunta %}"
               class="text-sm text-red-600 hover:underline font-medium"
             >
               Eliminar
