@@ -10,55 +10,53 @@ from uuid import UUID
 # Create your views here.
 
 
-usuario_id = UUID("64237ce1-a65e-45b4-a410-4c2222545ae5")
-
-
 def index(request, usuario_id):
     print(f"Usuario recibido: {usuario_id}")
-    if Comision.objects.filter(usuario_id=usuario_id).exists():
-        return render(request, "bienvenida_comision.html", {"usuario_id": usuario_id})
-    else:
-        return HttpResponse("No existe el usuario")
+
+    return render(request, "bienvenida_comision.html", {"usuario_id": usuario_id})
 
 
 def perfil(request, usuario_id):
     print(f"Usuario recibido: {usuario_id}")
-    if usuario_id:
-        try:
-            usuario_id = usuario_id
-        except ValueError:
-            return HttpResponse("ID de usuario no válido")
-    else:
-        return HttpResponse("No se proporcionó ID de usuario")
-
-    list_comision = Comision.objects.filter(usuario_id=usuario_id)
+    comision = get_object_or_404(Comision, usuario__id=usuario_id)
+    print(f"Comisiones encontradas: {comision}")
 
     return render(
-        request, "perfil.html", {"comision": list_comision, "usuario_id": usuario_id}
+        request, "perfil.html", {"comision": comision, "usuario_id": usuario_id}
     )
 
 
-def realizar_encuesta(request):
+def realizar_encuesta(request, usuario_id):
     modulos = ModuloPreguntas.objects.prefetch_related("preguntamodulo_set").all()
-    return render(request, "realizar_encuesta.html", {"modulos": modulos})
+
+    print(f"modulos: {modulos}")
+    return render(
+        request,
+        "realizar_encuesta.html",
+        {"modulos": modulos, "usuario_id": usuario_id},
+    )
 
 
-def editar_pregunta(request, id_pregunta):
+def editar_pregunta(request, id_pregunta, usuario_id):
     pregunta = get_object_or_404(PreguntaModulo, id_pregunta=id_pregunta)
     form = PreguntaModuloForm(request.POST or None, instance=pregunta)
     if form.is_valid():
         form.save()
-        return redirect("comision:realizar_encuesta")  # o al lugar que desees
-    return render(request, "editar_pregunta.html", {"form": form})
+        return redirect("comision:realizar_encuesta")
+    return render(
+        request,
+        "editar_pregunta.html",
+        {"form": form, "usuario_id": usuario_id},
+    )
 
 
-def eliminar_pregunta(request, id_pregunta):
+def eliminar_pregunta(request, id_pregunta, usuario_id):
     pregunta = get_object_or_404(PreguntaModulo, id_pregunta=id_pregunta)
     pregunta.delete()
-    return redirect("comision:realizar_encuesta")
+    return redirect("comision:realizar_encuesta", usuario_id=usuario_id)
 
 
-def agregar_pregunta(request, id_modulo):
+def agregar_pregunta(request, id_modulo, usuario_id):
     modulo = get_object_or_404(ModuloPreguntas, id_modulo=id_modulo)
 
     if request.method == "POST":
@@ -71,4 +69,8 @@ def agregar_pregunta(request, id_modulo):
     else:
         form = PreguntaModuloForm()
 
-    return render(request, "agregar_pregunta.html", {"form": form, "modulo": modulo})
+    return render(
+        request,
+        "agregar_pregunta.html",
+        {"form": form, "modulo": modulo, "usuario_id": usuario_id},
+    )
