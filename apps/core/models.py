@@ -7,7 +7,8 @@ class Curso(models.Model):
     nombre = models.CharField(max_length=100)
     codigo = models.CharField(max_length=20, unique=True)
     semestre = models.CharField(max_length=10)
-    docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
+    docente = models.ForeignKey('docentes.Docente', models.DO_NOTHING)
+
 
     def __str__(self):
         return f"{self.codigo} - {self.nombre}"

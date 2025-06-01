@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Dashboard Docente{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'docentes/css/dashboard.css' %}">
+    <script src="https://kit.fontawesome.com/a2e0e6ad65.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="{% static 'docentes/img/logo_unas.png' %}" alt="Logo UNAS" class="logo">
+        <ul class="nav">
+            <li><a href="{% url 'docentes:dashboard' %}"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="{% url 'docentes:perfil' %}"><i class="fas fa-user"></i> Mi Perfil</a></li>
+            <li><a href="#"><i class="fas fa-star"></i> Evaluaciones</a></li>
+            <li><a href="#"><i class="fas fa-bell"></i> Notificaciones</a></li>
+        </ul>
+        <a href="{% url 'docentes:logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    </div>
+
+    <div class="main-content">
+        {% block content %}
+        <!-- Aquí va el contenido específico de cada página -->
+        {% endblock %}
+        <footer>
+            <p>© 2025 Sistema de Evaluación Docente - UNAS</p>
+        </footer>
+    </div>
+</body>
+</html>
