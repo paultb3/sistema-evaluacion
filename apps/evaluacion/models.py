@@ -66,4 +66,8 @@ class PreguntaModulo(models.Model):
     pregunta = models.TextField(max_length=1000)
 
     def __str__(self):
-        return self.pregunta
+        return (
+            f"{self.id_modulo.id_modulo} - "
+            + self.pregunta
+            + f" ({self.id_modulo.nombre})"
+        )

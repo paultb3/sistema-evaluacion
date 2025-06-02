@@ -6,13 +6,16 @@ from . import views
 app_name = "comision"
 
 urlpatterns = [
-    path("<uuid:usuario_id>", views.index, name="bienvenida_comision"),
     path(
         "realizar_encuesta/<uuid:usuario_id>/",
         views.realizar_encuesta,
         name="realizar_encuesta",
     ),
-    path("perfil/<uuid:usuario_id>/", views.perfil, name="perfil"),
+    path(
+        "perfil_comision/<uuid:usuario_id>/",
+        views.perfil_comision,
+        name="perfil_comision",
+    ),
     path(
         "editar_pregunta/<uuid:usuario_id>/<uuid:id_pregunta>/",
         views.editar_pregunta,
@@ -28,4 +31,5 @@ urlpatterns = [
         views.agregar_pregunta,
         name="agregar_pregunta",
     ),
+    path("bienvenida/<uuid:usuario_id>", views.index, name="bienvenida_comision"),
 ]

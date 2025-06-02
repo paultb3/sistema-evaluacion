@@ -16,13 +16,15 @@ def index(request, usuario_id):
     return render(request, "bienvenida_comision.html", {"usuario_id": usuario_id})
 
 
-def perfil(request, usuario_id):
+def perfil_comision(request, usuario_id):
     print(f"Usuario recibido: {usuario_id}")
     comision = get_object_or_404(Comision, usuario__id=usuario_id)
     print(f"Comisiones encontradas: {comision}")
 
     return render(
-        request, "perfil.html", {"comision": comision, "usuario_id": usuario_id}
+        request,
+        "perfil_comision.html",
+        {"comision": comision, "usuario_id": usuario_id},
     )
 
 
