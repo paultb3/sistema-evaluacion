@@ -5,30 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - SED</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body class="min-h-screen bg-gray-100 flex items-center justify-center">
-    <div class="relative w-full h-screen">
-      <!-- Imagen de fondo -->
+  <body class="bg-gray-100 font-sans">
+    <div
+      class="min-h-screen flex items-center justify-center relative overflow-hidden"
+    >
+      <!-- Fondo -->
       <div
-        class="absolute top-0 left-0 w-full h-2/3 bg-cover bg-center"
+        class="absolute inset-0 bg-cover bg-center brightness-75"
         style="
           background-image: url('https://images.unsplash.com/photo-1573497491208-6b1acb260507');
         "
-      >
-        <div
-          class="w-full h-full bg-gradient-to-t from-white via-white/80 to-transparent"
-        ></div>
-      </div>
+      ></div>
+
+      <!-- Capa -->
+      <div class="absolute inset-0 bg-white/70 backdrop-blur-sm"></div>
 
       <!-- Formulario -->
       <div
-        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md p-8 bg-white rounded-2xl shadow-xl"
+        class="relative z-10 w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl animate-fade-in"
       >
-        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
-          Bienvenido a SED
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">
+          Bienvenido a <span class="text-green-600">SED</span>
         </h2>
 
-        <form method="post" class="space-y-4">
+        <form method="post" class="space-y-5">
           {% csrf_token %} {% if error %}
           <p class="text-red-500 text-sm">{{ error }}</p>
           {% endif %}
@@ -36,34 +52,107 @@
           <input
             type="email"
             name="correo"
-            placeholder="Correo"
+            placeholder="Correo electrónico"
             required
-            class="w-full p-3 border border-gray-300 rounded-md"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
 
           <div class="relative">
             <input
               type="password"
+              id="password"
               name="password"
               placeholder="Contraseña"
               required
-              class="w-full p-3 border border-gray-300 rounded-md"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg pr-12 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <span
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+
+            <button
+              type="button"
+              id="togglePassword"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-green-600 focus:outline-none"
             >
-              👁️
-            </span>
+              <!-- Ícono visible (ojo) -->
+              <svg
+                id="eye"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+
+              <!-- Ícono oculto (ojo tachado) -->
+              <svg
+                id="eyeOff"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 hidden"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a10.03 10.03 0 013.196-4.568M6.258 6.258A9.964 9.964 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.963 9.963 0 01-4.147 5.094M15 12a3 3 0 00-3-3M3 3l18 18"
+                />
+              </svg>
+            </button>
           </div>
 
           <button
             type="submit"
-            class="w-full py-3 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition duration-200"
+            class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-200"
           >
-            Login
+            Iniciar sesión
           </button>
         </form>
       </div>
     </div>
+
+    <style>
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-in-out both;
+      }
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+
+    <script>
+      const togglePassword = document.getElementById("togglePassword");
+      const password = document.getElementById("password");
+      const eye = document.getElementById("eye");
+      const eyeOff = document.getElementById("eyeOff");
+
+      togglePassword.addEventListener("click", () => {
+        const isHidden = password.type === "password";
+        password.type = isHidden ? "text" : "password";
+        eye.classList.toggle("hidden", !isHidden);
+        eyeOff.classList.toggle("hidden", isHidden);
+      });
+    </script>
   </body>
 </html>

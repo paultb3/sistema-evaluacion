@@ -1,0 +1,23 @@
+{% extends 'base/alumno.html' %} {% block title %} Bienvenida {% endblock title %}
+{% block content %}
+<div>
+  <h1 class="text-2xl font-bold mb-6">
+    Bienvenido, {{ alumno.usuario.nombre }}!
+  </h1>
+  <div class="bg-white shadow rounded p-6">
+    <p class="mb-4">
+       
+       {% for modulo_pregunta in  modulo %}
+       <div class="mb-4">  
+        {{modulo_pregunta}}
+
+       </div>
+       {% endfor %}
+        
+    </p>
+  </div>
+
+
+</div>
+
+{% endblock content %}
