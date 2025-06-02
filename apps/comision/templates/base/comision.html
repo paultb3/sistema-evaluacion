@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}SED | Comisión{% endblock title %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Inter Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-slate-100 flex flex-col md:flex-row text-slate-800 min-h-screen"
+  >
+    <!-- Header móvil -->
+    <header
+      class="bg-emerald-600 text-white flex items-center justify-between p-4 md:hidden shadow-md z-50"
+    >
+      <h1 class="text-xl font-bold tracking-wide">SED</h1>
+      <button id="menu-toggle" class="text-3xl">
+        <i class="fas fa-bars"></i>
+      </button>
+    </header>
+
+    <!-- Overlay para móviles -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"
+    ></div>
+
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="bg-emerald-800 text-white w-72 h-screen fixed md:static md:translate-x-0 -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between overflow-y-auto"
+    >
+      <div class="p-6">
+        <!-- Título -->
+        <a
+          href="{% url 'comision:bienvenida_comision' usuario_id=usuario_id %}"
+          class="block text-3xl font-bold mb-1"
+          >SED</a
+        >
+        <p class="text-sm text-white/70 mb-6">Sistema Evaluación Docente</p>
+
+        <!-- Menú principal -->
+        <nav class="space-y-2">
+          {% if usuario_id %}
+          <a
+            href="{% url 'comision:realizar_encuesta' usuario_id=usuario_id %}"
+            class="flex items-center gap-3 p-2 rounded-lg hover:bg-emerald-700 transition"
+          >
+            <i class="fas fa-pen-to-square"></i> <span>Realizar Encuesta</span>
+          </a>
+          {% endif %}
+
+          <details class="group">
+            <summary
+              class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-emerald-700 transition"
+            >
+              <i class="fas fa-chart-pie"></i>
+              <span class="flex-1">Reportes</span>
+              <i
+                class="fas fa-chevron-down transform group-open:rotate-180 transition"
+              ></i>
+            </summary>
+            <div class="ml-7 mt-1 space-y-1 text-sm text-white/90">
+              <a href="#" class="block hover:underline">Resumen General</a>
+              <a href="#" class="block hover:underline"
+                >Resultados por Docente</a
+              >
+              <a href="#" class="block hover:underline">Resultados por Curso</a>
+            </div>
+          </details>
+
+          <a
+            href="{% url 'comision:perfil_comision' usuario_id=usuario_id %}"
+            class="flex items-center gap-3 p-2 rounded-lg hover:bg-emerald-700 transition"
+          >
+            <i class="fas fa-user"></i> <span>Perfil</span>
+          </a>
+
+          <a
+            href="#"
+            class="flex items-center gap-3 p-2 rounded-lg hover:bg-emerald-700 transition"
+          >
+            <i class="fas fa-cog"></i> <span>Configuración</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Footer Sidebar -->
+      <div class="p-6 border-t border-white/20">
+        <div class="text-sm mb-3">
+          <p class="font-semibold">Comisión</p>
+          <p class="text-white/60">usuario@correo.edu</p>
+        </div>
+        <a
+          href="/"
+          class="flex items-center gap-2 p-2 rounded-lg hover:bg-red-600 transition"
+        >
+          <i class="fas fa-sign-out-alt"></i> <span>Cerrar sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 p-2 md:ml-30 mt-2 md:mt-0 overflow-y-auto">
+      {% block content %}{% endblock content %}
+    </main>
+
+    <!-- Script toggle -->
+    <script>
+      const menuToggle = document.getElementById("menu-toggle");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const icon = menuToggle.querySelector("i");
+
+      function openMenu() {
+        sidebar.classList.remove("-translate-x-full");
+        overlay.classList.remove("hidden");
+        icon.classList.replace("fa-bars", "fa-times");
+      }
+
+      function closeMenu() {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+        icon.classList.replace("fa-times", "fa-bars");
+      }
+
+      menuToggle.addEventListener("click", () => {
+        sidebar.classList.contains("-translate-x-full")
+          ? openMenu()
+          : closeMenu();
+      });
+
+      overlay.addEventListener("click", closeMenu);
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 768) closeMenu();
+      });
+    </script>
+  </body>
+</html>

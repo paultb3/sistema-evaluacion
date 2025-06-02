@@ -1,11 +1,43 @@
-{% extends 'base/base.html' %} {% block title %} Comisión {% endblock title %}
-{% block content %}
+{% extends 'base/comision.html' %} {% block title %} Bienvenida | Dashboard
+Comisión | UNAS {% endblock title %} {% block content %}
+<div class="max-w-5xl mx-auto mt-10 px-6">
+  <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
+    <h1 class="text-3xl font-bold text-emerald-700 mb-4">
+      Bienvenido(a) al Módulo de Comisión
+    </h1>
 
-<h1>Bienvenido a la sección de Comisión</h1>
+    <p class="text-gray-700 text-lg mb-6">
+      Este panel forma parte del
+      <strong>Sistema de Evaluación Docente (SED)</strong> de la
+      <strong>Universidad Nacional Agraria de la Selva</strong>. Desde aquí
+      podrás gestionar las encuestas de evaluación docente, revisar reportes y
+      acceder a funciones clave para asegurar la calidad académica
+      institucional.
+    </p>
 
-<section>
-  <p>Contenido de la sección Comisión.</p>
+    <hr class="my-6 border-t border-gray-300" />
 
-  <h1>normas</h1>
-</section>
+    <section class="space-y-4">
+      <h2 class="text-2xl font-semibold text-gray-800">
+        📋 Funciones disponibles
+      </h2>
+      <ul class="list-disc list-inside text-gray-700">
+        <li>Gestionar preguntas de evaluación por módulo.</li>
+        <li>Revisar resultados de encuestas realizadas por estudiantes.</li>
+        <li>Acceder a reportes consolidados por docente y asignatura.</li>
+        <li>Actualizar tu perfil como miembro de la Comisión Evaluadora.</li>
+      </ul>
+
+      <h2 class="text-2xl font-semibold text-gray-800 mt-8">
+        📌 Normas y recomendaciones
+      </h2>
+      <p class="text-gray-700">
+        Recuerda que el proceso de evaluación se rige por los principios de
+        <strong>objetividad, confidencialidad y transparencia</strong>. Toda
+        información recopilada debe ser tratada con responsabilidad y con fines
+        exclusivamente académicos.
+      </p>
+    </section>
+  </div>
+</div>
 {% endblock content %}
