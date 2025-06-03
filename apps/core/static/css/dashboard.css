@@ -11,10 +11,10 @@ html, body {
 }
 
 .div-options-left{
-    width: 220px; 
+    width:200px; 
     background: #274d60 ;
     color: white; 
-    padding: 1rem
+    padding: 0;
 }
 .div-header{
     height: 35px;
@@ -29,30 +29,47 @@ html, body {
     margin: 0;
 }
 #iniciar-sesion{
-    margin: auto 2rem;
+    margin: auto 0.2rem;
     text-decoration: none;
     color: #ecf0f1;
-    font-size: 15px;
-    background: #6ba3be;
+    font-size: 18px;
     padding: 0.8rem;
     border-radius: 8px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 }
 #iniciar-sesion:hover{
-    background-color: #0c969c;
+    background: #138496;
 }
 
 .nav-list {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* alinea a la izquierda */
+    gap: 0.5rem; /* sin espacio entre elementos */
     padding: 0.5rem;
     margin: 0.2rem auto;
+    margin-left: 0.7rem;
     border-radius: 8px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.nav-list:hover{
+    background-color: rgba(0,0,0,.2);
+}
+
+
 .nav-options{
     color: white; 
     text-decoration: none;
-    padding: 1rem;
+    padding: 0.1rem;
     font-size: 16px;
+}
+
+.icon{
+    width: 25px;
+    height: 25px;
+    margin: 0;
+    padding: 0;
 }
