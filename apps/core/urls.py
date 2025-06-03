@@ -3,7 +3,8 @@ from django.urls import path
 
 app_name = 'core'
 
+
+app_name = "core"
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('login/', views.login , name='login')
+    path('', views.index),
 ]
