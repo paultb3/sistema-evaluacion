@@ -6,7 +6,7 @@ import uuid
 
 
 def index(request):
-    return render(request, 'core/index.html')
+    return render(request, 'core/base.html')
 
 
 def login_view(request):
@@ -30,6 +30,6 @@ def login_view(request):
         except Usuario.DoesNotExist:
             error = "Usuario no encontrado"
 
-        return render(request, "login.html", {"form": {}, "error": error})
+        return render(request, "core/login.html", {"form": {}, "error": error})
 
-    return render(request, "login.html", {"form": {}})
+    return render(request, "core/login.html", {"form": {}})
