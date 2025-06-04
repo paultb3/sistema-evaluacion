@@ -1,0 +1,55 @@
+{% extends 'base/docente.html' %} {% block title %}Evaluaciones | Docente UNAS
+TINGO{% endblock title %} {% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+  <h1 class="text-3xl font-bold text-emerald-700">📊 Mis Evaluaciones</h1>
+
+  <!-- Módulos -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Módulos Evaluados</h2>
+    <div class="space-y-4">
+      {% for item in preguntas_con_puntuacion %}
+      <div class="bg-gray-50 p-3 rounded">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-sm font-medium text-gray-500 mb-1">
+              {{ item.modulo.nombre }}
+            </h3>
+            <p class="text-gray-700">{{ item.pregunta.pregunta }}</p>
+          </div>
+          <div class="flex items-center gap-2 ml-4">
+            <span class="text-sm font-medium text-emerald-600"
+              >{{ item.puntuacion }}</span
+            >
+            <div class="flex text-yellow-400">
+              {% for i in "12345" %} {% if forloop.counter <= item.puntuacion %}
+              <i class="fas fa-star"></i>
+              {% else %}
+              <i class="far fa-star"></i>
+              {% endif %} {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Comentarios -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">
+      Comentarios de los Estudiantes
+    </h2>
+    <div class="space-y-4">
+      {% for comentario in comentarios %}
+      <div class="bg-gray-50 p-4 rounded">
+        <p class="text-gray-700">{{ comentario }}</p>
+      </div>
+      {% empty %}
+      <p class="text-gray-500 italic text-center">
+        No hay comentarios disponibles
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

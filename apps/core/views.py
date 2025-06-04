@@ -34,6 +34,12 @@ def login_view(request):
                         "alumno:bienvenida_alumnos",
                         kwargs={"usuario_id": usuario.id},
                     )
+                    
+                elif str(usuario.rol) == "profesor":
+                    url = reverse(
+                        "docente:bienvenido_docente",
+                        kwargs={"usuario_id": usuario.id},
+                    )
 
                     return redirect(url)
                 else:
@@ -60,3 +66,8 @@ def logout_view(request):
     return render(
         request, "login.html", {"form": {}}
     )  # Redirige a la página de login o inicio
+
+
+
+def dashboard_view(request):
+    return render(request, "dashboard_main.html")

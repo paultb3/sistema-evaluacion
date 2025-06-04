@@ -1,27 +1,119 @@
-{% extends 'base/comision.html' %} {% block title %} Perfil | Comision Principal
-{% endblock title %} {% block content %}
-<h1 class="text-2xl font-bold mb-6">Perfil</h1>
+{% extends 'base/comision.html' %} {% block title %}Perfil | Comisión
+Principal{% endblock title %} {% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-3xl font-bold text-emerald-700">Perfil de la Comisión</h1>
+    <div class="flex items-center gap-2">
+      <span
+        class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium"
+      >
+        Comisión Principal
+      </span>
+    </div>
+  </div>
 
-<div class="bg-white shadow rounded p-6">
-  <p class="mb-4">Contenido de la sección Perfil.</p>
+  <!-- Información Principal -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-700 mb-2">
+            Información Personal
+          </h2>
+          <div class="space-y-3">
+            {% if comision.usuario.nombre %}
+            <div class="flex items-center gap-3">
+              <i class="fas fa-user text-emerald-600"></i>
+              <span class="text-gray-600">{{ comision.usuario.nombre }}</span>
+            </div>
+            {% else %}
+            <p class="text-red-500">
+              El nombre del usuario no está disponible.
+            </p>
+            {% endif %} {% if comision.usuario.correo %}
+            <div class="flex items-center gap-3">
+              <i class="fas fa-envelope text-emerald-600"></i>
+              <span class="text-gray-600">{{ comision.usuario.correo }}</span>
+            </div>
+            {% else %}
+            <p class="text-red-500">
+              El correo del usuario no está disponible.
+            </p>
+            {% endif %} {% if comision.usuario.rol %}
+            <div class="flex items-center gap-3">
+              <i class="fas fa-user-tag text-emerald-600"></i>
+              <span class="text-gray-600"
+                >{{ comision.usuario.rol.nombre }}</span
+              >
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
 
-  {% if comision.usuario.nombre %}
-  <h2 class="text-xl font-semibold text-gray-800">
-    Nombre: {{ comision.usuario.nombre }}
-  </h2>
-  {% else %}
-  <p class="text-red-500">El nombre del usuario no está disponible.</p>
-  {% endif %} {% if comision.usuario.correo %}
-  <h2 class="text-xl font-semibold text-gray-800 mt-2">
-    Correo: {{ comision.usuario.correo }}
-  </h2>
-  {% else %}
-  <p class="text-red-500">El correo del usuario no está disponible.</p>
-  {% endif %} {% if comision.usuario.rol %}
-  <h2 class="text-xl font-semibold text-gray-800 mt-2">
-    Rol: {{ comision.usuario.rol.nombre }}
-  </h2>
-  {% endif %}
+      <div class="space-y-4">
+        <h2 class="text-lg font-semibold text-gray-700 mb-2">
+          Estadísticas de Actividad
+        </h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-emerald-50 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-emerald-600 font-medium">
+                  Evaluaciones Revisadas
+                </p>
+                <p class="text-2xl font-bold text-emerald-700">
+                  {{ evaluaciones_revisadas }}
+                </p>
+              </div>
+              <i class="fas fa-clipboard-check text-2xl text-emerald-600"></i>
+            </div>
+          </div>
+          <div class="bg-emerald-50 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-emerald-600 font-medium">
+                  Preguntas Creadas
+                </p>
+                <p class="text-2xl font-bold text-emerald-700">
+                  {{ preguntas_creadas }}
+                </p>
+              </div>
+              <i class="fas fa-question-circle text-2xl text-emerald-600"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acciones Rápidas -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">Acciones Rápidas</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <a
+        href="{% url 'comision:realizar_encuesta' usuario_id=usuario_id %}"
+        class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="fas fa-clipboard-list text-emerald-600"></i>
+        <span class="text-gray-700">Gestionar Encuestas</span>
+      </a>
+      <a
+        href="#"
+        class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="fas fa-chart-bar text-emerald-600"></i>
+        <span class="text-gray-700">Ver Estadísticas</span>
+      </a>
+      <a
+        href="#"
+        class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="fas fa-cog text-emerald-600"></i>
+        <span class="text-gray-700">Configuración</span>
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock content %}
 

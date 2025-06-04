@@ -22,6 +22,7 @@ class Evaluacion(models.Model):
         choices=[("borrador", "Borrador"), ("enviada", "Enviada")],
         default="borrador",
     )
+    comentario_general = models.TextField(blank=True, null=True, help_text="Comentario general sobre la evaluación")
 
     class Meta:
         unique_together = (
@@ -46,7 +47,6 @@ class Respuesta(models.Model):
     puntuacion = models.IntegerField(
         choices=[(i, f"{i} estrella{'s' if i > 1 else ''}") for i in range(1, 6)]
     )
-    comentario = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.criterio} - {self.puntuacion}★"

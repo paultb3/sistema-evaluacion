@@ -86,8 +86,16 @@ def procesar_evaluacion(request, alumno):
             estudiante=alumno,
             curso=curso,
             docente=docente,
-            defaults={'estado': 'enviada'}
+            defaults={
+                'estado': 'enviada',
+                'comentario_general': request.POST.get('comentario_general', '')
+            }
         )
+
+        # Si la evaluación ya existía, actualizar el comentario general
+        if not created:
+            evaluacion.comentario_general = request.POST.get('comentario_general', '')
+            evaluacion.save()
 
         # Obtener todas las preguntas
         preguntas = PreguntaModulo.objects.all()
