@@ -84,13 +84,22 @@ WSGI_APPLICATION = "sed.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "sistema_evaluacion",
+        "NAME": "test",
         "USER": "postgres",
         "PASSWORD": "123456789",
         "HOST": "localhost",
         "PORT": "5432",
     }
 }
+
+# para poder ver el tiempo de respuesta de la base de datos
+DEVSERVER_MODULES = [
+    "devserver.modules.sql.SQLRealTimeModule",  # Muestra consultas SQL en tiempo real
+    "devserver.modules.sql.SQLSummaryModule",  # Resumen de consultas SQL
+    "devserver.modules.profile.ProfileSummaryModule",  # Tiempo que tarda cada vista
+    "devserver.modules.request.SessionInfoModule",  # Información de sesión
+    "devserver.modules.cache.CacheSummaryModule",  # Uso del caché
+]
 
 
 # Password validation

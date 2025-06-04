@@ -6,12 +6,25 @@ import uuid
 
 
 # Criterios que serán usados por cada evaluación
+
+
+class Calificacion(models.IntegerChoices):
+    UNO = "1", "Muy Deficiente"
+    DOS = "2", "Deficiente"
+    TRES = "3", "Regular"
+    CUATRO = "4", "Bueno"
+    CINCO = "5", "Excelente"
+
+
 class Criterio(models.Model):
-    nombre = models.CharField(max_length=100, unique=True)
-    descripcion = models.TextField(blank=True)
+    id_criterio = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    calificacion = models.IntegerField(
+        choices=Calificacion.choices, default=Calificacion.UNO
+    )
 
     def __str__(self):
-        return self.nombre
+        return self.get_calificacion_display()
 
 
 # Evaluación realizada por un estudiante a un docente en un curso específico
@@ -20,6 +33,12 @@ class Evaluacion(models.Model):
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
+    criterio = models.ForeignKey(
+        Criterio, on_delete=models.CASCADE, blank=True, null=True
+    )
+    docente = models.ForeignKey(
+        Docente, on_delete=models.CASCADE, blank=True, null=True
+    )
     estado = models.CharField(
         max_length=20,
         choices=[("borrador", "Borrador"), ("enviada", "Enviada")],
@@ -42,7 +61,7 @@ class Respuesta(models.Model):
     evaluacion = models.ForeignKey(
         Evaluacion, on_delete=models.CASCADE, related_name="respuestas"
     )
-    criterio = models.ForeignKey(Criterio, on_delete=models.CASCADE)
+    criterio = models.ForeignKey(Criterio, on_delete=models.CASCADE, blank=True)
     puntuacion = models.IntegerField(
         choices=[(i, f"{i} estrella{'s' if i > 1 else ''}") for i in range(1, 6)]
     )
