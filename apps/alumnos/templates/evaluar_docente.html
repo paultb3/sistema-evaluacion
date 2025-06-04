@@ -235,25 +235,76 @@
 
           <!-- CAMBIO PRINCIPAL: Filtrar criterios por módulo -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {% for criterio in criterios %}
             <label class="cursor-pointer group">
               <input
                 type="radio"
                 name="pregunta_{{ pregunta.id_pregunta }}"
-                value="{{ criterio.id }}"
-                id="criterio_id"
+                value="1"
                 required
                 class="sr-only peer"
               />
               <div
                 class="flex items-center justify-center p-3 bg-gray-50 border-2 border-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-all peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:text-blue-700 hover:bg-gray-100 group-hover:border-gray-300"
               >
-                <span class="text-center"
-                  >{{ criterio.get_calificacion_display }}</span
-                >
+                <span class="text-center">Muy Deficiente</span>
               </div>
             </label>
-            {% endfor %}
+            <label class="cursor-pointer group">
+              <input
+                type="radio"
+                name="pregunta_{{ pregunta.id_pregunta }}"
+                value="2"
+                required
+                class="sr-only peer"
+              />
+              <div
+                class="flex items-center justify-center p-3 bg-gray-50 border-2 border-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-all peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:text-blue-700 hover:bg-gray-100 group-hover:border-gray-300"
+              >
+                <span class="text-center">Deficiente</span>
+              </div>
+            </label>
+            <label class="cursor-pointer group">
+              <input
+                type="radio"
+                name="pregunta_{{ pregunta.id_pregunta }}"
+                value="3"
+                required
+                class="sr-only peer"
+              />
+              <div
+                class="flex items-center justify-center p-3 bg-gray-50 border-2 border-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-all peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:text-blue-700 hover:bg-gray-100 group-hover:border-gray-300"
+              >
+                <span class="text-center">Regular</span>
+              </div>
+            </label>
+            <label class="cursor-pointer group">
+              <input
+                type="radio"
+                name="pregunta_{{ pregunta.id_pregunta }}"
+                value="4"
+                required
+                class="sr-only peer"
+              />
+              <div
+                class="flex items-center justify-center p-3 bg-gray-50 border-2 border-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-all peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:text-blue-700 hover:bg-gray-100 group-hover:border-gray-300"
+              >
+                <span class="text-center">Bueno</span>
+              </div>
+            </label>
+            <label class="cursor-pointer group">
+              <input
+                type="radio"
+                name="pregunta_{{ pregunta.id_pregunta }}"
+                value="5"
+                required
+                class="sr-only peer"
+              />
+              <div
+                class="flex items-center justify-center p-3 bg-gray-50 border-2 border-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-all peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:text-blue-700 hover:bg-gray-100 group-hover:border-gray-300"
+              >
+                <span class="text-center">Excelente</span>
+              </div>
+            </label>
           </div>
         </div>
         {% endfor %}

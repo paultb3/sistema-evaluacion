@@ -15,10 +15,24 @@
           extend: {
             colors: {
               primary: {
-                light: "#34D399", // verde claro
-                DEFAULT: "#10B981", // verde medio
-                dark: "#059669", // verde oscuro
+                light: "#34D399", //verde esmeralda
+                DEFAULT: "#059669", // verde esmeralda oscuro
+                dark: "#047857", // verde esmeralda aun más oscuro
+                // Puedes añadir más tonos si lo necesitas
               },
+            },
+             animation: {
+                'fade-in': 'fade-in 0.7s cubic-bezier(.4,0,.2,1) both',
+                'spin-once': 'spin 0.4s linear',
+              },
+             keyframes: {
+                'fade-in': {
+                    'from': { opacity: 0, transform: 'translateY(20px)' },
+                    'to': { opacity: 1, transform: 'translateY(0)' },
+                },
+                 'spin': {
+                     'to': { transform: 'rotate(360deg)' },
+                 }
             },
           },
         },
@@ -27,18 +41,39 @@
 
     <!-- Tipografía -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
       body {
         font-family: "Inter", sans-serif;
       }
+      /* Opcional: Estilos para el scrollbar en navegadores que lo permiten */
+      ::-webkit-scrollbar {
+          width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+          background: #e2e8f0; /* gray-200 */
+      }
+      ::-webkit-scrollbar-thumb {
+          background: #94a3b8; /* gray-400 */
+          border-radius: 4px;
+      }
+       ::-webkit-scrollbar-thumb:hover {
+          background: #64748b; /* gray-500 */
+      }
+      .dark ::-webkit-scrollbar-track {
+          background: #1f2937; /* gray-800 */
+      }
+      .dark ::-webkit-scrollbar-thumb {
+          background: #475569; /* gray-600 */
+      }
+       .dark ::-webkit-scrollbar-thumb:hover {
+          background: #64748b; /* gray-500 */
+      }
     </style>
 
-    <!-- Iconos (usando Heroicons en vez de Font Awesome para algo más liviano y moderno) -->
-    <!-- Heroicons SVG: https://heroicons.com/ -->
-    <!-- Asegúrate de copiar los íconos SVG que uses (abajo verás ejemplos) -->
+    <!-- Iconos (usando Heroicons - solo copié los SVG necesarios para reducir dependencias) -->
   </head>
 
   <body
@@ -48,17 +83,19 @@
     <header
       class="bg-primary p-4 flex items-center justify-between md:hidden shadow-md dark:bg-gray-800"
     >
-      <a herf="{%url 'alumno:bienvenida_alumno' usuario_id=usuario_id% }"
-        >SED</a
-      >
+      <a href="{% url 'alumno:bienvenida_alumnos' usuario_id=usuario_id %}"
+         class="font-bold text-xl tracking-wide text-white hover:text-primary-light transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white rounded"
+         aria-label="Ir a inicio">
+          SED
+      </a>
       <div class="flex items-center space-x-4">
         <!-- Botón modo oscuro -->
         <button
           id="theme-toggle"
           aria-label="Cambiar tema"
-          class="focus:outline-none focus:ring-2 focus:ring-white rounded text-white"
+          class="focus:outline-none focus:ring-2 focus:ring-white rounded text-white p-1"
         >
-          <!-- Icono de sol/luna (inicial: sol) -->
+          <!-- Icono de sol/luna -->
           <svg
             id="icon-sun"
             xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +131,7 @@
         <button
           id="menu-toggle"
           aria-label="Abrir menú lateral"
-          class="text-white text-2xl focus:outline-none focus:ring-2 focus:ring-white rounded"
+          class="text-white p-1 focus:outline-none focus:ring-2 focus:ring-white rounded"
         >
           <!-- Icono hamburguesa -->
           <svg
@@ -119,6 +156,7 @@
     <div
       id="overlay"
       class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity duration-300"
+      aria-hidden="true"
     ></div>
 
     <!-- Contenedor principal: Sidebar + Main -->
@@ -126,26 +164,29 @@
       <!-- Sidebar -->
       <aside
         id="sidebar"
-        class="bg-primary text-white w-64 p-6 space-y-8 transform -translate-x-full md:translate-x-0 md:static md:block transition-transform duration-300 z-50 md:z-auto h-full fixed md:relative overflow-y-auto shadow-lg"
+        class="bg-gradient-to-b from-primary to-primary-dark text-white w-64 p-6 space-y-8 transform -translate-x-full md:translate-x-0 md:static md:block transition-transform duration-300 ease-in-out z-50 md:z-auto h-full fixed md:relative overflow-y-auto shadow-lg"
+        aria-label="Menú de navegación principal"
       >
         <div>
           <a href="{% url 'alumno:bienvenida_alumnos' usuario_id=usuario_id %}"
-            >SED</a
-          >
-          <p class="text-sm text-white/80 mb-6">
+             class="font-bold text-2xl tracking-wide text-white hover:text-primary-light transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white rounded p-1"
+             aria-label="Ir a inicio">
+              SED
+          </a>
+          <p class="text-sm text-white/80 mb-8">
             SISTEMA DE EVALUACIÓN DOCENTE
           </p>
 
           <!-- Navegación -->
-          <nav class="space-y-2 text-base">
+          <nav class="space-y-3 text-base" aria-label="Navegación principal">
             <a
               href="{% url 'alumno:perfil_alumno' usuario_id=usuario_id %}"
-              class="flex items-center hover:bg-primary-light p-2 rounded-lg transition-colors duration-200"
+              class="flex items-center group p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white"
             >
               <!-- Icono Home -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-2"
+                class="h-5 w-5 mr-3 text-white group-hover:text-primary-light transition-colors duration-200"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -163,16 +204,16 @@
                   d="M9 22V12h6v10"
                 />
               </svg>
-              Perfil
+              <span class="text-white group-hover:text-primary-light transition-colors duration-200">Perfil</span>
             </a>
             <a
               href="{% url 'alumno:explorar' usuario_id=usuario_id %}"
-              class="flex items-center hover:bg-primary-light p-2 rounded-lg transition-colors duration-200"
+              class="flex items-center group p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white"
             >
               <!-- Icono Chart -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-2"
+                class="h-5 w-5 mr-3 text-white group-hover:text-primary-light transition-colors duration-200"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -184,16 +225,16 @@
                   d="M11 11V3m0 8h8m-8 8v-8m0 8h8m-8 0H3"
                 />
               </svg>
-              Explorar
+               <span class="text-white group-hover:text-primary-light transition-colors duration-200">Explorar</span>
             </a>
             <a
               href="{% url 'alumno:evaluar_docente' usuario_id=usuario_id %}"
-              class="flex items-center hover:bg-primary-light p-2 rounded-lg transition-colors duration-200"
+              class="flex items-center group p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white"
             >
               <!-- Icono Usuario -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-2"
+                class="h-5 w-5 mr-3 text-white group-hover:text-primary-light transition-colors duration-200"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -211,20 +252,21 @@
                   d="M12 11a4 4 0 100-8 4 4 0 000 8zM16 17a8 8 0 00-8 0"
                 />
               </svg>
-              Evaluar
+              <span class="text-white group-hover:text-primary-light transition-colors duration-200">Evaluar</span>
             </a>
           </nav>
         </div>
 
-        <div class="pt-6 border-t border-white/20">
+        <div class="pt-6 border-t border-white/20 mt-auto"> {# mt-auto empuja al fondo #}
           <a
             href="{% url 'core:logout' %}"
-            class="flex items-center justify-center hover:bg-primary-light p-2 rounded-lg transition-colors duration-200"
+            class="flex items-center justify-center group p-2 rounded-lg hover:bg-red-600 hover:scale-[1.02] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white"
+            aria-label="Cerrar sesión"
           >
             <!-- Icono Salir -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-2"
+              class="h-5 w-5 mr-3 text-white group-hover:text-white transition-colors duration-200"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -236,15 +278,44 @@
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
               />
             </svg>
-            Salir
+            <span class="text-white group-hover:text-white transition-colors duration-200">Salir</span>
           </a>
         </div>
       </aside>
 
       <!-- Main content -->
       <main
-        class="flex-1 p-6 overflow-auto min-h-0 bg-white dark:bg-gray-800 rounded-tr-2xl md:rounded-none shadow-inner transition-colors duration-300"
+        class="flex-1 p-6 overflow-y-auto min-h-0 bg-gray-50 dark:bg-gray-800 md:rounded-none rounded-tr-2xl shadow-inner transition-colors duration-300 animate-fade-in"
+        id="main-content"
       >
+         {# Aquí se renderizarán los mensajes de Django #}
+         {% if messages %}
+            <div class="mb-6 space-y-3">
+                {% for message in messages %}
+                <div
+                  class="{% if message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% elif message.tags == 'error' %}bg-red-100 border-red-400 text-red-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} border-l-4 rounded-r p-4 flex items-center"
+                  role="alert"
+                >
+                  <div class="flex-shrink-0 mr-3">
+                    {% if message.tags == 'success' %}
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {% elif message.tags == 'error' %}
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {% else %}
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {% endif %}
+                  </div>
+                  <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            </div>
+         {% endif %}
         {% block content %}
         <!-- Aquí va tu contenido dinámico -->
         {% endblock %}
@@ -261,16 +332,22 @@
       const iconSun = document.getElementById("icon-sun");
       const iconMoon = document.getElementById("icon-moon");
       const htmlEl = document.documentElement;
+      const mainContent = document.getElementById('main-content');
+
 
       // Funciones menú
       function openMenu() {
         sidebar.classList.remove("-translate-x-full");
         overlay.classList.remove("hidden");
+        // Opcional: deshabilita scroll en body cuando menú abierto en móvil
+        document.body.style.overflow = 'hidden';
       }
 
       function closeMenu() {
         sidebar.classList.add("-translate-x-full");
         overlay.classList.add("hidden");
+         // Opcional: habilita scroll de nuevo
+        document.body.style.overflow = '';
       }
 
       menuToggle?.addEventListener("click", () => {
@@ -285,7 +362,8 @@
 
       window.addEventListener("resize", () => {
         if (window.innerWidth >= 768) {
-          closeMenu();
+          closeMenu(); // Asegura que el menú se cierra en desktop
+           document.body.style.overflow = ''; // Asegura scroll habilitado en desktop
         }
       });
 
@@ -304,7 +382,16 @@
         }
       }
 
-      themeToggle?.addEventListener("click", toggleTheme);
+      themeToggle?.addEventListener("click", () => {
+        toggleTheme();
+         // Agregar animación de giro
+        themeToggle.classList.add('animate-spin-once');
+        // Eliminar animación después de que termine
+        setTimeout(() => {
+            themeToggle.classList.remove('animate-spin-once');
+        }, 400); // La duración de la animación es 0.4s
+      });
+
 
       // Al cargar la página, aplicar tema guardado o sistema
       (function initTheme() {
@@ -323,6 +410,19 @@
           iconMoon.classList.remove("hidden");
         }
       })();
+
+       // Opcional: Reiniciar animación del main content en navegaciones SPA (si usas htms/alpinejs, etc.)
+       // Si es una aplicación tradicional Django, no es necesario
+       /*
+       document.addEventListener('DOMContentLoaded', () => {
+            if(mainContent) {
+                 mainContent.classList.remove('animate-fade-in');
+                 void mainContent.offsetWidth; // Reinicia la animación
+                 mainContent.classList.add('animate-fade-in');
+            }
+       });
+       */
+
     </script>
   </body>
 </html>

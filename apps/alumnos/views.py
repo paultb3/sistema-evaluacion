@@ -2,10 +2,11 @@ from collections import defaultdict
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.db.models import Avg, Q
 from apps.alumnos.models import Estudiante
 from apps.core.models import Curso
 from apps.docentes.models import Docente
-from apps.evaluacion.models import Criterio, Evaluacion, ModuloPreguntas, PreguntaModulo
+from apps.evaluacion.models import Evaluacion, ModuloPreguntas, PreguntaModulo, Respuesta
 
 
 def bienvenida_alumnos(request, usuario_id):
@@ -41,7 +42,6 @@ def mostrar_formulario_evaluacion(request, alumno, usuario_id):
     # Obtener todas las preguntas organizadas por módulo
     preguntas = PreguntaModulo.objects.select_related("id_modulo").all()
     modulos = ModuloPreguntas.objects.all()
-    criterios = Criterio.objects.all()
 
     # Organizar preguntas por módulo
     modulo_dict = defaultdict(list)
@@ -59,7 +59,6 @@ def mostrar_formulario_evaluacion(request, alumno, usuario_id):
         "alumno": alumno,
         "modulos": modulos,
         "modulo_dict": dict(modulo_dict),  # Convertir defaultdict a dict normal
-        "criterios": criterios,
         "cursos_disponibles": cursos_disponibles,
         "evaluaciones_existentes": evaluaciones_existentes,
     }
@@ -77,51 +76,71 @@ def procesar_evaluacion(request, alumno):
 
         if not curso_id or not docente_id:
             messages.error(request, "Debe seleccionar un curso y docente")
-            print(alumno.usuario.id)
             return redirect("alumno:evaluar_docente", usuario_id=alumno.usuario.id)
 
         curso = get_object_or_404(Curso, id=curso_id)
-        docente = get_object_or_404(Docente, usuario=docente_id)
-        print(curso, docente)
+        docente = get_object_or_404(Docente, pk=docente_id)
 
-        # Procesar respuestas por pregunta
+        # Crear o obtener la evaluación principal
+        evaluacion, created = Evaluacion.objects.get_or_create(
+            estudiante=alumno,
+            curso=curso,
+            docente=docente,
+            defaults={'estado': 'enviada'}
+        )
+
+        # Obtener todas las preguntas
         preguntas = PreguntaModulo.objects.all()
-        evaluaciones_creadas = 0
-        print(preguntas)
+        respuestas_creadas = 0
+        respuestas_actualizadas = 0
+
+        # Mapeo de valores numéricos a texto descriptivo
+        criterio_texto = {
+            "1": "Muy Deficiente",
+            "2": "Deficiente",
+            "3": "Regular",
+            "4": "Bueno",
+            "5": "Excelente"
+        }
 
         for pregunta in preguntas:
-            # Obtener la respuesta para esta pregunta
-            criterio_id = request.POST.get(f"pregunta_{pregunta.id_pregunta}")
-
-            if criterio_id:
-                criterio = get_object_or_404(Criterio, id=criterio_id)
-                print(criterio)
-                # Verificar si ya existe una evaluación para esta combinación
-                evaluacion_existente = Evaluacion.objects.filter(
-                    estudiante=alumno, curso=curso, docente=docente, pregunta=pregunta
-                ).first()
-                print(evaluacion_existente)
-                if evaluacion_existente:
-                    # Actualizar evaluación existente
-                    evaluacion_existente.criterio = criterio
-                    evaluacion_existente.save()
-                else:
-                    # Crear nueva evaluación
-                    Evaluacion.objects.create(
-                        estudiante=alumno,
-                        curso=curso,
-                        docente=docente,
-                        pregunta=pregunta,
-                        criterio=criterio,
+            criterio_valor = request.POST.get(f"pregunta_{pregunta.id_pregunta}")
+            print(f"Procesando pregunta {pregunta.id_pregunta}, criterio recibido: {criterio_valor}")
+            
+            if criterio_valor:
+                try:
+                    # Obtener el texto descriptivo del criterio
+                    criterio_texto_valor = criterio_texto.get(criterio_valor, "Sin calificar")
+                    
+                    # Crear o actualizar la respuesta
+                    respuesta, created = evaluacion.respuestas.get_or_create(
+                        evaluacion=evaluacion,
+                        defaults={
+                            'criterio': criterio_texto_valor,
+                            'puntuacion': int(criterio_valor),
+                            'comentario': ''
+                        }
                     )
-                    evaluaciones_creadas += 1
+                    
+                    if not created:
+                        respuesta.criterio = criterio_texto_valor
+                        respuesta.puntuacion = int(criterio_valor)
+                        respuesta.save()
+                        respuestas_actualizadas += 1
+                        print(f"Respuesta actualizada para pregunta {pregunta.id_pregunta}")
+                    else:
+                        respuestas_creadas += 1
+                        print(f"Nueva respuesta creada para pregunta {pregunta.id_pregunta}")
+                except Exception as e:
+                    print(f"Error procesando pregunta {pregunta.id_pregunta}: {str(e)}")
+                    messages.error(request, f"Error procesando la pregunta: {str(e)}")
 
         messages.success(
             request,
-            f"Evaluación completada exitosamente. Se crearon {evaluaciones_creadas} nuevas respuestas.",
+            f"Evaluación completada exitosamente. Nuevas respuestas: {respuestas_creadas}, actualizadas: {respuestas_actualizadas}.",
         )
-
     except Exception as e:
+        print(f"Error general en procesar_evaluacion: {str(e)}")
         messages.error(request, f"Error al procesar la evaluación: {str(e)}")
 
     return redirect("alumno:evaluar_docente", usuario_id=alumno.usuario.id)
@@ -143,10 +162,35 @@ def obtener_docentes_por_curso(request, curso_id):
 
 
 def explorar(request, usuario_id):
-    print(f"Usuario recibido: {usuario_id}")
-    modulo = PreguntaModulo.objects.all()
-
-    context = {"modulo": modulo, "usuario_id": usuario_id}
-    return render(
-        request, "explorar.html", {"usuario_id": usuario_id, "modulo": modulo}
-    )
+    query = request.GET.get('q', '')
+    docentes = Docente.objects.all()
+    if query:
+        docentes = docentes.filter(
+            Q(usuario__nombre__icontains=query) | Q(departamento__icontains=query)
+        )
+    data = []
+    for docente in docentes:
+        cursos = Curso.objects.filter(docente=docente)
+        cursos_info = []
+        for curso in cursos:
+            respuestas = Respuesta.objects.filter(
+                evaluacion__curso=curso,
+                evaluacion__docente=docente
+            )
+            promedio = respuestas.aggregate(prom=Avg('puntuacion'))['prom']
+            cursos_info.append({
+                'curso': curso,
+                'promedio': promedio,
+                'respuestas': respuestas,
+            })
+        # Asegúrate de agregar el docente aunque no tenga cursos
+        data.append({
+            'docente': docente,
+            'cursos': cursos_info
+        })
+    print("DATA ARMADA:", data)  # <-- Agrega esto para depurar
+    return render(request, "explorar.html", {
+        "usuario_id": usuario_id,
+        "data": data,
+        "query": query,
+    })
