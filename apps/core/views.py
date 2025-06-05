@@ -26,7 +26,7 @@ def login_view(request):
                 if str(usuario.rol) == "comision":
                     url = reverse(
                         "comision:bienvenida_comision",
-                        kwargs={"usuario_id": usuario.id},
+                        kwargs={"usuario_id": usuario.id },
                     )
                     return redirect(url)
                 elif str(usuario.rol) == "alumno":
@@ -63,9 +63,7 @@ def logout_view(request):
     request.session.flush()  # Limpia la sesión actual
     print("Sesión cerrada correctamente")
     # Puedes redirigir a una página de inicio o login después de cerrar sesión
-    return render(
-        request, "login.html", {"form": {}}
-    )  # Redirige a la página de login o inicio
+    return redirect("core:dashboard")  # Redirige a la página de login o inicio
 
 
 

@@ -1,3 +1,4 @@
+from os import name
 from django.urls import path
 from . import views
 
@@ -31,5 +32,8 @@ urlpatterns = [
         views.agregar_pregunta,
         name="agregar_pregunta",
     ),
-    path("bienvenida/<uuid:usuario_id>", views.index, name="bienvenida_comision"),
+            path("bienvenida/<uuid:usuario_id>/", views.index, name="bienvenida_comision"),
+    path("reporte_general/<uuid:usuario_id>/",views.reporter_general, name="reporte_general"),
+    path("reporte_curso/<uuid:usuario_id>/", views.reporte_curso, name="reporte_curso"),
+            path("reporte_docente/<uuid:usuario_id>/",views.reporte_docente,name="reporte_docente")
 ]

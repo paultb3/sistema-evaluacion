@@ -82,11 +82,21 @@
               ></i>
             </summary>
             <div class="ml-7 mt-1 space-y-1 text-sm text-white/90">
-              <a href="#" class="block hover:underline">Resumen General</a>
-              <a href="#" class="block hover:underline"
+              <a
+                href="{% url 'comision:reporte_general' usuario_id=usuario_id %}"
+                class="block hover:underline"
+                >Resumen General</a
+              >
+              <a
+                href="{% url 'comision:reporte_docente' usuario_id=usuario_id %}"
+                class="block hover:underline"
                 >Resultados por Docente</a
               >
-              <a href="#" class="block hover:underline">Resultados por Curso</a>
+              <a
+                href="{% url 'comision:reporte_curso' usuario_id=usuario_id %}"
+                class="block hover:underline"
+                >Resultados por Curso</a
+              >
             </div>
           </details>
 
