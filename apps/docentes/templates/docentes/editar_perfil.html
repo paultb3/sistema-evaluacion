@@ -1,0 +1,9 @@
+<h2>Editar Perfil</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar Cambios</button>
+</form>
+
+<a href="{% url 'docentes:perfil' %}">Volver al perfil</a>

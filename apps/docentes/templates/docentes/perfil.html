@@ -1,0 +1,33 @@
+{% extends 'docentes/base_docente.html' %}
+
+{% block title %}Perfil Docente{% endblock %}
+
+{% block content %}
+<header>
+    <h1>Mi Perfil</h1>
+</header>
+
+<main class="perfil">
+    <div class="perfil-box">
+        <h2>Información Personal</h2>
+        <p><strong>Nombre:</strong> {{ docente.usuario.nombre }}</p>
+        <p><strong>Correo:</strong> {{ docente.usuario.correo }}</p>
+        <p><strong>Departamento:</strong> {{ docente.departamento }}</p>
+    </div>
+
+    <div class="comentarios-box">
+        <h2>Comentarios de estudiantes</h2>
+        {% if comentarios %}
+            <ul class="comentarios-lista">
+                {% for comentario in comentarios %}
+                    <li>
+                        <strong>{{ comentario.autor }}:</strong> {{ comentario.texto }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay comentarios disponibles.</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

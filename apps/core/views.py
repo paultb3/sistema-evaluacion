@@ -1,13 +1,15 @@
+from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from apps.usuarios.models import Usuario
-import uuid
+from apps.docentes.models import Docente
+from apps.alumnos.models import Estudiante
+from apps.comision.models import Comision  # si vas a usarlo
 
 
 def index(request):
-    return render(request, 'core/base.html')
-
+    return render(request, 'core/base.html')  # o el template que quieras mostrar
 
 def login_view(request):
     if request.method == "POST":
@@ -16,15 +18,22 @@ def login_view(request):
 
         try:
             usuario = Usuario.objects.get(correo=correo)
-            # Si usas contraseña en texto plano (no recomendado), compara así:
-            # if usuario.password == password:
-            # Si usas hash, usa check_password:
+
             if check_password(password, usuario.password):
-                # Login exitoso
-                url = reverse(
-                    "comision:bienvenida_comision", kwargs={"usuario_id": usuario.id}
-                )
-                return redirect(url)  # redirige a la página deseada
+                # ✅ ESTABLECER SESIÓN
+                auth_logout(request)  # limpia sesiones anteriores si existen
+                auth_login(request, usuario)  # 🔥 inicia sesión correctamente
+
+                # Redirigir según el rol
+                if hasattr(usuario, 'docente'):
+                    return redirect('docentes:dashboard')
+                elif hasattr(usuario, 'estudiante'):
+                    return redirect('alumnos:dashboard')
+                elif hasattr(usuario, 'comision'):
+                    return redirect(reverse("comision:bienvenida_comision", kwargs={"usuario_id": usuario.id}))
+                else:
+                    error = "Tu cuenta no tiene un rol asignado."
+                    return render(request, "core/login.html", {"error": error})
             else:
                 error = "Contraseña incorrecta"
         except Usuario.DoesNotExist:
