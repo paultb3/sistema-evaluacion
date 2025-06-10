@@ -6,12 +6,6 @@ import uuid
 
 
 # Criterios que serán usados por cada evaluación
-class Criterio(models.Model):
-    nombre = models.CharField(max_length=100, unique=True)
-    descripcion = models.TextField(blank=True)
-
-    def __str__(self):
-        return self.nombre
 
 
 # Evaluación realizada por un estudiante a un docente en un curso específico
@@ -20,11 +14,15 @@ class Evaluacion(models.Model):
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
+    docente = models.ForeignKey(
+        Docente, on_delete=models.CASCADE, blank=True, null=True
+    )
     estado = models.CharField(
         max_length=20,
         choices=[("borrador", "Borrador"), ("enviada", "Enviada")],
         default="borrador",
     )
+    comentario_general = models.TextField(blank=True, null=True, help_text="Comentario general sobre la evaluación")
 
     class Meta:
         unique_together = (
@@ -42,14 +40,16 @@ class Respuesta(models.Model):
     evaluacion = models.ForeignKey(
         Evaluacion, on_delete=models.CASCADE, related_name="respuestas"
     )
-    criterio = models.ForeignKey(Criterio, on_delete=models.CASCADE)
+    pregunta = models.ForeignKey(
+        'PreguntaModulo', on_delete=models.CASCADE, related_name="respuestas", null=True, blank=True
+    )
+    criterio = models.CharField(max_length=100, blank=True, null=True)
     puntuacion = models.IntegerField(
         choices=[(i, f"{i} estrella{'s' if i > 1 else ''}") for i in range(1, 6)]
     )
-    comentario = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.criterio.nombre} - {self.puntuacion}★"
+        return f"{self.criterio} - {self.puntuacion}★"
 
 
 class ModuloPreguntas(models.Model):
@@ -66,4 +66,8 @@ class PreguntaModulo(models.Model):
     pregunta = models.TextField(max_length=1000)
 
     def __str__(self):
-        return self.pregunta
+        return (
+            f"{self.id_modulo.id_modulo} - "
+            + self.pregunta
+            + f" ({self.id_modulo.nombre})"
+        )

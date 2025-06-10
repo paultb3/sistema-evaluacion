@@ -1,4 +1,4 @@
-{% extends 'base/base.html' %} {% block title %} Agregar Pregunta - {{
+{% extends 'base/comision.html' %} {% block title %} Agregar Pregunta - {{
 modulo.nombre }} {% endblock title %} {% block content %}
 <div class="max-w-xl mx-auto mt-10">
   <h1 class="text-2xl font-bold mb-4">
@@ -23,7 +23,7 @@ modulo.nombre }} {% endblock title %} {% block content %}
     </button>
 
     <a
-      href="{% url 'comision:realizar_encuesta' %}"
+      href="{% url 'comision:realizar_encuesta' usuario_id=usuario_id %}"
       class="text-sm text-blue-600 hover:underline"
     >
       ← Cancelar y volver

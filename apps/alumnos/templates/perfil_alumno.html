@@ -1,0 +1,41 @@
+{% extends 'base/alumno.html' %} {% block title %} Perfil | Alumno Principal SED
+{% endblock title %} {% block content %}
+<div class="space-y-6">
+  <h1 class="text-3xl font-bold text-green-700">👤 Tu Perfil</h1>
+
+  <div class="bg-white rounded-2xl shadow-md p-6 space-y-4">
+    <p class="text-gray-700 text-lg">
+      Aquí puedes consultar tu información personal y académica dentro del
+      sistema.
+    </p>
+
+    <!-- Ejemplo de datos del perfil -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h2 class="text-sm font-semibold text-gray-500 uppercase mb-1">
+          Nombre completo
+        </h2>
+        <p class="text-gray-800 text-base">{{ alumno.usuario.nombre }}</p>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold text-gray-500 uppercase mb-1">
+          Correo institucional
+        </h2>
+        <p class="text-gray-800 text-base">{{ alumno.usuario.correo }}</p>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold text-gray-500 uppercase mb-1">
+          Código de alumno
+        </h2>
+        <p class="text-gray-800 text-base">{{ alumno.codigo }}</p>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold text-gray-500 uppercase mb-1">
+          Carrera
+        </h2>
+        <p class="text-gray-800 text-base">{{ alumno.carrera }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

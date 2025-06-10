@@ -22,4 +22,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("apps.core.urls", namespace="core")),
     path("comision/", include("apps.comision.urls", namespace="comision")),
+    path("alumno/", include("apps.alumnos.urls", namespace="alumno")),
+    path("docente/", include("apps.docentes.urls", namespace="docente")),
 ]

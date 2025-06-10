@@ -7,4 +7,4 @@ class Comision(models.Model):
     facultad = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"Comisión de {self.facultad}"
+        return f"Comisión de {self.usuario} ({self.facultad})"

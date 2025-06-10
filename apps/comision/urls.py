@@ -1,3 +1,4 @@
+from os import name
 from django.urls import path
 from . import views
 
@@ -6,22 +7,33 @@ from . import views
 app_name = "comision"
 
 urlpatterns = [
-    path("<uuid:usuario_id>", views.index, name="bienvenida_comision"),
-    path("realizar_encuesta/", views.realizar_encuesta, name="realizar_encuesta"),
-    path("perfil/<uuid:usuario_id>/", views.perfil, name="perfil"),
     path(
-        "editar_pregunta/<uuid:id_pregunta>/",
+        "realizar_encuesta/<uuid:usuario_id>/",
+        views.realizar_encuesta,
+        name="realizar_encuesta",
+    ),
+    path(
+        "perfil_comision/<uuid:usuario_id>/",
+        views.perfil_comision,
+        name="perfil_comision",
+    ),
+    path(
+        "editar_pregunta/<uuid:usuario_id>/<uuid:id_pregunta>/",
         views.editar_pregunta,
         name="editar_pregunta",
     ),
     path(
-        "eliminar_pregunta/<uuid:id_pregunta>/",
+        "eliminar_pregunta/<uuid:usuario_id>/<uuid:id_pregunta>/",
         views.eliminar_pregunta,
         name="eliminar_pregunta",
     ),
     path(
-        "agregar_pregunta/<uuid:id_modulo>/",
+        "agregar_pregunta/<uuid:usuario_id>/<uuid:id_modulo>/",
         views.agregar_pregunta,
         name="agregar_pregunta",
     ),
+            path("bienvenida/<uuid:usuario_id>/", views.index, name="bienvenida_comision"),
+    path("reporte_general/<uuid:usuario_id>/",views.reporter_general, name="reporte_general"),
+    path("reporte_curso/<uuid:usuario_id>/", views.reporte_curso, name="reporte_curso"),
+            path("reporte_docente/<uuid:usuario_id>/",views.reporte_docente,name="reporte_docente")
 ]
