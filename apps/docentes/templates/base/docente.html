@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,205 +10,441 @@
     <meta name="theme-color" content="#047857" />
 
     <title>{% block title %}SED | DOCENTE{% endblock title %}</title>
-
-    <!-- Favicon -->
-
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#16a34a",
+                dark: "#15803d",
+                light: "#22c55e",
+              },
+            },
+            animation: {
+              "spin-once": "spin 0.4s linear",
+              "fade-in": "fadeIn 0.5s ease-out forwards",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+            },
+          },
+        },
+      };
+    </script>
 
     <!-- Inter Font -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
     />
 
     <!-- Font Awesome -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
       rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
     />
 
     <style>
       body {
         font-family: "Inter", sans-serif;
       }
+
+      /* Estilos para los enlaces de navegación */
       .nav-link {
-        @apply flex items-center gap-3 p-3 rounded-lg hover:bg-emerald-700/50 transition-colors text-white/90 hover:text-white;
+        position: relative;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
       }
-      .nav-link.active {
-        @apply bg-emerald-700 text-white;
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: currentColor;
+        transition: width 0.3s ease;
       }
-      .nav-link i {
-        @apply text-lg;
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      /* Animación para el navbar */
+      #mainNav.scrolled {
+        background-color: rgba(22, 163, 74, 0.95);
+        backdrop-filter: blur(8px);
+        transform: translateY(0);
+      }
+
+      #mainNav.hidden {
+        transform: translateY(-100%);
+      }
+
+      /* Loader */
+      .loader-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+      }
+
+      .loader-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+      }
+
+      .loader {
+        width: 48px;
+        height: 48px;
+        border: 5px solid #fff;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+      }
+
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loader-text {
+        margin-top: 1rem;
+        font-size: 1.125rem;
       }
     </style>
   </head>
 
   <body
-    class="bg-slate-100 flex flex-col md:flex-row text-slate-800 min-h-screen"
+    class="bg-slate-100 dark:bg-gray-900 text-slate-800 dark:text-white min-h-screen"
   >
-    <!-- Header móvil -->
-    <header
-      class="bg-emerald-600 text-white flex items-center justify-between p-4 md:hidden shadow-md z-50"
-      role="banner"
+    <!-- Navbar principal fijo -->
+    <nav
+      class="fixed top-0 left-0 right-0 z-50 bg-emerald-600 dark:bg-gray-800 text-white shadow-lg transition-all duration-300"
+      id="mainNav"
     >
-      <h1 class="text-xl font-bold tracking-wide">SED</h1>
-      <button
-        id="menu-toggle"
-        class="text-3xl focus:outline-none focus:ring-2 focus:ring-white rounded-lg p-1"
-        aria-label="Toggle menu"
-        aria-expanded="false"
-        aria-controls="sidebar"
-      >
-        <i class="fas fa-bars" aria-hidden="true"></i>
-      </button>
-    </header>
-
-    <!-- Overlay para móviles -->
-    <div
-      id="overlay"
-      class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"
-      aria-hidden="true"
-    ></div>
-
-    <!-- Sidebar -->
-    <aside
-      id="sidebar"
-      class="bg-emerald-800 text-white w-72 h-screen fixed md:static md:translate-x-0 -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between overflow-y-auto"
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      <div class="p-6">
-        <!-- Título -->
-        <a
-          href="{% url 'docente:bienvenido_docente' usuario_id=usuario_id %}"
-          class="block text-3xl font-bold mb-1 hover:text-white/90 transition-colors"
-          aria-label="SED - Inicio"
-          >SED</a
-        >
-        <p class="text-sm text-white/70 mb-6">Sistema Evaluación Docente</p>
-
-        <!-- Menú principal -->
-        <nav class="space-y-4" aria-label="Main menu">
-          <div class="space-y-1">
-            <h2
-              class="text-xs font-semibold text-white/50 uppercase tracking-wider px-2"
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo y título -->
+          <div class="flex items-center gap-3">
+            <a
+              href="{% url 'docente:bienvenido_docente' usuario_id=usuario_id %}"
+              class="flex items-center gap-2 hover:text-emerald-100 transition-colors duration-200"
             >
-              Perfil
-            </h2>
+              <i class="fas fa-chalkboard-teacher text-2xl"></i>
+              <span class="font-bold text-xl">SED UNAS</span>
+            </a>
+          </div>
+
+          <!-- Navegación principal - Solo visible en desktop -->
+          <div class="hidden md:flex items-center space-x-8">
             <a
               href="{% url 'docente:perfil_docente' usuario_id=usuario_id %}"
-              class="nav-link {% if request.resolver_match.url_name == 'perfil_docente' %}active{% endif %}"
-              aria-current="{% if request.resolver_match.url_name == 'perfil_docente' %}page{% endif %}"
+              class="nav-link flex items-center gap-2"
             >
-              <i class="fas fa-user w-6 text-center" aria-hidden="true"></i>
+              <i class="fas fa-user"></i>
               <span>Mi Perfil</span>
             </a>
-          </div>
 
-          <div class="space-y-1">
-            <h2
-              class="text-xs font-semibold text-white/50 uppercase tracking-wider px-2"
-            >
-              Evaluación
-            </h2>
             <a
               href="{% url 'docente:ver_evaluacion' usuario_id=usuario_id %}"
-              class="nav-link {% if request.resolver_match.url_name == 'ver_evaluacion' %}active{% endif %}"
-              aria-current="{% if request.resolver_match.url_name == 'ver_evaluacion' %}page{% endif %}"
+              class="nav-link flex items-center gap-2"
             >
-              <i
-                class="fas fa-clipboard-check w-6 text-center"
-                aria-hidden="true"
-              ></i>
+              <i class="fas fa-clipboard-check"></i>
               <span>Ver Evaluación</span>
             </a>
-          </div>
 
-          <div class="space-y-1">
-            <h2
-              class="text-xs font-semibold text-white/50 uppercase tracking-wider px-2"
-            >
-              Mejoras
-            </h2>
             <a
               href="{% url 'docente:ver_recomendaciones' usuario_id=usuario_id %}"
-              class="nav-link {% if request.resolver_match.url_name == 'ver_recomendaciones' %}active{% endif %}"
-              aria-current="{% if request.resolver_match.url_name == 'ver_recomendaciones' %}page{% endif %}"
+              class="nav-link flex items-center gap-2"
             >
-              <i
-                class="fas fa-lightbulb w-6 text-center"
-                aria-hidden="true"
-              ></i>
+              <i class="fas fa-lightbulb"></i>
               <span>Recomendaciones</span>
             </a>
           </div>
-        </nav>
-      </div>
 
-      <!-- Footer Sidebar -->
-      <footer class="p-6 border-t border-white/20">
-        <div class="text-sm mb-3">
-          <p class="font-semibold">Comisión</p>
-          <p class="text-white/60">{{ request.user.email }}</p>
+          <!-- Botones de acción -->
+          <div class="flex items-center gap-4">
+            <!-- Tema oscuro -->
+            <button
+              id="theme-toggle"
+              aria-label="Cambiar tema"
+              class="p-2 rounded-full hover:bg-emerald-700 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              <i class="fas fa-sun dark:hidden"></i>
+              <i class="fas fa-moon hidden dark:block"></i>
+            </button>
+
+            <!-- Notificaciones -->
+            <button
+              class="p-2 rounded-full hover:bg-emerald-700 dark:hover:bg-gray-700 transition-colors duration-200 relative"
+            >
+              <i class="fas fa-bell"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-xs w-4 h-4 flex items-center justify-center rounded-full"
+                >2</span
+              >
+            </button>
+
+            <!-- Menú de usuario -->
+            <div class="relative group">
+              <button
+                class="flex items-center gap-2 p-2 rounded-full hover:bg-emerald-700 dark:hover:bg-gray-700 transition-colors duration-200"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center"
+                >
+                  <i class="fas fa-user-circle text-lg"></i>
+                </div>
+                <span class="hidden md:block">Docente</span>
+                <i class="fas fa-chevron-down text-xs"></i>
+              </button>
+              <!-- Dropdown del menú de usuario -->
+              <div
+                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden group-hover:block animate-fade-in"
+              >
+                <a
+                  href="{% url 'docente:perfil_docente' usuario_id=usuario_id %}"
+                  class="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <i class="fas fa-user-circle mr-2"></i>
+                  Mi Perfil
+                </a>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <i class="fas fa-cog mr-2"></i>
+                  Configuración
+                </a>
+                <hr class="my-2 border-gray-200 dark:border-gray-700" />
+                <a
+                  href="/"
+                  class="block px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
+                >
+                  <i class="fas fa-sign-out-alt mr-2"></i>
+                  Cerrar sesión
+                </a>
+              </div>
+            </div>
+
+            <!-- Botón menú móvil -->
+            <button
+              id="menu-toggle"
+              aria-label="Abrir menú"
+              class="md:hidden p-2 rounded-full hover:bg-emerald-700 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
         </div>
-        <a
-          href="{% url 'core:logout' %}"
-          class="nav-link text-red-400 hover:bg-red-600 hover:text-white"
-          aria-label="Cerrar sesión"
-        >
-          <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-          <span>Cerrar sesión</span>
-        </a>
-      </footer>
-    </aside>
+      </div>
+    </nav>
 
-    <!-- Contenido principal -->
-    <main class="flex-1 p-4 md:ml-30 mt-2 md:mt-0 overflow-y-auto" role="main">
-      {% block content %}{% endblock content %}
+    <!-- Menú móvil -->
+    <div
+      id="mobileMenu"
+      class="fixed inset-0 z-40 transform translate-x-full transition-transform duration-300 md:hidden"
+    >
+      <!-- Overlay -->
+      <div
+        class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        id="overlay"
+      ></div>
+      <!-- Contenido del menú -->
+      <div
+        class="absolute right-0 top-0 bottom-0 w-64 bg-white dark:bg-gray-800 shadow-xl"
+      >
+        <div class="p-6 space-y-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+              Menú
+            </h2>
+            <button
+              id="closeMenu"
+              class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <nav class="space-y-4">
+            <a
+              href="{% url 'docente:perfil_docente' usuario_id=usuario_id %}"
+              class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <i class="fas fa-user"></i>
+              <span>Mi Perfil</span>
+            </a>
+            <a
+              href="{% url 'docente:ver_evaluacion' usuario_id=usuario_id %}"
+              class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <i class="fas fa-clipboard-check"></i>
+              <span>Ver Evaluación</span>
+            </a>
+            <a
+              href="{% url 'docente:ver_recomendaciones' usuario_id=usuario_id %}"
+              class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <i class="fas fa-lightbulb"></i>
+              <span>Recomendaciones</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spacer para el navbar fijo -->
+    <div class="h-16"></div>
+
+    <!-- Main content -->
+    <main class="flex-1 container mx-auto px-4 py-6">
+      {% if messages %}
+      <div class="mb-6 space-y-3">
+        {% for message in messages %}
+        <div
+          class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-200{% elif message.tags == 'error' %}bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-200{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-200{% else %}bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-200{% endif %}"
+        >
+          <div class="flex items-center gap-3">
+            {% if message.tags == 'success' %}
+            <i class="fas fa-check-circle"></i>
+            {% elif message.tags == 'error' %}
+            <i class="fas fa-exclamation-circle"></i>
+            {% elif message.tags == 'warning' %}
+            <i class="fas fa-exclamation-triangle"></i>
+            {% else %}
+            <i class="fas fa-info-circle"></i>
+            {% endif %}
+            <span>{{ message }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% block content %}{% endblock %}
     </main>
 
-    <!-- Script toggle -->
+    <!-- Loader -->
+    <div id="loaderOverlay" class="loader-overlay">
+      <div class="loader-content">
+        <div class="loader"></div>
+        <div class="loader-text">Cargando...</div>
+      </div>
+    </div>
+
     <script>
+      // Variables
+      const mainNav = document.getElementById("mainNav");
+      const mobileMenu = document.getElementById("mobileMenu");
       const menuToggle = document.getElementById("menu-toggle");
-      const sidebar = document.getElementById("sidebar");
+      const closeMenu = document.getElementById("closeMenu");
       const overlay = document.getElementById("overlay");
-      const icon = menuToggle.querySelector("i");
-
-      function openMenu() {
-        sidebar.classList.remove("-translate-x-full");
-        overlay.classList.remove("hidden");
-        icon.classList.replace("fa-bars", "fa-times");
-        menuToggle.setAttribute("aria-expanded", "true");
+      const themeToggle = document.getElementById("theme-toggle");
+      const htmlEl = document.documentElement;
+      let lastScroll = 0; // Función para manejar el tema oscuro
+      function initializeTheme() {
+        // Verificar tema guardado o preferencia del sistema
+        if (
+          localStorage.theme === "dark" ||
+          (!("theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          htmlEl.classList.add("dark");
+        } else {
+          htmlEl.classList.remove("dark");
+        }
       }
 
-      function closeMenu() {
-        sidebar.classList.add("-translate-x-full");
-        overlay.classList.add("hidden");
-        icon.classList.replace("fa-times", "fa-bars");
-        menuToggle.setAttribute("aria-expanded", "false");
-      }
+      // Inicializar tema al cargar
+      initializeTheme();
 
-      menuToggle.addEventListener("click", () => {
-        sidebar.classList.contains("-translate-x-full")
-          ? openMenu()
-          : closeMenu();
+      // Manejar cambios de tema
+      themeToggle.addEventListener("click", () => {
+        // Cambiar tema
+        if (htmlEl.classList.contains("dark")) {
+          htmlEl.classList.remove("dark");
+          localStorage.theme = "light";
+        } else {
+          htmlEl.classList.add("dark");
+          localStorage.theme = "dark";
+        }
+
+        // Agregar animación de giro
+        themeToggle.classList.add("animate-spin-once");
+        setTimeout(() => {
+          themeToggle.classList.remove("animate-spin-once");
+        }, 400);
       });
 
-      overlay.addEventListener("click", closeMenu);
+      // Función para manejar el scroll del navbar
+      function handleNavScroll() {
+        const currentScroll = window.pageYOffset;
 
-      // Cerrar menú al cambiar tamaño de ventana
+        if (currentScroll <= 0) {
+          mainNav.classList.remove("scrolled", "hidden");
+        } else if (
+          currentScroll > lastScroll &&
+          !mainNav.classList.contains("hidden")
+        ) {
+          mainNav.classList.add("hidden");
+        } else if (
+          currentScroll < lastScroll &&
+          mainNav.classList.contains("hidden")
+        ) {
+          mainNav.classList.remove("hidden");
+          mainNav.classList.add("scrolled");
+        }
+
+        lastScroll = currentScroll;
+      }
+
+      // Función para abrir el menú móvil
+      function openMobileMenu() {
+        mobileMenu.classList.remove("translate-x-full");
+        document.body.classList.add("overflow-hidden");
+      }
+
+      // Función para cerrar el menú móvil
+      function closeMobileMenu() {
+        mobileMenu.classList.add("translate-x-full");
+        document.body.classList.remove("overflow-hidden");
+      }
+
+      // Event Listeners
+      window.addEventListener("scroll", handleNavScroll);
+      menuToggle.addEventListener("click", openMobileMenu);
+      closeMenu.addEventListener("click", closeMobileMenu);
+      overlay.addEventListener("click", closeMobileMenu);
+
+      // Cerrar menú al redimensionar la ventana
       window.addEventListener("resize", () => {
-        if (window.innerWidth >= 768) closeMenu();
+        if (window.innerWidth >= 768) {
+          closeMobileMenu();
+        }
       });
 
-      // Cerrar menú al presionar Escape
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeMenu();
+      // Loading state
+      window.addEventListener("beforeunload", () => {
+        document.getElementById("loaderOverlay").style.display = "block";
       });
     </script>
   </body>

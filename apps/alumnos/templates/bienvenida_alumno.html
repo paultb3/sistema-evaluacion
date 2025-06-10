@@ -1,39 +1,135 @@
-{% extends 'base/alumno.html' %} {% block title %} Bienvenida | Alumno Principal
-{% endblock title %} {% block content %}
-<div class="bg-white shadow-xl rounded-2xl p-8 mb-8">
-  <h1 class="text-3xl font-bold text-green-700 mb-4">
-    ¡Hola, {{ comision.usuario.nombre }}! 👋
-  </h1>
-  <p class="text-gray-700 text-lg">
-    Bienvenido al <strong>Sistema de Evaluación Docente</strong>. Nos alegra
-    tenerte por aquí. Desde este panel puedes explorar tus evaluaciones, acceder
-    a tu perfil y colaborar en la mejora continua de la enseñanza.
-  </p>
+{% extends 'base/alumno.html' %} {% block title %}Bienvenida | Sistema de
+Evaluación Docente{% endblock %} {% block content %}
+<div class="space-y-8 animate-fade-in">
+  <!-- Header de bienvenida -->
+  <div
+    class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover-scale card"
+  >
+    <div class="flex items-center gap-4 mb-6">
+      <div
+        class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center"
+      >
+        <i class="fas fa-user-graduate text-3xl text-primary"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
+          ¡Hola, {{ alumno.usuario.nombre }}! 👋
+        </h1>
+        <p class="text-gray-600 dark:text-gray-300">
+          Bienvenido de nuevo al Sistema de Evaluación Docente
+        </p>
+      </div>
+    </div>
+
+    <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+      Tu participación es fundamental para mejorar la calidad educativa de
+      nuestra universidad. Aquí podrás evaluar a tus docentes y contribuir al
+      desarrollo académico de la UNAS.
+    </p>
+  </div>
+
+  <!-- Cards de acciones principales -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Perfil -->
+    <a
+      href="{% url 'alumno:perfil_alumno' usuario_id=usuario_id %}"
+      class="card group p-6 flex flex-col items-center text-center"
+    >
+      <div
+        class="w-16 h-16 mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+      >
+        <i class="fas fa-user text-2xl text-green-600 dark:text-green-400"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+        Tu Perfil
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400">
+        Gestiona tu información personal y académica
+      </p>
+    </a>
+
+    <!-- Explorar -->
+    <a
+      href="{% url 'alumno:explorar' usuario_id=usuario_id %}"
+      class="card group p-6 flex flex-col items-center text-center"
+    >
+      <div
+        class="w-16 h-16 mb-4 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+      >
+        <i class="fas fa-search text-2xl text-blue-600 dark:text-blue-400"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+        Explorar
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400">
+        Descubre y analiza las evaluaciones realizadas
+      </p>
+    </a>
+
+    <!-- Evaluar -->
+    <a
+      href="{% url 'alumno:evaluaciones' usuario_id=usuario_id %}"
+      class="card group p-6 flex flex-col items-center text-center"
+    >
+      <div
+        class="w-16 h-16 mb-4 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+      >
+        <i
+          class="fas fa-clipboard-check text-2xl text-purple-600 dark:text-purple-400"
+        ></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+        Evaluar Docentes
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400">
+        Comparte tu experiencia académica
+      </p>
+    </a>
+  </div>
+
+  <!-- Sección de estadísticas o información adicional -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Tips rápidos -->
+    <div class="card p-6">
+      <h3
+        class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2"
+      >
+        <i class="fas fa-lightbulb text-yellow-500"></i>
+        Tips Rápidos
+      </h3>
+      <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+        <li class="flex items-center gap-2">
+          <i class="fas fa-check text-green-500"></i>
+          Evalúa objetivamente el desempeño docente
+        </li>
+        <li class="flex items-center gap-2">
+          <i class="fas fa-check text-green-500"></i>
+          Proporciona comentarios constructivos
+        </li>
+        <li class="flex items-center gap-2">
+          <i class="fas fa-check text-green-500"></i>
+          Tus evaluaciones son completamente anónimas
+        </li>
+      </ul>
+    </div>
+
+    <!-- Ayuda rápida -->
+    <div class="card p-6">
+      <h3
+        class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2"
+      >
+        <i class="fas fa-question-circle text-blue-500"></i>
+        ¿Necesitas ayuda?
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-4">
+        Si tienes dudas sobre cómo usar el sistema o necesitas asistencia, no
+        dudes en contactarnos.
+      </p>
+      <a href="#" class="btn btn-primary inline-flex items-center gap-2">
+        <i class="fas fa-headset"></i>
+        Contactar soporte
+      </a>
+    </div>
+  </div>
 </div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-  <a
-    href="{% url 'alumno:perfil_alumno' usuario_id=usuario_id %}"
-    class="bg-green-600 text-white p-6 rounded-xl shadow-md hover:bg-green-700 transition duration-300 flex items-center gap-4"
-  >
-    <i class="fas fa-user text-2xl"></i>
-    <span class="text-lg font-semibold">Tu Perfil</span>
-  </a>
-
-  <a
-    href="{% url 'alumno:explorar' usuario_id=usuario_id %}"
-    class="bg-blue-600 text-white p-6 rounded-xl shadow-md hover:bg-blue-700 transition duration-300 flex items-center gap-4"
-  >
-    <i class="fas fa-chart-line text-2xl"></i>
-    <span class="text-lg font-semibold">Explorar</span>
-  </a>
-
-  <a
-    href="{% url 'alumno:evaluaciones' usuario_id=usuario_id %}"
-    class="bg-purple-600 text-white p-6 rounded-xl shadow-md hover:bg-purple-700 transition duration-300 flex items-center gap-4"
-  >
-    <i class="fas fa-edit text-2xl"></i>
-    <span class="text-lg font-semibold">Evaluar Docentes</span>
-  </a>
-</div>
-{% endblock content %}
+{% endblock %}

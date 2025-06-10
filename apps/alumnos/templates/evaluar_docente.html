@@ -393,27 +393,16 @@ SISTEMA DE EVALUACION A DOCENTE{% endblock title %} {% block content %}
   </form>
 </div>
 
-<!-- Overlay del Loader -->
+<!-- Loader Overlay -->
 <div id="loaderOverlay" class="loader-overlay">
-  <div class="loader"></div>
+  <div class="loader-content">
+    <div class="loader loader-pulse"></div>
+    <div class="loader-text">Procesando evaluación...</div>
+  </div>
 </div>
 
 <style>
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out both;
-  }
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
+  /* Loader Styles */
   .loader-overlay {
     display: none;
     position: fixed;
@@ -421,22 +410,39 @@ SISTEMA DE EVALUACION A DOCENTE{% endblock title %} {% block content %}
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
     z-index: 9999;
     justify-content: center;
     align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .loader-content {
+    text-align: center;
   }
 
   .loader {
-    width: 48px;
-    height: 48px;
-    border: 5px solid #2563eb;
-    border-bottom-color: transparent;
+    width: 60px;
+    height: 60px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #2563eb;
     border-radius: 50%;
-    animation: rotation 1s linear infinite;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
   }
 
-  @keyframes rotation {
+  .loader-text {
+    color: #2563eb;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.5s ease forwards 0.3s;
+  }
+
+  @keyframes spin {
     0% {
       transform: rotate(0deg);
     }
@@ -444,14 +450,48 @@ SISTEMA DE EVALUACION A DOCENTE{% endblock title %} {% block content %}
       transform: rotate(360deg);
     }
   }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .loader-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .loader-pulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
 </style>
 
 <script>
-  // Función para mostrar el loader
-  function showLoader() {
+  // Función mejorada para mostrar el loader
+  function showLoader(message = "Procesando evaluación...") {
     const loader = document.getElementById("loaderOverlay");
-    if (loader) {
+    const loaderText = loader.querySelector(".loader-text");
+
+    if (loader && loaderText) {
+      loaderText.textContent = message;
       loader.style.display = "flex";
+      document.body.style.overflow = "hidden";
+
+      setTimeout(() => {
+        loader.classList.add("show");
+      }, 10);
     }
   }
 
