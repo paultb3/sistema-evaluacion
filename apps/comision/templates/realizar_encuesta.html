@@ -1,74 +1,115 @@
 {% extends 'base/comision.html' %} {% block title %} Comisión | Realizar
 Encuesta {% endblock title %} {% block content %}
-<div class="max-w-4xl mx-40 mt-9">
-  <h1 class="text-3xl font-bold text-gray-800 mb-6">
-    Gestión de Preguntas por Módulo
-  </h1>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      Gestión de Preguntas por Módulo
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      Administre las preguntas de evaluación para cada módulo del sistema.
+    </p>
+  </div>
 
-  <div class="bg-white rounded-xl shadow-lg p-6 space-y-6">
-    {% if modulos %} {% for modulo in modulos %}
-    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
-      <h2
-        class="text-xl font-semibold text-blue-700 mb-3 flex items-center justify-between"
+  <div class="space-y-6">
+    {% if modulos %}
+    <div class="grid gap-6 md:grid-cols-2">
+      {% for modulo in modulos %}
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
       >
-        <span class="flex items-center">
-          <svg
-            class="w-5 h-5 mr-2 text-blue-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8c1.657 0 3-1.343 3-3S13.657 2 12 2s-3 1.343-3 3 1.343 3 3 3zm0 0v4m0 4h.01M4.93 4.93a10 10 0 0114.14 0m1.42 1.42a10 10 0 010 14.14m-1.42 1.42a10 10 0 01-14.14 0m-1.42-1.42a10 10 0 010-14.14"
-            />
-          </svg>
-          {{ modulo.nombre }}
-        </span>
-        <a
-          href="{% url 'comision:agregar_pregunta' usuario_id modulo.id_modulo %}"
-          class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-        >
-          + Agregar Pregunta
-        </a>
-      </h2>
-
-      {% if modulo.preguntamodulo_set.all %}
-      <ul class="space-y-2">
-        {% for pregunta in modulo.preguntamodulo_set.all %}
-        <li
-          class="flex justify-between items-center bg-white rounded-md px-4 py-2 shadow-sm border hover:bg-gray-100"
-        >
-          <span class="text-gray-800">{{ pregunta.pregunta }}</span>
-          <div class="space-x-4">
-            <a
-              href="{% url 'comision:editar_pregunta' usuario_id pregunta.id_pregunta %}"
-              class="text-sm text-blue-600 hover:underline font-medium"
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2
+              class="text-xl font-semibold text-gray-900 dark:text-white flex items-center"
             >
-              Editar
-            </a>
+              <span
+                class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-3"
+              >
+                <i class="fas fa-book text-blue-600 dark:text-blue-400"></i>
+              </span>
+              {{ modulo.nombre }}
+            </h2>
             <a
-              href="{% url 'comision:eliminar_pregunta' usuario_id pregunta.id_pregunta %}"
-              class="text-sm text-red-600 hover:underline font-medium"
+              href="{% url 'comision:agregar_pregunta' usuario_id modulo.id_modulo %}"
+              class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-300"
             >
-              Eliminar
+              <i class="fas fa-plus mr-2"></i>
+              Agregar
             </a>
           </div>
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p class="text-gray-500 italic">
-        Este módulo no tiene preguntas registradas.
-      </p>
-      {% endif %}
+
+          {% if modulo.preguntamodulo_set.all %}
+          <div class="space-y-3">
+            {% for pregunta in modulo.preguntamodulo_set.all %}
+            <div
+              class="group p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              <div class="flex items-start justify-between">
+                <p class="text-gray-700 dark:text-gray-300 flex-1 pr-4">
+                  {{ pregunta.pregunta }}
+                </p>
+                <div
+                  class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                >
+                  <a
+                    href="{% url 'comision:editar_pregunta' usuario_id pregunta.id_pregunta %}"
+                    class="p-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                    title="Editar pregunta"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <a
+                    href="{% url 'comision:eliminar_pregunta' usuario_id pregunta.id_pregunta %}"
+                    class="p-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    title="Eliminar pregunta"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-center py-8">
+            <div
+              class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mb-4"
+            >
+              <i
+                class="fas fa-clipboard-list text-2xl text-gray-400 dark:text-gray-500"
+              ></i>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400">
+              No hay preguntas registradas en este módulo
+            </p>
+            <a
+              href="{% url 'comision:agregar_pregunta' usuario_id modulo.id_modulo %}"
+              class="inline-flex items-center mt-4 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              Agregar primera pregunta
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
     </div>
-    {% endfor %} {% else %}
-    <div class="text-center text-gray-500 italic">
-      No hay módulos registrados actualmente.
+    {% else %}
+    <div
+      class="text-center py-12 bg-white dark:bg-gray-800 rounded-xl shadow-md"
+    >
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full mb-6"
+      >
+        <i class="fas fa-folders text-3xl text-gray-400 dark:text-gray-500"></i>
+      </div>
+      <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">
+        No hay módulos registrados
+      </h3>
+      <p class="text-gray-500 dark:text-gray-400">
+        No se encontraron módulos en el sistema.
+      </p>
     </div>
     {% endif %}
   </div>

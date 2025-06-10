@@ -28,6 +28,84 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      /* Loader Styles */
+      .loader-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .loader-content {
+        text-align: center;
+      }
+
+      .loader {
+        width: 60px;
+        height: 60px;
+        border: 4px solid #e2e8f0;
+        border-top: 4px solid #16a34a;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem auto;
+      }
+
+      .loader-text {
+        color: #16a34a;
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-top: 1rem;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: fadeInUp 0.5s ease forwards 0.3s;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Animación para mostrar el loader */
+      .loader-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Pulse effect para el spinner */
+      .loader-pulse {
+        animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
   </head>
   <body class="font-sans bg-gray-50 text-gray-800">
     <!-- Encabezado / Navegación -->
@@ -197,5 +275,68 @@
         Docente
       </div>
     </footer>
+
+    <!-- Loader Overlay -->
+    <div id="loaderOverlay" class="loader-overlay">
+      <div class="loader-content">
+        <div class="loader loader-pulse"></div>
+        <div class="loader-text">Cargando...</div>
+      </div>
+    </div>
+
+    <script>
+      // Función mejorada para mostrar el loader
+      function showLoader(message = "Cargando...") {
+        const loader = document.getElementById("loaderOverlay");
+        const loaderText = loader.querySelector(".loader-text");
+
+        if (loader && loaderText) {
+          loaderText.textContent = message;
+          loader.style.display = "flex";
+          document.body.style.overflow = "hidden"; // Previene el scroll
+
+          setTimeout(() => {
+            loader.classList.add("show");
+          }, 10);
+        }
+      }
+
+      // Función para ocultar el loader
+      function hideLoader() {
+        const loader = document.getElementById("loaderOverlay");
+        if (loader) {
+          loader.classList.remove("show");
+          setTimeout(() => {
+            loader.style.display = "none";
+            document.body.style.overflow = ""; // Restaura el scroll
+          }, 300);
+        }
+      }
+
+      // Intercepta todos los clicks en enlaces
+      document.addEventListener("click", (e) => {
+        const link = e.target.closest("a");
+        if (link && !link.hasAttribute("data-no-loader")) {
+          showLoader("Redirigiendo...");
+        }
+      });
+
+      // Intercepta envíos de formularios
+      document.addEventListener("submit", (e) => {
+        if (!e.target.hasAttribute("data-no-loader")) {
+          showLoader("Procesando...");
+        }
+      });
+
+      // Muestra loader al cargar la página
+      window.addEventListener("load", () => {
+        hideLoader();
+      });
+
+      // Muestra loader al recargar la página
+      window.addEventListener("beforeunload", () => {
+        showLoader();
+      });
+    </script>
   </body>
 </html>

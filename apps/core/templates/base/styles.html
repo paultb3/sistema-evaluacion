@@ -1,0 +1,187 @@
+<!-- Estilos base compartidos -->
+<style>
+  /* Animaciones */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(-10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  /* Clases de utilidad */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  .hover-scale {
+    transition: transform 0.2s ease;
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  /* Loader mejorado */
+  .loader-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .loader-content {
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .loader {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #16a34a;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+  }
+
+  .dark .loader {
+    border-color: #374151;
+    border-top-color: #16a34a;
+  }
+
+  .loader-text {
+    color: #16a34a;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.5s ease forwards 0.3s;
+  }
+
+  /* Scrollbar personalizado */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #16a34a;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #15803d;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background: #1f2937;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: #22c55e;
+  }
+
+  /* Transiciones suaves */
+  .transition-all {
+    transition: all 0.3s ease;
+  }
+
+  /* Cards con hover effect */
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Botones con efecto hover */
+  .btn {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300;
+  }
+
+  .btn-primary {
+    @apply bg-green-600 text-white hover:bg-green-700 hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-600 text-white hover:bg-gray-700 hover:shadow-lg;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 hover:shadow-lg;
+  }
+
+  /* Inputs mejorados */
+  .input {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-300;
+  }
+
+  /* Labels */
+  .label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
+  }
+
+  /* Messages/Alerts */
+  .alert {
+    @apply p-4 rounded-lg mb-4 animate-fade-in;
+  }
+
+  .alert-success {
+    @apply bg-green-100 border border-green-200 text-green-800;
+  }
+
+  .alert-error {
+    @apply bg-red-100 border border-red-200 text-red-800;
+  }
+
+  .alert-warning {
+    @apply bg-yellow-100 border border-yellow-200 text-yellow-800;
+  }
+
+  .alert-info {
+    @apply bg-blue-100 border border-blue-200 text-blue-800;
+  }
+</style>
