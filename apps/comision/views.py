@@ -151,6 +151,10 @@ def reporter_general(request, usuario_id):
                     filter=models.Q(evaluacion__estado='enviada'))
     ).order_by('-promedio')[:5]
     
+
+    for docente in mejores_docentes:
+        print(docente)
+    
     # Top 5 cursos mejor calificados
     mejores_cursos = Curso.objects.annotate(
         promedio=Avg('evaluacion__respuestas__puntuacion', 

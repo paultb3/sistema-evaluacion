@@ -5,9 +5,10 @@ from apps.usuarios.models import Usuario
 
 
 def login_view(request):
+    
     if request.method == "POST":
-        correo = request.POST.get("correo", "")
-        password = request.POST.get("password", "")
+        correo = request.POST.get("correo")
+        password = request.POST.get("password")
 
         print(f"Correo recibido: {correo}")
         print(f"Password recibido: {password}")
@@ -29,17 +30,18 @@ def login_view(request):
                         kwargs={"usuario_id": usuario.id },
                     )
                     return redirect(url)
-                elif str(usuario.rol) == "alumno":
-                    url = reverse(
-                        "alumno:bienvenida_alumnos",
-                        kwargs={"usuario_id": usuario.id},
-                    )
-                    
                 elif str(usuario.rol) == "profesor":
                     url = reverse(
                         "docente:bienvenido_docente",
                         kwargs={"usuario_id": usuario.id},
                     )
+                    return redirect(url)
+                elif str(usuario.rol) == "alumno":
+                    url = reverse(
+                        "alumno:bienvenida_alumno",
+                        kwargs={"usuario_id": usuario.id},
+                    )
+                    
 
                     return redirect(url)
                 else:

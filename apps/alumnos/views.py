@@ -76,7 +76,7 @@ def procesar_evaluacion(request, alumno):
 
         if not curso_id or not docente_id:
             messages.error(request, "Debe seleccionar un curso y docente")
-            return redirect("alumno:evaluar_docente", usuario_id=alumno.usuario.id)
+            return redirect("alumno:evaluaciones", usuario_id=alumno.usuario.id)
 
         curso = get_object_or_404(Curso, id=curso_id)
         docente = get_object_or_404(Docente, pk=docente_id)
@@ -122,11 +122,10 @@ def procesar_evaluacion(request, alumno):
                     
                     # Crear o actualizar la respuesta
                     respuesta, created = evaluacion.respuestas.get_or_create(
-                        evaluacion=evaluacion,
+                        pregunta=pregunta,
                         defaults={
                             'criterio': criterio_texto_valor,
                             'puntuacion': int(criterio_valor),
-                            'comentario': ''
                         }
                     )
                     
@@ -151,7 +150,7 @@ def procesar_evaluacion(request, alumno):
         print(f"Error general en procesar_evaluacion: {str(e)}")
         messages.error(request, f"Error al procesar la evaluación: {str(e)}")
 
-    return redirect("alumno:evaluar_docente", usuario_id=alumno.usuario.id)
+    return redirect("alumno:evaluaciones", usuario_id=alumno.usuario.id)
 
 
 # Vista adicional para obtener docentes por curso (AJAX)
