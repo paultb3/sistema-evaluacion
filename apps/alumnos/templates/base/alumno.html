@@ -21,18 +21,18 @@
                 // Puedes añadir más tonos si lo necesitas
               },
             },
-             animation: {
-                'fade-in': 'fade-in 0.7s cubic-bezier(.4,0,.2,1) both',
-                'spin-once': 'spin 0.4s linear',
+            animation: {
+              "fade-in": "fade-in 0.7s cubic-bezier(.4,0,.2,1) both",
+              "spin-once": "spin 0.4s linear",
+            },
+            keyframes: {
+              "fade-in": {
+                from: { opacity: 0, transform: "translateY(20px)" },
+                to: { opacity: 1, transform: "translateY(0)" },
               },
-             keyframes: {
-                'fade-in': {
-                    'from': { opacity: 0, transform: 'translateY(20px)' },
-                    'to': { opacity: 1, transform: 'translateY(0)' },
-                },
-                 'spin': {
-                     'to': { transform: 'rotate(360deg)' },
-                 }
+              spin: {
+                to: { transform: "rotate(360deg)" },
+              },
             },
           },
         },
@@ -50,26 +50,26 @@
       }
       /* Opcional: Estilos para el scrollbar en navegadores que lo permiten */
       ::-webkit-scrollbar {
-          width: 8px;
+        width: 8px;
       }
       ::-webkit-scrollbar-track {
-          background: #e2e8f0; /* gray-200 */
+        background: #e2e8f0; /* gray-200 */
       }
       ::-webkit-scrollbar-thumb {
-          background: #94a3b8; /* gray-400 */
-          border-radius: 4px;
+        background: #94a3b8; /* gray-400 */
+        border-radius: 4px;
       }
-       ::-webkit-scrollbar-thumb:hover {
-          background: #64748b; /* gray-500 */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b; /* gray-500 */
       }
       .dark ::-webkit-scrollbar-track {
-          background: #1f2937; /* gray-800 */
+        background: #1f2937; /* gray-800 */
       }
       .dark ::-webkit-scrollbar-thumb {
-          background: #475569; /* gray-600 */
+        background: #475569; /* gray-600 */
       }
-       .dark ::-webkit-scrollbar-thumb:hover {
-          background: #64748b; /* gray-500 */
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #64748b; /* gray-500 */
       }
     </style>
 
@@ -83,10 +83,12 @@
     <header
       class="bg-primary p-4 flex items-center justify-between md:hidden shadow-md dark:bg-gray-800"
     >
-      <a href="{% url 'alumno:bienvenida_alumnos' usuario_id=usuario_id %}"
-         class="font-bold text-xl tracking-wide text-white hover:text-primary-light transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white rounded"
-         aria-label="Ir a inicio">
-          SED
+      <a
+        href="{% url 'alumno:bienvenida_alumno' usuario_id=usuario_id %}"
+        class="font-bold text-xl tracking-wide text-white hover:text-primary-light transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white rounded"
+        aria-label="Ir a inicio"
+      >
+        SED
       </a>
       <div class="flex items-center space-x-4">
         <!-- Botón modo oscuro -->
@@ -168,12 +170,14 @@
         aria-label="Menú de navegación principal"
       >
         <div>
-          <a href="{% url 'alumno:bienvenida_alumnos' usuario_id=usuario_id %}"
-             class="font-bold text-2xl tracking-wide text-white hover:text-primary-light transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white rounded p-1"
-             aria-label="Ir a inicio">
-              SED
+          <a
+            href="{% url 'alumno:bienvenida_alumno' usuario_id=usuario_id %}"
+            class="font-bold text-3xl tracking-wide text-white hover:text-primary-light transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white rounded p-1"
+            aria-label="Ir a inicio"
+          >
+            SED
           </a>
-          <p class="text-sm text-white/80 mb-8">
+          <p class="text-sm text-white/80 mb-8 m-auto">
             SISTEMA DE EVALUACIÓN DOCENTE
           </p>
 
@@ -204,7 +208,10 @@
                   d="M9 22V12h6v10"
                 />
               </svg>
-              <span class="text-white group-hover:text-primary-light transition-colors duration-200">Perfil</span>
+              <span
+                class="text-white group-hover:text-primary-light transition-colors duration-200"
+                >Perfil</span
+              >
             </a>
             <a
               href="{% url 'alumno:explorar' usuario_id=usuario_id %}"
@@ -225,10 +232,13 @@
                   d="M11 11V3m0 8h8m-8 8v-8m0 8h8m-8 0H3"
                 />
               </svg>
-               <span class="text-white group-hover:text-primary-light transition-colors duration-200">Explorar</span>
+              <span
+                class="text-white group-hover:text-primary-light transition-colors duration-200"
+                >Explorar</span
+              >
             </a>
             <a
-              href="{% url 'alumno:evaluar_docente' usuario_id=usuario_id %}"
+              href="{% url 'alumno:evaluaciones' usuario_id=usuario_id %}"
               class="flex items-center group p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white"
             >
               <!-- Icono Usuario -->
@@ -252,12 +262,16 @@
                   d="M12 11a4 4 0 100-8 4 4 0 000 8zM16 17a8 8 0 00-8 0"
                 />
               </svg>
-              <span class="text-white group-hover:text-primary-light transition-colors duration-200">Evaluar</span>
+              <span
+                class="text-white group-hover:text-primary-light transition-colors duration-200"
+                >Evaluar</span
+              >
             </a>
           </nav>
         </div>
 
-        <div class="pt-6 border-t border-white/20 mt-auto"> {# mt-auto empuja al fondo #}
+        <div class="pt-6 border-t border-white/20 mt-auto">
+          {# mt-auto empuja al fondo #}
           <a
             href="{% url 'core:logout' %}"
             class="flex items-center justify-center group p-2 rounded-lg hover:bg-red-600 hover:scale-[1.02] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white"
@@ -278,7 +292,10 @@
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
               />
             </svg>
-            <span class="text-white group-hover:text-white transition-colors duration-200">Salir</span>
+            <span
+              class="text-white group-hover:text-white transition-colors duration-200"
+              >Salir</span
+            >
           </a>
         </div>
       </aside>
@@ -288,35 +305,63 @@
         class="flex-1 p-6 overflow-y-auto min-h-0 bg-gray-50 dark:bg-gray-800 md:rounded-none rounded-tr-2xl shadow-inner transition-colors duration-300 animate-fade-in"
         id="main-content"
       >
-         {# Aquí se renderizarán los mensajes de Django #}
-         {% if messages %}
-            <div class="mb-6 space-y-3">
-                {% for message in messages %}
-                <div
-                  class="{% if message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% elif message.tags == 'error' %}bg-red-100 border-red-400 text-red-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} border-l-4 rounded-r p-4 flex items-center"
-                  role="alert"
-                >
-                  <div class="flex-shrink-0 mr-3">
-                    {% if message.tags == 'success' %}
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    {% elif message.tags == 'error' %}
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    {% else %}
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    {% endif %}
-                  </div>
-                  <span>{{ message }}</span>
-                </div>
-                {% endfor %}
+        {# Aquí se renderizarán los mensajes de Django #} {% if messages %}
+        <div class="mb-6 space-y-3">
+          {% for message in messages %}
+          <div
+            class="{% if message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% elif message.tags == 'error' %}bg-red-100 border-red-400 text-red-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} border-l-4 rounded-r p-4 flex items-center"
+            role="alert"
+          >
+            <div class="flex-shrink-0 mr-3">
+              {% if message.tags == 'success' %}
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              {% elif message.tags == 'error' %}
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              {% else %}
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              {% endif %}
             </div>
-         {% endif %}
-        {% block content %}
+            <span>{{ message }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %} {% block content %}
         <!-- Aquí va tu contenido dinámico -->
         {% endblock %}
       </main>
@@ -332,22 +377,21 @@
       const iconSun = document.getElementById("icon-sun");
       const iconMoon = document.getElementById("icon-moon");
       const htmlEl = document.documentElement;
-      const mainContent = document.getElementById('main-content');
-
+      const mainContent = document.getElementById("main-content");
 
       // Funciones menú
       function openMenu() {
         sidebar.classList.remove("-translate-x-full");
         overlay.classList.remove("hidden");
         // Opcional: deshabilita scroll en body cuando menú abierto en móvil
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = "hidden";
       }
 
       function closeMenu() {
         sidebar.classList.add("-translate-x-full");
         overlay.classList.add("hidden");
-         // Opcional: habilita scroll de nuevo
-        document.body.style.overflow = '';
+        // Opcional: habilita scroll de nuevo
+        document.body.style.overflow = "";
       }
 
       menuToggle?.addEventListener("click", () => {
@@ -363,7 +407,7 @@
       window.addEventListener("resize", () => {
         if (window.innerWidth >= 768) {
           closeMenu(); // Asegura que el menú se cierra en desktop
-           document.body.style.overflow = ''; // Asegura scroll habilitado en desktop
+          document.body.style.overflow = ""; // Asegura scroll habilitado en desktop
         }
       });
 
@@ -384,14 +428,13 @@
 
       themeToggle?.addEventListener("click", () => {
         toggleTheme();
-         // Agregar animación de giro
-        themeToggle.classList.add('animate-spin-once');
+        // Agregar animación de giro
+        themeToggle.classList.add("animate-spin-once");
         // Eliminar animación después de que termine
         setTimeout(() => {
-            themeToggle.classList.remove('animate-spin-once');
+          themeToggle.classList.remove("animate-spin-once");
         }, 400); // La duración de la animación es 0.4s
       });
-
 
       // Al cargar la página, aplicar tema guardado o sistema
       (function initTheme() {
@@ -411,9 +454,9 @@
         }
       })();
 
-       // Opcional: Reiniciar animación del main content en navegaciones SPA (si usas htms/alpinejs, etc.)
-       // Si es una aplicación tradicional Django, no es necesario
-       /*
+      // Opcional: Reiniciar animación del main content en navegaciones SPA (si usas htms/alpinejs, etc.)
+      // Si es una aplicación tradicional Django, no es necesario
+      /*
        document.addEventListener('DOMContentLoaded', () => {
             if(mainContent) {
                  mainContent.classList.remove('animate-fade-in');
@@ -422,7 +465,6 @@
             }
        });
        */
-
     </script>
   </body>
 </html>

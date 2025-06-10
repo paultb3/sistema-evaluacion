@@ -47,7 +47,7 @@ COMISION {% endblock title %} {% block content %}
         >
           <div>
             <h3 class="font-medium text-gray-800">
-              {{ docente.nombre }} {{ docente.apellido }}
+              {{ docente }} {{ docente.apellido }}
             </h3>
             <p class="text-sm text-gray-600">{{ docente.email }}</p>
           </div>
@@ -101,7 +101,9 @@ COMISION {% endblock title %} {% block content %}
           <div class="h-6 bg-gray-200 rounded-full overflow-hidden">
             <div
               class="h-full bg-blue-600"
-              style="width: {% widthratio item.total total_evaluaciones 100 %}%"
+              style="
+                width: '{% widthratio item.total total_evaluaciones 100 %}%';
+              "
             ></div>
           </div>
         </div>
