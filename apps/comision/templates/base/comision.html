@@ -141,14 +141,14 @@
               class="flex items-center gap-2 hover:text-emerald-100 transition-colors duration-200"
             >
               <i class="fas fa-chart-line text-2xl"></i>
-              <span class="font-bold text-xl">SED UNAS</span>
+              <span class="font-bold text-xl">SED </span>
             </a>
           </div>
 
           <!-- Navegación principal - Solo visible en desktop -->
           <div class="hidden md:flex items-center space-x-8">
             <a
-              href="{% url 'comision:realizar_encuesta' usuario_id=usuario_id %}"
+              href="{% url 'comision:realizar_encuesta' usuario_id %}"
               class="nav-link flex items-center gap-2"
             >
               <i class="fas fa-pen-to-square"></i>
@@ -301,7 +301,7 @@
           </div>
           <nav class="space-y-4">
             <a
-              href="{% url 'comision:realizar_encuesta' usuario_id=usuario_id %}"
+              href="{% url 'comision:realizar_encuesta' usuario_id %}"
               class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="fas fa-pen-to-square"></i>

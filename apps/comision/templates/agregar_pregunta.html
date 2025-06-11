@@ -21,9 +21,8 @@ modulo.nombre }} {% endblock title %} {% block content %}
     >
       Guardar
     </button>
-
     <a
-      href="{% url 'comision:realizar_encuesta' usuario_id=usuario_id %}"
+      href="{% url 'comision:realizar_encuesta' usuario_id %}"
       class="text-sm text-blue-600 hover:underline"
     >
       ← Cancelar y volver

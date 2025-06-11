@@ -6,7 +6,12 @@ from django.db.models import Avg, Q
 from apps.alumnos.models import Estudiante
 from apps.core.models import Curso
 from apps.docentes.models import Docente
-from apps.evaluacion.models import Evaluacion, ModuloPreguntas, PreguntaModulo, Respuesta
+from apps.evaluacion.models import (
+    Evaluacion,
+    ModuloPreguntas,
+    PreguntaModulo,
+    Respuesta,
+)
 
 
 def bienvenida_alumnos(request, usuario_id):
@@ -87,14 +92,14 @@ def procesar_evaluacion(request, alumno):
             curso=curso,
             docente=docente,
             defaults={
-                'estado': 'enviada',
-                'comentario_general': request.POST.get('comentario_general', '')
-            }
+                "estado": "enviada",
+                "comentario_general": request.POST.get("comentario_general", ""),
+            },
         )
 
         # Si la evaluación ya existía, actualizar el comentario general
         if not created:
-            evaluacion.comentario_general = request.POST.get('comentario_general', '')
+            evaluacion.comentario_general = request.POST.get("comentario_general", "")
             evaluacion.save()
 
         # Obtener todas las preguntas
@@ -108,36 +113,44 @@ def procesar_evaluacion(request, alumno):
             "2": "Deficiente",
             "3": "Regular",
             "4": "Bueno",
-            "5": "Excelente"
+            "5": "Excelente",
         }
 
         for pregunta in preguntas:
             criterio_valor = request.POST.get(f"pregunta_{pregunta.id_pregunta}")
-            print(f"Procesando pregunta {pregunta.id_pregunta}, criterio recibido: {criterio_valor}")
-            
+            print(
+                f"Procesando pregunta {pregunta.id_pregunta}, criterio recibido: {criterio_valor}"
+            )
+
             if criterio_valor:
                 try:
                     # Obtener el texto descriptivo del criterio
-                    criterio_texto_valor = criterio_texto.get(criterio_valor, "Sin calificar")
-                    
+                    criterio_texto_valor = criterio_texto.get(
+                        criterio_valor, "Sin calificar"
+                    )
+
                     # Crear o actualizar la respuesta
                     respuesta, created = evaluacion.respuestas.get_or_create(
                         pregunta=pregunta,
                         defaults={
-                            'criterio': criterio_texto_valor,
-                            'puntuacion': int(criterio_valor),
-                        }
+                            "criterio": criterio_texto_valor,
+                            "puntuacion": int(criterio_valor),
+                        },
                     )
-                    
+
                     if not created:
                         respuesta.criterio = criterio_texto_valor
                         respuesta.puntuacion = int(criterio_valor)
                         respuesta.save()
                         respuestas_actualizadas += 1
-                        print(f"Respuesta actualizada para pregunta {pregunta.id_pregunta}")
+                        print(
+                            f"Respuesta actualizada para pregunta {pregunta.id_pregunta}"
+                        )
                     else:
                         respuestas_creadas += 1
-                        print(f"Nueva respuesta creada para pregunta {pregunta.id_pregunta}")
+                        print(
+                            f"Nueva respuesta creada para pregunta {pregunta.id_pregunta}"
+                        )
                 except Exception as e:
                     print(f"Error procesando pregunta {pregunta.id_pregunta}: {str(e)}")
                     messages.error(request, f"Error procesando la pregunta: {str(e)}")
@@ -169,7 +182,7 @@ def obtener_docentes_por_curso(request, curso_id):
 
 
 def explorar(request, usuario_id):
-    query = request.GET.get('q', '')
+    query = request.GET.get("q", "")
     docentes = Docente.objects.all()
     if query:
         docentes = docentes.filter(
@@ -181,23 +194,25 @@ def explorar(request, usuario_id):
         cursos_info = []
         for curso in cursos:
             respuestas = Respuesta.objects.filter(
-                evaluacion__curso=curso,
-                evaluacion__docente=docente
+                evaluacion__curso=curso, evaluacion__docente=docente
             )
-            promedio = respuestas.aggregate(prom=Avg('puntuacion'))['prom']
-            cursos_info.append({
-                'curso': curso,
-                'promedio': promedio,
-                'respuestas': respuestas,
-            })
+            promedio = respuestas.aggregate(prom=Avg("puntuacion"))["prom"]
+            cursos_info.append(
+                {
+                    "curso": curso,
+                    "promedio": promedio,
+                    "respuestas": respuestas,
+                }
+            )
         # Asegúrate de agregar el docente aunque no tenga cursos
-        data.append({
-            'docente': docente,
-            'cursos': cursos_info
-        })
+        data.append({"docente": docente, "cursos": cursos_info})
     print("DATA ARMADA:", data)  # <-- Agrega esto para depurar
-    return render(request, "explorar.html", {
-        "usuario_id": usuario_id,
-        "data": data,
-        "query": query,
-    })
+    return render(
+        request,
+        "explorar.html",
+        {
+            "usuario_id": usuario_id,
+            "data": data,
+            "query": query,
+        },
+    )

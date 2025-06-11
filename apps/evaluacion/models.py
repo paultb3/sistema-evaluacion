@@ -5,6 +5,43 @@ from apps.core.models import Curso
 import uuid
 
 
+# Nuevo modelo para gestionar periodos de evaluación
+class PeriodoEvaluacion(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    nombre = models.CharField(
+        max_length=200, help_text="Nombre del periodo de evaluación"
+    )
+    descripcion = models.TextField(
+        blank=True, null=True, help_text="Descripción del periodo de evaluación"
+    )
+    fecha_inicio = models.DateField(
+        help_text="Fecha de inicio del periodo de evaluación"
+    )
+    fecha_fin = models.DateField(help_text="Fecha de fin del periodo de evaluación")
+    fecha_comision = models.DateField(
+        help_text="Fecha de reunión de comisión para revisión"
+    )
+    fecha_cierre = models.DateField(
+        help_text="Fecha de cierre definitivo y publicación"
+    )
+    estado = models.CharField(
+        max_length=20,
+        choices=[
+            ("pendiente", "Pendiente de inicio"),
+            ("activo", "Activo"),
+            ("revision", "En revisión por comisión"),
+            ("cerrado", "Cerrado"),
+        ],
+        default="pendiente",
+    )
+
+    def __str__(self):
+        return f"{self.nombre} ({self.fecha_inicio} - {self.fecha_fin})"
+
+    class Meta:
+        ordering = ["-fecha_inicio"]
+
+
 # Criterios que serán usados por cada evaluación
 
 
@@ -22,7 +59,9 @@ class Evaluacion(models.Model):
         choices=[("borrador", "Borrador"), ("enviada", "Enviada")],
         default="borrador",
     )
-    comentario_general = models.TextField(blank=True, null=True, help_text="Comentario general sobre la evaluación")
+    comentario_general = models.TextField(
+        blank=True, null=True, help_text="Comentario general sobre la evaluación"
+    )
 
     class Meta:
         unique_together = (
@@ -41,7 +80,11 @@ class Respuesta(models.Model):
         Evaluacion, on_delete=models.CASCADE, related_name="respuestas"
     )
     pregunta = models.ForeignKey(
-        'PreguntaModulo', on_delete=models.CASCADE, related_name="respuestas", null=True, blank=True
+        "PreguntaModulo",
+        on_delete=models.CASCADE,
+        related_name="respuestas",
+        null=True,
+        blank=True,
     )
     criterio = models.CharField(max_length=100, blank=True, null=True)
     puntuacion = models.IntegerField(
