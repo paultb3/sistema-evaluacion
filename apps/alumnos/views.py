@@ -12,6 +12,7 @@ from apps.evaluacion.models import (
     PreguntaModulo,
     Respuesta,
 )
+from apps.evaluacion.models import PeriodoEvaluacion
 
 
 def bienvenida_alumnos(request, usuario_id):
@@ -47,6 +48,9 @@ def mostrar_formulario_evaluacion(request, alumno, usuario_id):
     # Obtener todas las preguntas organizadas por módulo
     preguntas = PreguntaModulo.objects.select_related("id_modulo").all()
     modulos = ModuloPreguntas.objects.all()
+    periodo = PeriodoEvaluacion.objects.all()
+
+    print(periodo)
 
     # Organizar preguntas por módulo
     modulo_dict = defaultdict(list)
@@ -66,6 +70,7 @@ def mostrar_formulario_evaluacion(request, alumno, usuario_id):
         "modulo_dict": dict(modulo_dict),  # Convertir defaultdict a dict normal
         "cursos_disponibles": cursos_disponibles,
         "evaluaciones_existentes": evaluaciones_existentes,
+        "periodo": periodo,
     }
 
     return render(request, "evaluar_docente.html", context)
