@@ -73,9 +73,7 @@ Encuesta {% endblock title %} {% block content %}
           </h3>
           <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
             <span class="font-medium">Inicio:</span>
-            <span>
-              {{ periodo.fecha_inicio|date:"d M, Y" }}
-            </span> 
+            <span> {{ periodo.fecha_inicio|date:"d M, Y" }} </span>
           </p>
           <p class="text-gray-700 dark:text-gray-300 text-sm">
             <span class="font-medium">Fin: </span>
@@ -102,10 +100,8 @@ Encuesta {% endblock title %} {% block content %}
             Reunión de Comisión
           </h3>
           <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
-            <span class="font-medium">Fecha:</span>  <span>
-
-              {{ periodo.fecha_comision|date:"d M, Y" }}
-            </span>
+            <span class="font-medium">Fecha:</span>
+            <span> {{ periodo.fecha_comision|date:"d M, Y" }} </span>
           </p>
           <p class="text-gray-700 dark:text-gray-300 text-sm">
             <span class="font-medium">Estado:</span>
@@ -132,10 +128,8 @@ Encuesta {% endblock title %} {% block content %}
             Cierre de Proceso
           </h3>
           <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
-            <span class="font-medium">Fecha:</span> <span>
-
-              {{periodo.fecha_cierre|date:"d M, Y" }}
-            </span>
+            <span class="font-medium">Fecha:</span>
+            <span> {{periodo.fecha_cierre|date:"d M, Y" }} </span>
           </p>
           <p class="text-gray-700 dark:text-gray-300 text-sm">
             <span class="font-medium">Publicación:</span>
@@ -162,7 +156,8 @@ Encuesta {% endblock title %} {% block content %}
           <i class="fas fa-cog mr-1"></i> Configurar fechas
         </a>
       </div>
-    </div>  </div>
+    </div>
+  </div>
   {% else %}
   <!-- Mensaje si no hay periodo activo -->
   <div
@@ -292,87 +287,6 @@ Encuesta {% endblock title %} {% block content %}
       <p class="text-gray-500 dark:text-gray-400">
         No se encontraron módulos en el sistema.
       </p>
-    </div>
-    {% endif %} {% if periodo %}
-    <!-- Sección de estado actual del periodo -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-      <h2
-        class="text-xl font-semibold text-gray-900 dark:text-white flex items-center mb-4"
-      >
-        <span
-          class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-3"
-        >
-          <i class="fas fa-chart-line text-green-600 dark:text-green-400"></i>
-        </span>
-        Estado Actual del Proceso
-      </h2>
-
-      <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Estado:</p>
-            <p class="text-lg font-medium {{ status_color }} flex items-center">
-              <i
-                class="fas {% if periodo.estado == 'activo' %}fa-check-circle{% elif periodo.estado == 'pendiente' %}fa-clock{% elif periodo.estado == 'revision' %}fa-search{% else %}fa-lock{% endif %} mr-2"
-              ></i>
-              {{ status_label }}
-            </p>
-          </div>
-
-          <div class="text-right">
-            <p class="text-sm text-gray-500 dark:text-gray-400">Progreso:</p>
-            <div class="flex items-center">
-              <div
-                class="w-48 bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mr-2"
-              >
-                <div
-                  class="bg-blue-600 h-2.5 rounded-full"
-                  style="width: {{ estadisticas.progreso|default:0 }}%;"
-                ></div>
-                ></div>
-              </div>
-              <span class="text-sm text-gray-600 dark:text-gray-300"
-                >{{ estadisticas.progreso|default:0 }}%</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-4 grid gap-4 grid-cols-2 md:grid-cols-4">
-          <div class="text-center">
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Total estudiantes
-            </p>
-            <p class="text-xl font-bold text-gray-800 dark:text-white">
-              {{ estadisticas.total_estudiantes|default:0 }}
-            </p>
-          </div>
-          <div class="text-center">
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Evaluaciones completadas
-            </p>
-            <p class="text-xl font-bold text-gray-800 dark:text-white">
-              {{ estadisticas.evaluaciones_completadas|default:0 }}
-            </p>
-          </div>
-          <div class="text-center">
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Días restantes
-            </p>
-            <p class="text-xl font-bold text-gray-800 dark:text-white">
-              {{ estadisticas.dias_restantes|default:0 }}
-            </p>
-          </div>
-          <div class="text-center">
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Docentes evaluados
-            </p>
-            <p class="text-xl font-bold text-gray-800 dark:text-white">
-              {{ estadisticas.docentes_evaluados|default:'0/0' }}
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
     {% endif %}
   </div>
