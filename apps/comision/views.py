@@ -7,163 +7,26 @@ from apps.evaluacion.models import (
     Respuesta,
     PeriodoEvaluacion,
 )
-from apps.docentes.models import Docente
-from apps.core.models import Curso
-from uuid import UUID
 from apps.comision.forms import (
     PreguntaModuloForm,
     PreguntaModulo,
     PeriodoEvaluacionForm,
 )
 from django.contrib import messages
-from django.db import models
-from datetime import datetime, timedelta, date
 from django.utils import timezone
 
-
-# Helper functions for period management
-def calcular_dias_restantes(fecha_fin):
-    """Calculate remaining days until the end date"""
-    if fecha_fin and fecha_fin >= date.today():
-        return (fecha_fin - date.today()).days
-    return 0
-
-
-def calcular_dias_habiles(fecha_inicio, fecha_fin):
-    """Calculate business days between two dates (excluding weekends)"""
-    if not fecha_inicio or not fecha_fin:
-        return 0
-
-    current_date = fecha_inicio
-    dias_habiles = 0
-
-    while current_date <= fecha_fin:
-        # Monday = 0, Sunday = 6
-        if current_date.weekday() < 5:  # Monday to Friday
-            dias_habiles += 1
-        current_date += timedelta(days=1)
-
-    return dias_habiles
-
-
-def calcular_dias_habiles_restantes(fecha_fin):
-    """Calculate remaining business days until the end date"""
-    if not fecha_fin or fecha_fin < date.today():
-        return 0
-
-    return calcular_dias_habiles(date.today(), fecha_fin)
-
-
-def calcular_progreso_dias_habiles(periodo):
-    """Calculate progress based on business days"""
-    if not periodo:
-        return 0
-
-    total_dias_habiles = calcular_dias_habiles(periodo.fecha_inicio, periodo.fecha_fin)
-    if total_dias_habiles == 0:
-        return 100
-
-    hoy = date.today()
-    if hoy < periodo.fecha_inicio:
-        return 0
-    elif hoy > periodo.fecha_fin:
-        return 100
-
-    dias_habiles_transcurridos = calcular_dias_habiles(periodo.fecha_inicio, hoy)
-    return min(100, int((dias_habiles_transcurridos / total_dias_habiles) * 100))
-
-
-def get_informacion_dias_habiles(periodo):
-    """Get comprehensive business days information for a period"""
-    if not periodo:
-        return {
-            "total_dias_habiles": 0,
-            "dias_habiles_transcurridos": 0,
-            "dias_habiles_restantes": 0,
-            "progreso_dias_habiles": 0,
-            "es_dia_habil": False,
-        }
-
-    hoy = date.today()
-    total_dias_habiles = calcular_dias_habiles(periodo.fecha_inicio, periodo.fecha_fin)
-    dias_habiles_transcurridos = calcular_dias_habiles(
-        periodo.fecha_inicio, min(hoy, periodo.fecha_fin)
-    )
-    dias_habiles_restantes = calcular_dias_habiles_restantes(periodo.fecha_fin)
-    progreso_dias_habiles = calcular_progreso_dias_habiles(periodo)
-    es_dia_habil = hoy.weekday() < 5  # Monday to Friday
-
-    return {
-        "total_dias_habiles": total_dias_habiles,
-        "dias_habiles_transcurridos": dias_habiles_transcurridos,
-        "dias_habiles_restantes": dias_habiles_restantes,
-        "progreso_dias_habiles": progreso_dias_habiles,
-        "es_dia_habil": es_dia_habil,
-        "dia_semana": [
-            "Lunes",
-            "Martes",
-            "Miércoles",
-            "Jueves",
-            "Viernes",
-            "Sábado",
-            "Domingo",
-        ][hoy.weekday()],
-    }
-
-
-def get_periodo_status(periodo, fecha_actual):
-    """Get the status label and CSS classes for a period"""
-    if not periodo:
-        return (
-            "Sin periodo",
-            "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400",
-        )
-
-    estado = periodo.estado
-    if estado == "activo":
-        return (
-            "Período de evaluación activo",
-            "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-        )
-    elif estado == "pendiente":
-        return (
-            "Pendiente de inicio",
-            "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-        )
-    elif estado == "revision":
-        return (
-            "En revisión por comisión",
-            "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-        )
-    else:
-        return (
-            "Proceso cerrado",
-            "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400",
-        )
-
-
-def get_comision_status(periodo, fecha_actual):
-    """Get the commission meeting status"""
-    if not periodo:
-        return ("Sin periodo", "text-gray-500 dark:text-gray-400")
-
-    if fecha_actual > periodo.fecha_fin and fecha_actual <= periodo.fecha_cierre:
-        return ("En revisión", "text-amber-600 dark:text-amber-400")
-    elif fecha_actual > periodo.fecha_cierre:
-        return ("Completada", "text-green-600 dark:text-green-400")
-    else:
-        return ("Pendiente", "text-gray-500 dark:text-gray-400")
-
-
-def get_publication_status(periodo, fecha_actual):
-    """Get the publication status"""
-    if not periodo:
-        return ("Sin periodo", "text-gray-500 dark:text-gray-400")
-
-    if fecha_actual > periodo.fecha_cierre:
-        return ("Publicado", "text-green-600 dark:text-green-400")
-    else:
-        return ("Pendiente", "text-gray-500 dark:text-gray-400")
+# Import our new modularized helpers and services
+from apps.comision.lib.utils.dias_habiles import (
+    calcular_dias_habiles,
+    calcular_dias_habiles_restantes,
+    calcular_progreso_dias_habiles,
+    get_informacion_dias_habiles,
+)
+from apps.comision.lib.utils.fechas import calcular_dias_restantes
+from apps.comision.lib.services.periodo_status import PeriodoStatusService
+from apps.comision.lib.services.estadisticas import EstadisticasService
+from apps.comision.lib.helpers.context import ContextHelper
+from apps.comision.lib.helpers.validaciones import ValidacionHelper
 
 
 # Create your views here.
@@ -172,10 +35,9 @@ def get_publication_status(periodo, fecha_actual):
 def index(request, usuario_id):
     comision = get_object_or_404(Comision, usuario__id=usuario_id)
 
-    # Estadísticas generales
-    total_docentes = Docente.objects.count()
-    total_evaluaciones = Evaluacion.objects.filter(estado="enviada").count()
-    total_modulos = ModuloPreguntas.objects.count()
+    # Use statistics service
+    estadisticas_service = EstadisticasService()
+    estadisticas_generales = estadisticas_service.get_estadisticas_generales()
 
     # Evaluaciones recientes
     evaluaciones_recientes = (
@@ -192,9 +54,9 @@ def index(request, usuario_id):
     context = {
         "usuario_id": usuario_id,
         "comision": comision,
-        "total_docentes": total_docentes,
-        "total_evaluaciones": total_evaluaciones,
-        "total_modulos": total_modulos,
+        "total_docentes": estadisticas_generales["total_docentes"],
+        "total_evaluaciones": estadisticas_generales["total_evaluaciones"],
+        "total_modulos": estadisticas_generales["total_modulos"],
         "evaluaciones_recientes": evaluaciones_recientes,
         "modulos_populares": modulos_populares,
     }
@@ -235,29 +97,21 @@ def gestionar_periodos(request, usuario_id):
         "-fecha_inicio"
     )
 
-    # Estadísticas de periodos
-    total_periodos = periodos_activos.count() + periodos_pasados.count()
-    proximos_periodos = periodos_activos.filter(fecha_inicio__gt=hoy).count()
-    periodos_en_curso = periodos_activos.filter(
-        fecha_inicio__lte=hoy
-    ).count()  # Obtener periodo actual (si existe)
+    # Use statistics service for periods
+    estadisticas_service = EstadisticasService()
+    estadisticas_periodos = estadisticas_service.get_estadisticas_periodos(
+        periodos_activos, periodos_pasados, hoy
+    )
+
+    # Obtener periodo actual (si existe)
     periodo_actual = None
     info_dias_habiles_actual = None
     if periodos_activos.filter(fecha_inicio__lte=hoy).exists():
         periodo_actual = periodos_activos.filter(fecha_inicio__lte=hoy).first()
 
-        # Calcular progreso
-        duracion_total = (periodo_actual.fecha_fin - periodo_actual.fecha_inicio).days
-        dias_transcurridos = (hoy - periodo_actual.fecha_inicio).days
-        if duracion_total > 0:  # Evitar división por cero
-            periodo_actual.progreso = min(
-                100, int((dias_transcurridos / duracion_total) * 100)
-            )
-        else:
-            periodo_actual.progreso = 100
-
-        # Días restantes (calendario)
-        periodo_actual.dias_restantes = max(0, (periodo_actual.fecha_fin - hoy).days)
+        # Use context helper to prepare period data
+        context_helper = ContextHelper()
+        periodo_actual = context_helper.preparar_datos_periodo(periodo_actual, hoy)
 
         # Información sobre días hábiles
         info_dias_habiles_actual = get_informacion_dias_habiles(periodo_actual)
@@ -274,9 +128,9 @@ def gestionar_periodos(request, usuario_id):
         "comision": comision,
         "periodos_activos": periodos_activos,
         "periodos_pasados": periodos_pasados,
-        "total_periodos": total_periodos,
-        "proximos_periodos": proximos_periodos,
-        "periodos_en_curso": periodos_en_curso,
+        "total_periodos": estadisticas_periodos["total_periodos"],
+        "proximos_periodos": estadisticas_periodos["proximos_periodos"],
+        "periodos_en_curso": estadisticas_periodos["periodos_en_curso"],
         "periodo_actual": periodo_actual,
         "info_dias_habiles_actual": info_dias_habiles_actual,
         "hoy": hoy,
@@ -294,29 +148,33 @@ def crear_periodo(request, usuario_id):
         form = PeriodoEvaluacionForm(request.POST)
         if form.is_valid():
             periodo = form.save(commit=False)
-            # Calcular automáticamente la fecha de reunión de comisión (3 días después del fin)
-            periodo.fecha_comision = periodo.fecha_fin + timedelta(days=3)
-            # Calcular automáticamente la fecha de cierre (5 días después del fin)
-            periodo.fecha_cierre = periodo.fecha_fin + timedelta(days=5)
-            # Establecer el estado inicial
-            if periodo.fecha_inicio <= timezone.now().date():
-                periodo.estado = "activo"
-            else:
-                periodo.estado = "pendiente"
 
-            periodo.save()
-            messages.success(request, "Periodo de evaluación creado exitosamente.")
-            return redirect("comision:gestionar_periodos", usuario_id=usuario_id)
+            # Use validation helper
+            validacion_helper = ValidacionHelper()
+            context_helper = ContextHelper()
+
+            # Validate period dates
+            errores = validacion_helper.validar_fechas_periodo(
+                periodo.fecha_inicio, periodo.fecha_fin
+            )
+            if not errores:
+                # Calculate automatic dates using context helper
+                periodo = context_helper.calcular_fechas_automaticas(periodo)
+
+                # Set initial state
+                periodo.estado = context_helper.determinar_estado_inicial(periodo)
+
+                periodo.save()
+                messages.success(request, "Periodo de evaluación creado exitosamente.")
+                return redirect("comision:gestionar_periodos", usuario_id=usuario_id)
+            else:
+                for error in errores:
+                    messages.error(request, error)
     else:
-        # Valores predeterminados: inicio en la fecha actual, fin en 15 días
-        fecha_inicio_default = timezone.now().date()
-        fecha_fin_default = fecha_inicio_default + timedelta(days=15)
-        form = PeriodoEvaluacionForm(
-            initial={
-                "fecha_inicio": fecha_inicio_default,
-                "fecha_fin": fecha_fin_default,
-            }
-        )
+        # Use context helper for default values
+        context_helper = ContextHelper()
+        fechas_default = context_helper.get_fechas_default_periodo()
+        form = PeriodoEvaluacionForm(initial=fechas_default)
 
     context = {
         "form": form,
@@ -337,12 +195,27 @@ def configurar_periodo(request, periodo_id, usuario_id):
         form = PeriodoEvaluacionForm(request.POST, instance=periodo)
         if form.is_valid():
             periodo = form.save(commit=False)
-            # Actualizar fechas de comisión y cierre si cambiaron las fechas principales
-            periodo.fecha_comision = periodo.fecha_fin + timedelta(days=3)
-            periodo.fecha_cierre = periodo.fecha_fin + timedelta(days=5)
-            periodo.save()
-            messages.success(request, "Periodo de evaluación actualizado exitosamente.")
-            return redirect("comision:gestionar_periodos", usuario_id=usuario_id)
+
+            # Use validation helper
+            validacion_helper = ValidacionHelper()
+            context_helper = ContextHelper()
+
+            # Validate period dates
+            errores = validacion_helper.validar_fechas_periodo(
+                periodo.fecha_inicio, periodo.fecha_fin
+            )
+            if not errores:
+                # Update automatic dates using context helper
+                periodo = context_helper.calcular_fechas_automaticas(periodo)
+
+                periodo.save()
+                messages.success(
+                    request, "Periodo de evaluación actualizado exitosamente."
+                )
+                return redirect("comision:gestionar_periodos", usuario_id=usuario_id)
+            else:
+                for error in errores:
+                    messages.error(request, error)
     else:
         form = PeriodoEvaluacionForm(instance=periodo)
 
@@ -389,14 +262,22 @@ def realizar_encuesta(request, usuario_id, periodo_id=None):
             periodo = periodos_activos.first()
 
     # Get current date
-    fecha_actual = (
-        timezone.now().date()
-    )  # Calculate status information using helper functions
+    fecha_actual = timezone.now().date()
+
+    # Use services for status and statistics
+    periodo_status_service = PeriodoStatusService()
+    estadisticas_service = EstadisticasService()
+
+    # Calculate status information using services
     dias_restantes = calcular_dias_restantes(periodo.fecha_fin) if periodo else 0
-    status_label, status_color = get_periodo_status(periodo, fecha_actual)
-    comision_status, comision_color = get_comision_status(periodo, fecha_actual)
-    publication_status, publication_color = get_publication_status(
+    status_label, status_color = periodo_status_service.get_periodo_status(
         periodo, fecha_actual
+    )
+    comision_status, comision_color = periodo_status_service.get_comision_status(
+        periodo, fecha_actual
+    )
+    publication_status, publication_color = (
+        periodo_status_service.get_publication_status(periodo, fecha_actual)
     )
 
     # Obtener información detallada sobre días hábiles
@@ -405,50 +286,12 @@ def realizar_encuesta(request, usuario_id, periodo_id=None):
     # Obtener los módulos disponibles
     modulos = ModuloPreguntas.objects.prefetch_related("preguntamodulo_set").all()
 
-    # Calcular estadísticas si hay un periodo activo
+    # Use statistics service for evaluation statistics
     estadisticas = {}
     if periodo:
-        # Estudiantes totales (estimado)
-        estadisticas["total_estudiantes"] = (
-            320  # En un sistema real, esto vendría de la base de datos
+        estadisticas = estadisticas_service.get_estadisticas_evaluacion(
+            periodo, info_dias_habiles
         )
-
-        # Evaluaciones completadas en este periodo
-        evaluaciones = Evaluacion.objects.filter(
-            fecha__range=(periodo.fecha_inicio, periodo.fecha_fin), estado="enviada"
-        )
-        estadisticas["evaluaciones_completadas"] = evaluaciones.count()
-
-        # Días restantes (calendario y hábiles)
-        estadisticas["dias_restantes"] = dias_restantes
-        estadisticas["dias_habiles_restantes"] = info_dias_habiles[
-            "dias_habiles_restantes"
-        ]
-
-        # Docentes evaluados
-        docentes_evaluados = evaluaciones.values("docente").distinct().count()
-        total_docentes = Docente.objects.count()
-        estadisticas["docentes_evaluados"] = f"{docentes_evaluados}/{total_docentes}"
-
-        # Calcular progreso (basado en días calendario y días hábiles)
-        if estadisticas["total_estudiantes"] > 0:
-            estadisticas["progreso"] = min(
-                100,
-                int(
-                    (
-                        estadisticas["evaluaciones_completadas"]
-                        / estadisticas["total_estudiantes"]
-                    )
-                    * 100
-                ),
-            )
-        else:
-            estadisticas["progreso"] = 0
-
-        # Progreso basado en días hábiles
-        estadisticas["progreso_dias_habiles"] = info_dias_habiles[
-            "progreso_dias_habiles"
-        ]
 
     context = {
         "modulos": modulos,
@@ -526,122 +369,47 @@ def agregar_pregunta(request, id_modulo, usuario_id):
 
 
 def reporter_general(request, usuario_id):
-    # Estadísticas generales
-    total_docentes = Docente.objects.count()
-    total_cursos = Curso.objects.count()
-    total_evaluaciones = Evaluacion.objects.filter(estado="enviada").count()
+    # Use statistics service for general reports
+    estadisticas_service = EstadisticasService()
 
-    # Promedio general de calificaciones usando las respuestas
-    promedio_general = (
-        Evaluacion.objects.filter(estado="enviada")
-        .annotate(promedio_respuestas=Avg("respuestas__puntuacion"))
-        .aggregate(promedio=Avg("promedio_respuestas"))["promedio"]
-        or 0
-    )
+    # Get general statistics
+    estadisticas_generales = estadisticas_service.get_estadisticas_generales()
 
-    # Top 5 docentes mejor calificados
-    mejores_docentes = Docente.objects.annotate(
-        promedio=Avg(
-            "evaluacion__respuestas__puntuacion",
-            filter=models.Q(evaluacion__estado="enviada"),
-        )
-    ).order_by("-promedio")[:5]
-
-    for docente in mejores_docentes:
-        print(docente)
-
-    # Top 5 cursos mejor calificados
-    mejores_cursos = Curso.objects.annotate(
-        promedio=Avg(
-            "evaluacion__respuestas__puntuacion",
-            filter=models.Q(evaluacion__estado="enviada"),
-        )
-    ).order_by("-promedio")[:5]
-
-    # Distribución de calificaciones
-    distribucion = (
-        Respuesta.objects.filter(evaluacion__estado="enviada")
-        .values("puntuacion")
-        .annotate(total=Count("id"))
-        .order_by("puntuacion")
-    )
+    # Get specific report data
+    reporte_data = estadisticas_service.get_reporte_general()
 
     context = {
         "usuario_id": usuario_id,
-        "total_docentes": total_docentes,
-        "total_cursos": total_cursos,
-        "total_evaluaciones": total_evaluaciones,
-        "promedio_general": promedio_general,
-        "mejores_docentes": mejores_docentes,
-        "mejores_cursos": mejores_cursos,
-        "distribucion": distribucion,
+        "total_docentes": estadisticas_generales["total_docentes"],
+        "total_cursos": estadisticas_generales["total_cursos"],
+        "total_evaluaciones": estadisticas_generales["total_evaluaciones"],
+        "promedio_general": reporte_data["promedio_general"],
+        "mejores_docentes": reporte_data["mejores_docentes"],
+        "mejores_cursos": reporte_data["mejores_cursos"],
+        "distribucion": reporte_data["distribucion"],
     }
     return render(request, "reportes/reporte_general.html", context)
 
 
 def reporte_curso(request, usuario_id):
-    # Obtener todos los cursos con sus evaluaciones
-    cursos = (
-        Curso.objects.prefetch_related("evaluacion_set", "evaluacion_set__respuestas")
-        .select_related("docente")
-        .all()
-    )
-
-    # Para cada curso, calcular estadísticas
-    for curso in cursos:
-        # Obtener evaluaciones del curso
-        evaluaciones = curso.evaluacion_set.filter(estado="enviada")
-
-        # Calcular promedio de calificaciones usando las respuestas
-        curso.promedio_calificacion = (
-            evaluaciones.annotate(
-                promedio_respuestas=Avg("respuestas__puntuacion")
-            ).aggregate(promedio=Avg("promedio_respuestas"))["promedio"]
-            or 0
-        )
-
-        # Contar total de evaluaciones
-        curso.total_evaluaciones = evaluaciones.count()
-
-        # Calcular calificación para cada evaluación
-        for evaluacion in evaluaciones:
-            evaluacion.calificacion = (
-                evaluacion.respuestas.aggregate(promedio=Avg("puntuacion"))["promedio"]
-                or 0
-            )
+    # Use statistics service for course reports
+    estadisticas_service = EstadisticasService()
+    cursos_con_estadisticas = estadisticas_service.get_reporte_cursos()
 
     context = {
         "usuario_id": usuario_id,
-        "cursos": cursos,
+        "cursos": cursos_con_estadisticas,
     }
     return render(request, "reportes/reporte_curso.html", context)
 
 
 def reporte_docente(request, usuario_id):
-    # Obtener todos los docentes con sus evaluaciones y cursos
-    docentes = Docente.objects.prefetch_related("evaluacion_set", "curso_set").all()
-
-    # Para cada docente, calcular estadísticas
-    for docente in docentes:
-        # Obtener evaluaciones del docente
-        evaluaciones = docente.evaluacion_set.filter(estado="enviada")
-
-        # Calcular promedio de calificaciones usando las respuestas
-        docente.promedio_calificacion = (
-            evaluaciones.annotate(
-                promedio_respuestas=Avg("respuestas__puntuacion")
-            ).aggregate(promedio=Avg("promedio_respuestas"))["promedio"]
-            or 0
-        )
-
-        # Contar total de evaluaciones
-        docente.total_evaluaciones = evaluaciones.count()
-
-        # Obtener cursos del docente
-        docente.cursos = docente.curso_set.all()
+    # Use statistics service for teacher reports
+    estadisticas_service = EstadisticasService()
+    docentes_con_estadisticas = estadisticas_service.get_reporte_docentes()
 
     context = {
         "usuario_id": usuario_id,
-        "docentes": docentes,
+        "docentes": docentes_con_estadisticas,
     }
     return render(request, "reportes/reporte_docente.html", context)
