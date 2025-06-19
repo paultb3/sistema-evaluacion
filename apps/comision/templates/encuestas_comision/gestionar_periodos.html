@@ -1,0 +1,355 @@
+{% extends 'base/comision.html' %} {% block title %} Comisión | Gestionar
+Periodos {% endblock title %} {% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8 flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        Periodos de Evaluación
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400">
+        Administre los periodos de evaluación del sistema.
+      </p>
+    </div>
+    <a
+      href="{% url 'comision:crear_periodo' usuario_id %}"
+      class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-300"
+    >
+      <i class="fas fa-plus mr-2"></i>
+      Nuevo Periodo
+    </a>
+  </div>
+
+  <!-- Resumen de estadísticas -->
+  <div class="grid gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border-l-4 border-blue-500"
+    >
+      <p class="text-sm text-gray-500 dark:text-gray-400">Total periodos</p>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white">
+        {{ total_periodos }}
+      </p>
+    </div>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border-l-4 border-green-500"
+    >
+      <p class="text-sm text-gray-500 dark:text-gray-400">En curso</p>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white">
+        {{ periodos_en_curso }}
+      </p>
+    </div>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border-l-4 border-yellow-500"
+    >
+      <p class="text-sm text-gray-500 dark:text-gray-400">Próximos</p>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white">
+        {{ proximos_periodos }}
+      </p>
+    </div>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border-l-4 border-purple-500"
+    >
+      <p class="text-sm text-gray-500 dark:text-gray-400">Periodo actual</p>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white">
+        {% if periodo_actual %}
+        <a
+          href="{% url 'comision:realizar_encuesta_periodo' usuario_id periodo_actual.id %}"
+          class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        >
+          <i
+            class="fas fa-calendar-check mr-2 text-green-600 dark:text-green-400"
+          ></i>
+          Activo
+        </a>
+        {% else %}
+        <span class="text-gray-500 dark:text-gray-400">Ninguno</span>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+  {% if periodo_actual %}
+  <!-- Periodo actual destacado -->
+  <div
+    class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-md mb-8 overflow-hidden border border-blue-200 dark:border-blue-800/30"
+  >
+    <div class="p-6">
+      <div class="flex flex-wrap justify-between items-center mb-4">
+        <h2
+          class="text-xl font-semibold text-gray-900 dark:text-white flex items-center"
+        >
+          <span
+            class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-3"
+          >
+            <i class="fas fa-calendar-alt text-blue-600 dark:text-blue-400"></i>
+          </span>
+          {{ periodo_actual.nombre }}
+        </h2>
+        <span
+          class="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+        >
+          Activo
+        </span>
+      </div>
+
+      <p class="text-gray-600 dark:text-gray-400 mb-4">
+        {{ periodo_actual.descripcion|default:"" }}
+      </p>
+
+      <div class="grid gap-4 md:grid-cols-3 mb-4">
+        <div class="bg-white/80 dark:bg-gray-800/50 rounded-lg p-3">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Fechas
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300 text-sm">
+            <span>
+              {{ periodo_actual.fecha_inicio|date:"d M, Y" }} - <span> {{periodo_actual.fecha_fin|date:"d M, Y" }}
+            </span>
+          </p>
+        </div>
+        <div class="bg-white/80 dark:bg-gray-800/50 rounded-lg p-3">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Progreso
+          </h3>
+          <div class="flex items-center pt-1">
+            <div
+              class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2"
+            >
+              <div
+                class="bg-blue-600 h-2 rounded-full"
+                style="width: {% if periodo_actual.progreso %}{{ periodo_actual.progreso }}{% else %}0{% endif %}%"
+              ></div>
+            </div>
+            <span class="text-xs text-gray-600 dark:text-gray-300"
+              >{{ periodo_actual.progreso|default:0 }}%</span
+            >
+          </div>
+        </div>
+        <div class="bg-white/80 dark:bg-gray-800/50 rounded-lg p-3">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Días restantes
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300 text-sm">
+            <span>
+
+                {% if periodo_actual.dias_restantes > 0 %} <span>
+                    {{ periodo_actual.dias_restantes }} días {% else %}
+                </span> 
+            </span>
+            <span class="text-red-600 dark:text-red-400">Finalizado</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="{% url 'comision:realizar_encuesta_periodo' usuario_id periodo_actual.id %}"
+          class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-300"
+        >
+          <i class="fas fa-tasks mr-2"></i>
+          Administrar encuestas
+        </a>
+        <a
+          href="{% url 'comision:configurar_periodo' usuario_id periodo_actual.id %}"
+          class="inline-flex items-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 text-sm font-medium rounded-md transition-colors duration-300"
+        >
+          <i class="fas fa-cog mr-2"></i>
+          Configurar
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Lista de periodos activos -->
+  {% if periodos_activos %}
+  <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+    Periodos Activos y Próximos
+  </h2>
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-md mb-8 overflow-hidden"
+  >
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Nombre
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Fechas
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Estado
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Acciones
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          {% for periodo in periodos_activos %}
+          <tr
+            class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="font-medium text-gray-900 dark:text-white">
+                {{ periodo.nombre }}
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                {{ periodo.descripcion|default:""|truncatechars:50 }}
+              </div>
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300"
+            >
+              <div>Inicio: {{ periodo.fecha_inicio|date:"d M, Y" }}</div>
+              <div>Fin: {{ periodo.fecha_fin|date:"d M, Y" }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-2 py-1 text-xs font-medium rounded-full {% if periodo.estado == 'activo' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 {% elif periodo.estado == 'pendiente' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 {% else %}bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400{% endif %}"
+              >
+                {{ periodo.estado|title }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <div class="flex space-x-2">
+                <a
+                  href="{% url 'comision:realizar_encuesta_periodo' usuario_id periodo.id %}"
+                  class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                >
+                  <i class="fas fa-tasks" title="Administrar encuestas"></i>
+                </a>
+                <a
+                  href="{% url 'comision:configurar_periodo' usuario_id periodo.id %}"
+                  class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  <i class="fas fa-cog" title="Configurar periodo"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Lista de periodos pasados -->
+  {% if periodos_pasados %}
+  <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+    Periodos Pasados
+  </h2>
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Nombre
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Fechas
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Estado
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Acciones
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          {% for periodo in periodos_pasados %}
+          <tr
+            class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="font-medium text-gray-900 dark:text-white">
+                {{ periodo.nombre }}
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                {{ periodo.descripcion|default:""|truncatechars:50 }}
+              </div>
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300"
+            >
+              <div>Inicio: {{ periodo.fecha_inicio|date:"d M, Y" }}</div>
+              <div>Fin: {{ periodo.fecha_fin|date:"d M, Y" }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+              >
+                Finalizado
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <div class="flex space-x-2">
+                <a
+                  href="{% url 'comision:realizar_encuesta_periodo' usuario_id periodo.id %}"
+                  class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                >
+                  <i class="fas fa-eye" title="Ver encuestas"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %} {% if not periodos_activos and not periodos_pasados %}
+  <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+    <div
+      class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full mb-6"
+    >
+      <i
+        class="fas fa-calendar-times text-3xl text-gray-400 dark:text-gray-500"
+      ></i>
+    </div>
+    <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">
+      No hay periodos de evaluación
+    </h3>
+    <p class="text-gray-500 dark:text-gray-400 mb-6">
+      Cree su primer periodo de evaluación para comenzar.
+    </p>
+    <a
+      href="{% url 'comision:crear_periodo' usuario_id %}"
+      class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-300"
+    >
+      <i class="fas fa-plus mr-2"></i>
+      Crear Primer Periodo
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}

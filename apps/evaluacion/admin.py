@@ -6,9 +6,11 @@ from django.contrib import admin
 from apps.evaluacion.models import (
     Evaluacion,
     Respuesta,
-    Criterio,
     ModuloPreguntas,
     PreguntaModulo,
+    PeriodoEvaluacion,
 )
 
-admin.site.register([Evaluacion, Respuesta, Criterio, ModuloPreguntas, PreguntaModulo])
+admin.site.register(
+    [Evaluacion, Respuesta, ModuloPreguntas, PreguntaModulo, PeriodoEvaluacion]
+)

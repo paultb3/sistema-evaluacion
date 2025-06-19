@@ -1,0 +1,163 @@
+{% extends 'base/comision.html' %} {% block title %} Comisión | Configurar
+Periodo de Evaluación {% endblock title %} {% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      Configurar Periodo de Evaluación
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      Modifique los detalles del periodo de evaluación.
+    </p>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+
+      <div class="space-y-4">
+        <div>
+          <label
+            for="{{ form.nombre.id_for_label }}"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            {{ form.nombre.label }}
+          </label>
+          <div class="mt-1">{{ form.nombre }}</div>
+          {% if form.nombre.help_text %}
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            {{ form.nombre.help_text }}
+          </p>
+          {% endif %} {% if form.nombre.errors %}
+          <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ form.nombre.errors.0 }}
+          </p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label
+            for="{{ form.descripcion.id_for_label }}"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            {{ form.descripcion.label }}
+          </label>
+          <div class="mt-1">{{ form.descripcion }}</div>
+          {% if form.descripcion.help_text %}
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            {{ form.descripcion.help_text }}
+          </p>
+          {% endif %} {% if form.descripcion.errors %}
+          <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ form.descripcion.errors.0 }}
+          </p>
+          {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              for="{{ form.fecha_inicio.id_for_label }}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              {{ form.fecha_inicio.label }}
+            </label>
+            <div class="mt-1">{{ form.fecha_inicio }}</div>
+            {% if form.fecha_inicio.help_text %}
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {{ form.fecha_inicio.help_text }}
+            </p>
+            {% endif %} {% if form.fecha_inicio.errors %}
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ form.fecha_inicio.errors.0 }}
+            </p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label
+              for="{{ form.fecha_fin.id_for_label }}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              {{ form.fecha_fin.label }}
+            </label>
+            <div class="mt-1">{{ form.fecha_fin }}</div>
+            {% if form.fecha_fin.help_text %}
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {{ form.fecha_fin.help_text }}
+            </p>
+            {% endif %} {% if form.fecha_fin.errors %}
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ form.fecha_fin.errors.0 }}
+            </p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+          <h2
+            class="text-sm font-medium text-blue-800 dark:text-blue-300 flex items-center mb-2"
+          >
+            <i class="fas fa-info-circle mr-2"></i> Fechas Calculadas
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <div>
+              <p class="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Reunión de Comisión
+              </p>
+              <p class="text-sm text-gray-800 dark:text-gray-200">
+                {{ periodo.fecha_comision|date:"d M, Y" }}
+              </p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Cierre Definitivo
+              </p>
+              <p class="text-sm text-gray-800 dark:text-gray-200">
+                {{ periodo.fecha_cierre|date:"d M, Y" }}
+              </p>
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-blue-600 dark:text-blue-400">
+            <i class="fas fa-exclamation-triangle mr-1"></i>
+            Estas fechas se actualizarán automáticamente al guardar los cambios.
+          </p>
+        </div>
+
+        <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg">
+          <h2
+            class="text-sm font-medium text-amber-800 dark:text-amber-300 flex items-center"
+          >
+            <i class="fas fa-exclamation-triangle mr-2"></i> Estado Actual
+          </h2>
+          <p class="mt-1 text-xs text-amber-600 dark:text-amber-400">
+            El estado actual del periodo es:
+            <strong>{{ periodo.estado|title }}</strong>
+          </p>
+          <p class="mt-1 text-xs text-amber-600 dark:text-amber-400">
+            Este estado se actualiza automáticamente según las fechas
+            configuradas.
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="flex items-center justify-end pt-4 border-t border-gray-200 dark:border-gray-700"
+      >
+        <a
+          href="{% url 'comision:gestionar_periodos' usuario_id %}"
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white mr-4"
+        >
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-300"
+        >
+          <i class="fas fa-save mr-2"></i>
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}

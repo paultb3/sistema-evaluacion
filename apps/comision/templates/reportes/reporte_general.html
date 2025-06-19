@@ -1,0 +1,120 @@
+{% extends 'base/comision.html' %} {% block title %} Reporte General | SED
+COMISION {% endblock title %} {% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Reporte General del Sistema</h1>
+
+  <!-- Estadísticas Generales -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">
+        Total de Docentes
+      </h3>
+      <p class="text-3xl font-bold text-blue-600">{{ total_docentes }}</p>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Total de Cursos</h3>
+      <p class="text-3xl font-bold text-blue-600">{{ total_cursos }}</p>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">
+        Total de Evaluaciones
+      </h3>
+      <p class="text-3xl font-bold text-blue-600">{{ total_evaluaciones }}</p>
+    </div>
+  </div>
+
+  <!-- Promedio General -->
+  <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+      Promedio General de Calificaciones
+    </h2>
+    <p class="text-4xl font-bold text-blue-600">
+      {{ promedio_general|floatformat:2 }}
+    </p>
+  </div>
+
+  <!-- Top Docentes y Cursos -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <!-- Top Docentes -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+        Top 5 Docentes Mejor Calificados
+      </h2>
+      <div class="space-y-4">
+        {% for docente in mejores_docentes %}
+        <div
+          class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+        >
+          <div>
+            <h3 class="font-medium text-gray-800">
+              {{ docente }} {{ docente.apellido }}
+            </h3>
+            <p class="text-sm text-gray-600">{{ docente.email }}</p>
+          </div>
+          <p class="text-lg font-semibold text-blue-600">
+            {{ docente.promedio|floatformat:2 }}
+          </p>
+        </div>
+        {% empty %}
+        <p class="text-gray-500">No hay datos disponibles</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Top Cursos -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+        Top 5 Cursos Mejor Calificados
+      </h2>
+      <div class="space-y-4">
+        {% for curso in mejores_cursos %}
+        <div
+          class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+        >
+          <div>
+            <h3 class="font-medium text-gray-800">{{ curso.nombre }}</h3>
+            <p class="text-sm text-gray-600">Código: {{ curso.codigo }}</p>
+          </div>
+          <p class="text-lg font-semibold text-blue-600">
+            {{ curso.promedio|floatformat:2 }}
+          </p>
+        </div>
+        {% empty %}
+        <p class="text-gray-500">No hay datos disponibles</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Distribución de Calificaciones -->
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+      Distribución de Calificaciones
+    </h2>
+    <div class="space-y-4">
+      {% for item in distribucion %}
+      <div class="flex items-center">
+        <div class="w-24 text-sm text-gray-600">
+          {{ item.calificacion|floatformat:1 }}
+        </div>
+        <div class="flex-1">
+          <div class="h-6 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              class="h-full bg-blue-600"
+              style="
+                width: '{% widthratio item.total total_evaluaciones 100 %}%';
+              "
+            ></div>
+          </div>
+        </div>
+        <div class="w-16 text-right text-sm text-gray-600">
+          {{ item.total }}
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-gray-500">No hay datos disponibles</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

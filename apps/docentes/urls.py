@@ -1,11 +1,11 @@
 from django.urls import path
 from . import views
 
-app_name = 'docentes'
+app_name = 'docente'
 
 urlpatterns = [
-    path('dashboard/', views.dashboard_docente, name='dashboard'),
-    path('perfil/', views.perfil_docente, name='perfil'),
-    path('editar-perfil/', views.editar_perfil_docente, name='editar_perfil'),
-    path('logout/', views.logout_view, name='logout'),
+    path('bienvenido_docente/<uuid:usuario_id>/', views.bienvenido_docente, name='bienvenido_docente'),
+    path('perfil_docente/<uuid:usuario_id>/', views.perfil_docente, name='perfil_docente'),
+    path('ver_recomendaciones/<uuid:usuario_id>/', views.ver_recomendaciones, name='ver_recomendaciones'),
+    path('ver_evaluacion/<uuid:usuario_id>/' , views.ver_evaluacion, name='ver_evaluacion')
 ]

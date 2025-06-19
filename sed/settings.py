@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -63,14 +62,14 @@ ROOT_URLCONF = "sed.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -85,13 +84,22 @@ WSGI_APPLICATION = "sed.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "sistema_evaluacion",
+        "NAME": "test",
         "USER": "postgres",
-        "PASSWORD": "sistema",
+        "PASSWORD": "123456789",
         "HOST": "localhost",
         "PORT": "5432",
     }
 }
+
+# para poder ver el tiempo de respuesta de la base de datos
+DEVSERVER_MODULES = [
+    "devserver.modules.sql.SQLRealTimeModule",  # Muestra consultas SQL en tiempo real
+    "devserver.modules.sql.SQLSummaryModule",  # Resumen de consultas SQL
+    "devserver.modules.profile.ProfileSummaryModule",  # Tiempo que tarda cada vista
+    "devserver.modules.request.SessionInfoModule",  # Información de sesión
+    "devserver.modules.cache.CacheSummaryModule",  # Uso del caché
+]
 
 
 # Password validation
@@ -132,7 +140,5 @@ STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-AUTH_USER_MODEL = 'usuarios.Usuario'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

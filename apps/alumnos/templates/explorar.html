@@ -1,0 +1,57 @@
+{% extends 'base/alumno.html' %} {% block title %} Explorar | SISTEMA DE
+EVALUACION DE DOCENTE {% endblock title %} {% block content %}
+<div class="max-w-3xl mx-auto py-6">
+  <form method="get" class="mb-6 flex">
+    <input
+      type="text"
+      name="q"
+      value="{{ query }}"
+      placeholder="Buscar docente o departamento..."
+      class="flex-1 px-4 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <button
+      type="submit"
+      class="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700"
+    >Buscar</button>
+  </form>
+
+  {% if data %}
+    <div class="grid grid-cols-1 gap-6">
+      {% for entry in data %}
+        <div class="p-4 border rounded-lg bg-white shadow">
+          <h2 class="text-lg font-bold">{{ entry.docente.usuario.nombre }}</h2>
+          <div class="text-gray-600 mb-2">{{ entry.docente.departamento }}</div>
+          <ul>
+            {% for curso_info in entry.cursos %}
+              <li class="mb-2">
+                <div class="font-semibold">{{ curso_info.curso }}</div>
+                <div>
+                  Calificación promedio:
+                  {% if curso_info.promedio %}
+                    <span class="text-blue-700 font-bold">{{ curso_info.promedio|floatformat:2 }}</span>
+                  {% else %}
+                    <span class="text-gray-400">Sin evaluaciones</span>
+                  {% endif %}
+                </div>
+                {# Si quieres mostrar el detalle de respuestas: #}
+                {% if curso_info.respuestas %}
+                  <ul class="ml-4 text-sm text-gray-700">
+                    {% for r in curso_info.respuestas %}
+                      <li>
+                        {{ r.pregunta.pregunta }}:
+                        {{ r.criterio }} ({{ r.puntuacion }} estrellas)
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center text-gray-500 py-10">No se encontraron docentes.</div>
+  {% endif %}
+</div>
+{% endblock %}

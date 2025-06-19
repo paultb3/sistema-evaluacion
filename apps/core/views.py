@@ -1,44 +1,73 @@
-from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from apps.usuarios.models import Usuario
-from apps.docentes.models import Docente
-from apps.alumnos.models import Estudiante
-from apps.comision.models import Comision  # si vas a usarlo
 
-
-def index(request):
-    return render(request, 'core/base.html')  # o el template que quieras mostrar
 
 def login_view(request):
+    
     if request.method == "POST":
         correo = request.POST.get("correo")
         password = request.POST.get("password")
 
+        print(f"Correo recibido: {correo}")
+        print(f"Password recibido: {password}")
+
+        error = None  # Inicializa el error
         try:
+
             usuario = Usuario.objects.get(correo=correo)
+            print(f"Usuario encontrado: {usuario}")
+            print(f"Usuario ID: {usuario.password}")
+            print(f"Usuario Rol: {type(usuario.rol)} {usuario.rol}")
+            if usuario.password == password:
+                # Login exitoso
+                print(f"Usuario ID: {usuario.id}")
 
-            if check_password(password, usuario.password):
-                # ✅ ESTABLECER SESIÓN
-                auth_logout(request)  # limpia sesiones anteriores si existen
-                auth_login(request, usuario)  # 🔥 inicia sesión correctamente
+                if str(usuario.rol) == "comision":
+                    url = reverse(
+                        "comision:bienvenida_comision",
+                        kwargs={"usuario_id": usuario.id },
+                    )
+                    return redirect(url)
+                elif str(usuario.rol) == "profesor":
+                    url = reverse(
+                        "docente:bienvenido_docente",
+                        kwargs={"usuario_id": usuario.id},
+                    )
+                    return redirect(url)
+                elif str(usuario.rol) == "alumno":
+                    url = reverse(
+                        "alumno:bienvenida_alumno",
+                        kwargs={"usuario_id": usuario.id},
+                    )
+                    
 
-                # Redirigir según el rol
-                if hasattr(usuario, 'docente'):
-                    return redirect('docentes:dashboard')
-                elif hasattr(usuario, 'estudiante'):
-                    return redirect('alumnos:dashboard')
-                elif hasattr(usuario, 'comision'):
-                    return redirect(reverse("comision:bienvenida_comision", kwargs={"usuario_id": usuario.id}))
+                    return redirect(url)
                 else:
-                    error = "Tu cuenta no tiene un rol asignado."
-                    return render(request, "core/login.html", {"error": error})
+                    error = "Rol no reconocido. Contacta con el administrador."
             else:
                 error = "Contraseña incorrecta"
+
         except Usuario.DoesNotExist:
             error = "Usuario no encontrado"
 
-        return render(request, "core/login.html", {"form": {}, "error": error})
+        return render(request, "login.html", {"form": {}, "error": error})
 
-    return render(request, "core/login.html", {"form": {}})
+    # Si es GET
+    return render(request, "login.html", {"form": {}})
+
+
+def logout_view(request):
+    print("Cerrando sesión")
+    # Aquí deberías implementar la lógica para cerrar sesión
+    # Por ejemplo, limpiar la sesión del usuario
+    request.session.flush()  # Limpia la sesión actual
+    print("Sesión cerrada correctamente")
+    # Puedes redirigir a una página de inicio o login después de cerrar sesión
+    return redirect("core:dashboard")  # Redirige a la página de login o inicio
+
+
+
+def dashboard_view(request):
+    return render(request, "dashboard_main.html")
