@@ -4,3 +4,4 @@ __pycache__/
 mi_entorno/
 .env
 venv/
+staticfiles/
