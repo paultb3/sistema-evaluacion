@@ -8,6 +8,9 @@ from apps.evaluacion.models import (
     Respuesta,
     ModuloPreguntas,
     PreguntaModulo,
+    PeriodoEvaluacion,
 )
 
-admin.site.register([Evaluacion, Respuesta, ModuloPreguntas, PreguntaModulo])
+admin.site.register(
+    [Evaluacion, Respuesta, ModuloPreguntas, PreguntaModulo, PeriodoEvaluacion]
+)

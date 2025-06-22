@@ -1,0 +1,126 @@
+{% extends 'base/comision.html' %} {% block title %} Comisión | Seleccionar Tipo
+de Encuesta {% endblock title %} {% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      Seleccionar Tipo de Encuesta
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      Elija entre crear una nueva encuesta o utilizar una existente.
+    </p>
+  </div>
+
+  <div class="grid gap-6 md:grid-cols-2">
+    <!-- Opción 1: Crear encuesta nueva -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-transparent hover:border-blue-200 dark:hover:border-blue-800 p-6"
+    >
+      <div class="flex flex-col h-full">
+        <div
+          class="flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full mb-6 mx-auto"
+        >
+          <i
+            class="fas fa-file-plus text-2xl text-blue-600 dark:text-blue-400"
+          ></i>
+        </div>
+        <h2
+          class="text-xl font-semibold text-center text-gray-900 dark:text-white mb-4"
+        >
+          Crear Nueva Encuesta
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400 text-center mb-6 flex-grow">
+          Diseñe una encuesta desde cero con nuevas preguntas y criterios de
+          evaluación.
+        </p>
+        <div class="mt-4 text-center">
+          <a
+            href="{% url 'comision:realizar_encuesta_periodo' usuario_id periodo.id %}"
+            class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-300 w-full"
+          >
+            <i class="fas fa-plus mr-2"></i>
+            Comenzar Diseño
+          </a>
+        </div>
+
+        <div class="mt-4 text-center">
+          <ul class="text-xs text-gray-500 dark:text-gray-400 space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5"></i>
+              <span>Total flexibilidad en el diseño</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5"></i>
+              <span>Adaptar a nuevos criterios</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5"></i>
+              <span>Crear módulos específicos</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Opción 2: Usar encuesta existente -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-transparent hover:border-green-200 dark:hover:border-green-800 p-6"
+    >
+      <div class="flex flex-col h-full">
+        <div
+          class="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full mb-6 mx-auto"
+        >
+          <i
+            class="fas fa-copy text-2xl text-green-600 dark:text-green-400"
+          ></i>
+        </div>
+        <h2
+          class="text-xl font-semibold text-center text-gray-900 dark:text-white mb-4"
+        >
+          Usar Encuesta Existente
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400 text-center mb-6 flex-grow">
+          Reutilice las preguntas y módulos de periodos anteriores para mantener
+          la coherencia.
+        </p>
+        <div class="mt-4 text-center">
+          <a
+            href="{% url 'comision:realizar_encuesta' usuario_id %}"
+            class="inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-300 w-full"
+          >
+            <i class="fas fa-check mr-2"></i>
+            Usar Existente
+          </a>
+        </div>
+
+        <div class="mt-4 text-center">
+          <ul class="text-xs text-gray-500 dark:text-gray-400 space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5"></i>
+              <span>Ahorro de tiempo en configuración</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5"></i>
+              <span>Mantiene consistencia entre periodos</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5"></i>
+              <span>Resultados comparables históricamente</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón para volver -->
+  <div class="mt-8 text-center">
+    <a
+      href="{% url 'comision:gestionar_periodos' usuario_id %}"
+      class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 text-sm font-medium rounded-lg transition-colors duration-300"
+    >
+      <i class="fas fa-arrow-left mr-2"></i>
+      Volver a Gestión de Periodos
+    </a>
+  </div>
+</div>
+{% endblock content %}

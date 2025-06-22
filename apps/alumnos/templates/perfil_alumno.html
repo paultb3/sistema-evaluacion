@@ -109,6 +109,26 @@ Docente{% endblock %} {% block content %}
             Activo
           </div>
         </div>
+
+        <div class="group">
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400"
+            >Curso</label
+          >          <div class="space-y-2">
+            {% if cursos %}
+              {% for curso in cursos %}
+              <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 mb-2">
+                <i class="fas fa-book-open mr-2"></i>
+                {{ curso.codigo }} - {{ curso.nombre }}
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                Sin cursos matriculados
+              </div>
+            {% endif %}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -134,9 +154,8 @@ Docente{% endblock %} {% block content %}
 
       <div
         class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 text-center hover-scale"
-      >
-        <div class="text-3xl font-bold text-primary mb-2">
-          {{ cursos_count|default:"0" }}
+      >        <div class="text-3xl font-bold text-primary mb-2">
+          {{ cursos_evaluados|default:"0" }}
         </div>
         <p class="text-gray-600 dark:text-gray-400">Cursos Evaluados</p>
       </div>
@@ -144,8 +163,10 @@ Docente{% endblock %} {% block content %}
       <div
         class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 text-center hover-scale"
       >
-        <div class="text-3xl font-bold text-primary mb-2">100%</div>
-        <p class="text-gray-600 dark:text-gray-400">Tasa de Participación</p>
+        <div class="text-3xl font-bold text-primary mb-2">
+          {{ cursos_count|default:"0" }}
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">Cursos Matriculados</p>
       </div>
     </div>
   </div>
