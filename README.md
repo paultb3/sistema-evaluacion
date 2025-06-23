@@ -54,6 +54,7 @@ source mi_entorno/bin/activate
 ```bash
 pip install django
 pip install psycopg2-binary
+pip install python-decouple
 ```
 
 > `psycopg2-binary` es la librería que permite conectar Django con PostgreSQL.

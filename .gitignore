@@ -1,6 +1,29 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Django
 *.sqlite3
-mi_entorno/
-.env
+*.log
+/media/
+staticfiles/
+*.pot
+*.pyc
+*.mo
+
+# Entornos
+env/
 venv/
+mi_entorno/
+
+# VSCode
+.vscode/
+
+# Archivos de entorno
+.env
+.env.*
+
+# Migrations (opcional)
+**/migrations/*.py
+**/migrations/__pycache__/
