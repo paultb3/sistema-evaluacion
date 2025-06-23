@@ -1,0 +1,894 @@
+{% extends 'base/alumno.html' %} {% block title %} Evaluacion de Docente |
+SISTEMA DE EVALUACION A DOCENTE{% endblock title %} 
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+  <!-- Header -->  {% if not periodo_activo %}
+  <div class="bg-red-100 border-l-4 border-red-500 p-4 mb-8 rounded-lg">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <div class="ml-3">
+        <p class="text-lg font-medium text-red-800">Periodo de evaluación finalizado</p>
+        <p class="text-red-700 mt-1">
+          No se pueden realizar evaluaciones en este momento. El formulario está deshabilitado.
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  
+  <div
+    class="bg-white rounded-xl shadow-lg p-8 mb-8 text-center border-t-4 border-blue-500"
+  >
+    <div class="mb-4">
+      <div
+        class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4"
+      >
+        <svg
+          class="w-8 h-8 text-white"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        Evaluación de Docente
+      </h1>
+      <p class="text-gray-600 text-lg">Sistema de Evaluación Académica</p>
+
+      {% for ev in periodo %}
+        <p class="text-gray-500 text-sm mt-2">
+          Periodo: {{ ev.nombre }} - Fecha de Inicio: {{ ev.fecha_inicio }} -
+          Fecha de Fin: {{ ev.fecha_fin }}
+
+        {% if ev.estado == 'activo' and ev.fecha_inicio <= now and ev.fecha_fin >= now %}
+          <span class="text-green-600 font-semibold"> (Activo)</span>
+        {% elif ev.estado == 'inactivo' or ev.fecha_fin < now %}
+          <span class="text-red-600 font-semibold"> (Inactivo)</span>
+        {% else %}
+          <span class="text-yellow-600 font-semibold"> ({{ ev.estado }})</span>
+        {% endif %}
+          
+        </p>
+      {% endfor %}
+      </p>
+      
+      <!-- Periodo de evaluación inactivo mensaje -->
+      {% if not periodo_activo %}
+      <div class="mt-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium">
+              El periodo de evaluación no está activo actualmente. No se pueden enviar evaluaciones.
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Student Info -->
+  <div
+    class="bg-white rounded-xl shadow-md p-6 mb-8 border-l-4 border-green-500"
+  >
+    <div class="flex items-center mb-4">
+      <div
+        class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3"
+      >
+        <svg
+          class="w-5 h-5 text-green-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-800">
+        Información del Estudiante
+      </h3>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="flex items-center">
+        <span class="font-medium text-gray-700 mr-2">Nombre:</span>
+        <span class="text-gray-900">{{ alumno.usuario.nombre }}</span>
+      </div>
+      <div class="flex items-center">
+        <span class="font-medium text-gray-700 mr-2">Codigo:</span>
+        <span class="text-gray-900 font-mono">{{ alumno.codigo }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+  <div class="mb-8 space-y-3">
+    {% for message in messages %}
+    <div
+      class="{% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-800{% elif message.tags == 'error' %}bg-red-50 border-red-200 text-red-800{% else %}bg-blue-50 border-blue-200 text-blue-800{% endif %} border rounded-lg p-4 flex items-center"
+    >
+      <div class="flex-shrink-0 mr-3">
+        {% if message.tags == 'success' %}
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+        {% elif message.tags == 'error' %}
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+        {% else %}
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+        {% endif %}
+      </div>
+      <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <!-- Form -->  <form method="post" id="evaluacionForm" class="space-y-8" {% if not periodo_activo %}onsubmit="return false;"{% endif %}>
+    {% csrf_token %}
+    
+    <!-- Hidden input to store periodo_activo state for JavaScript -->
+    <input type="hidden" id="periodoActivo" value="{% if periodo_activo %}true{% else %}false{% endif %}">
+    
+    {% if not periodo_activo %}
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            <strong>Atención:</strong> El formulario está deshabilitado porque el periodo de evaluación no está activo.
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endif %}<!-- Course and Teacher Selection -->
+    <div class="bg-white rounded-xl shadow-md p-6 space-y-6">
+      <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+        <div
+          class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3"
+        >
+          <svg
+            class="w-4 h-4 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            ></path>
+          </svg>
+        </div>
+        Selección de Curso y Docente
+      </h3>
+
+      {% if cursos_disponibles %}      <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <label for="curso_id" class="block text-sm font-medium text-gray-700"
+            >Seleccionar Curso</label
+          >          <select
+            name="curso_id"
+            id="curso_id"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white {% if not periodo_activo %}opacity-60 cursor-not-allowed{% endif %}"
+            {% if not periodo_activo %}disabled{% endif %}
+          >
+            <option value="">-- Seleccione un curso --</option>
+            {% for curso in cursos_disponibles %}
+            <option
+              value="{{ curso.id }}"
+              data-docente-id="{{ curso.docente.pk }}"
+              data-docente-nombre="{{ curso.docente }}"
+            >
+              {{ curso.codigo }} - {{ curso.nombre }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      {% else %}
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-yellow-700">
+              No estás matriculado en ningún curso actualmente. Solo puedes evaluar a docentes de cursos en los que estés matriculado.
+            </p>
+          </div>
+        </div>      </div>
+      {% endif %}      {% if cursos_disponibles %}
+        <div class="space-y-2">
+          <label
+            for="docente_id"
+            class="block text-sm font-medium text-gray-700"
+            >Docente</label
+          >          <select
+            name="docente_id"
+            id="docente_id"
+            required
+            disabled
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 disabled:opacity-50 {% if not periodo_activo %}cursor-not-allowed{% endif %}"
+          >
+            <option value="">-- Primero seleccione un curso --</option>
+          </select>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    
+    {% if cursos_disponibles %}
+    <!-- Módulos y Preguntas -->
+    {% for modulo, preguntas in modulo_dict.items %}
+    <div class="bg-white rounded-xl shadow-md overflow-hidden transform transition-all hover:shadow-lg">
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6">
+        <h3 class="text-xl font-semibold flex items-center">
+          <div
+            class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              ></path>
+            </svg>
+          </div>
+          {{ modulo.nombre }}
+        </h3>
+        <p class="text-blue-100 text-sm ml-12 mt-1">Selecciona una calificación para cada pregunta</p>
+      </div>
+
+      <div class="p-6 space-y-6">
+        {% for pregunta in preguntas %}        <div
+          class="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow bg-white"
+        >
+          <div class="mb-4 text-center">
+            <h4 class="text-gray-800 font-medium leading-relaxed text-lg">
+              {{ pregunta.pregunta }}
+            </h4>
+          </div><!-- Sistema de calificación por estrellas -->
+          <div class="flex flex-col items-center">
+            <div class="star-rating">
+              <div class="flex items-center justify-center my-4">
+                <div class="flex space-x-1">
+                  {% for value in "12345" %}
+                  <label class="{% if not periodo_activo %}cursor-not-allowed opacity-60{% else %}cursor-pointer{% endif %}">                    <input
+                      type="radio"
+                      name="pregunta_{{ pregunta.id_pregunta }}"
+                      value="{{ value }}"
+                      required
+                      class="hidden star-input"
+                      data-rating="{{ value }}"
+                      data-question="{{ pregunta.id_pregunta }}"
+                      {% if not periodo_activo %}disabled{% endif %}
+                    />
+                    <svg class="w-10 h-10 star-svg {% if not periodo_activo %}opacity-60{% endif %}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>              <div class="rating-text text-center font-medium text-sm mt-1 h-6" id="rating-text-{{ pregunta.id_pregunta }}">
+                {% if periodo_activo %}Selecciona una calificación{% else %}Evaluación no disponible{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>    {% endfor %}
+    {% endif %}
+
+    <!-- Comentario General -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+        <div
+          class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3"
+        >
+          <svg
+            class="w-4 h-4 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+            ></path>
+          </svg>
+        </div>
+        Comentario General
+      </h3>
+      <div class="space-y-2">        <textarea
+          name="comentario_general"
+          id="comentario_general"
+          rows="4"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {% if not periodo_activo %}opacity-60 cursor-not-allowed{% endif %}"
+          placeholder="Escriba aquí sus comentarios generales sobre el docente y el curso..."
+          {% if not periodo_activo %}disabled{% endif %}
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">        <button
+          type="submit"
+          class="px-8 py-3 {% if not periodo_activo %}bg-gray-400 cursor-not-allowed{% else %}bg-blue-600 hover:bg-blue-700{% endif %} text-white font-semibold rounded-lg shadow-md transform {% if periodo_activo %}hover:scale-105{% endif %} transition-all duration-200 flex items-center justify-center"
+          {% if not periodo_activo %}disabled{% endif %}
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+            ></path>
+          </svg>
+          Enviar Evaluación
+        </button>
+
+        <button
+          type="button"
+          onclick="history.back()"
+          class="px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transform hover:scale-105 transition-all duration-200 flex items-center justify-center"
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
+          </svg>
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<!-- Loader Overlay -->
+<div id="loaderOverlay" class="loader-overlay">
+  <div class="loader-content">
+    <div class="loader loader-pulse"></div>
+    <div class="loader-text">Procesando evaluación...</div>
+  </div>
+</div>
+
+<style>
+  /* Loader Styles */
+  .loader-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .loader-content {
+    text-align: center;
+  }
+
+  .loader {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+  }
+
+  .loader-text {
+    color: #2563eb;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.5s ease forwards 0.3s;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .loader-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .loader-pulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Estilos para el sistema de calificación por estrellas */
+  .star-rating {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .star-svg {
+    color: #d1d5db;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .star-svg:hover {
+    transform: scale(1.1);
+  }
+
+  /* Clases para las estrellas activas según la calificación */
+  .star-rating-1 .star-svg:nth-child(-n+1),
+  .star-input[data-rating="1"]:checked ~ .star-svg {
+    color: #FBBF24;
+    fill: #FBBF24;
+  }
+
+  .star-rating-2 .star-svg:nth-child(-n+2),
+  .star-input[data-rating="2"]:checked ~ .star-svg {
+    color: #FBBF24;
+    fill: #FBBF24;
+  }
+
+  .star-rating-3 .star-svg:nth-child(-n+3),
+  .star-input[data-rating="3"]:checked ~ .star-svg {
+    color: #FBBF24;
+    fill: #FBBF24;
+  }
+
+  .star-rating-4 .star-svg:nth-child(-n+4),
+  .star-input[data-rating="4"]:checked ~ .star-svg {
+    color: #FBBF24;
+    fill: #FBBF24;
+  }
+
+  .star-rating-5 .star-svg:nth-child(-n+5),
+  .star-input[data-rating="5"]:checked ~ .star-svg {
+    color: #FBBF24;
+    fill: #FBBF24;
+  }
+
+  /* Efectos hover para las estrellas */
+  label:hover .star-svg,
+  label:hover ~ label .star-svg {
+    color: #FBBF24;
+    fill: #FBBF24;
+  }
+
+  .rating-text {
+    transition: all 0.3s ease;
+  }
+
+  /* Mejorar aspecto de los contenedores de preguntas */
+  .border {
+    transition: all 0.3s ease;
+  }
+  .border:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-color: #3b82f6;
+  }
+</style>
+
+<script>
+  // Función mejorada para mostrar el loader
+  function showLoader(message = "Procesando evaluación...") {
+    const loader = document.getElementById("loaderOverlay");
+    const loaderText = loader.querySelector(".loader-text");
+
+    if (loader && loaderText) {
+      loaderText.textContent = message;
+      loader.style.display = "flex";
+      document.body.style.overflow = "hidden";
+
+      setTimeout(() => {
+        loader.classList.add("show");
+      }, 10);
+    }
+  }
+
+  // Actualizar docente cuando se selecciona un curso
+  document.getElementById("curso_id").addEventListener("change", function () {
+    const docenteSelect = document.getElementById("docente_id");
+    const selectedOption = this.options[this.selectedIndex];
+
+    // Limpiar opciones anteriores
+    docenteSelect.innerHTML =
+      '<option value="">-- Seleccione un docente --</option>';
+
+    if (selectedOption.value) {
+      const docenteId = selectedOption.getAttribute("data-docente-id");
+      const docenteNombre = selectedOption.getAttribute("data-docente-nombre");
+
+      // Agregar la opción del docente
+      const option = document.createElement("option");
+      option.value = docenteId;
+      option.textContent = docenteNombre;
+      option.selected = true;
+      docenteSelect.appendChild(option);
+
+      docenteSelect.disabled = false;
+      docenteSelect.classList.remove("bg-gray-50", "disabled:opacity-50");
+      docenteSelect.classList.add("bg-white");
+    } else {
+      docenteSelect.disabled = true;
+      docenteSelect.classList.add("bg-gray-50", "disabled:opacity-50");
+      docenteSelect.classList.remove("bg-white");
+    }
+  });  // Validación del formulario
+  document
+    .getElementById("evaluacionForm")
+    .addEventListener("submit", function (e) {
+      // Verificar si el periodo está activo
+      const periodoActivoElement = document.getElementById('periodoActivo');
+      const periodoActivo = periodoActivoElement ? (periodoActivoElement.value === 'true') : false;
+      
+      if (!periodoActivo) {
+        e.preventDefault();
+        showAlert(
+          "El periodo de evaluación no está activo. No se pueden enviar evaluaciones en este momento.",
+          "error"
+        );
+        return false;
+      }
+      
+      const curso = document.getElementById("curso_id").value;
+      const docente = document.getElementById("docente_id").value;
+
+      if (!curso || !docente) {
+        e.preventDefault();
+        showAlert(
+          "Por favor seleccione un curso y docente antes de enviar la evaluación.",
+          "error"
+        );
+        return false;
+      }
+
+      // Verificar que todas las preguntas tengan respuesta
+      const preguntas = document.querySelectorAll('[name^="pregunta_"]');
+      const preguntasUnicas = new Set();
+
+      preguntas.forEach(function (input) {
+        preguntasUnicas.add(input.name);
+      });
+
+      let todasRespondidas = true;
+      preguntasUnicas.forEach(function (nombrePregunta) {
+        const radios = document.querySelectorAll(
+          '[name="' + nombrePregunta + '"]'
+        );
+        let respondida = false;
+
+        radios.forEach(function (radio) {
+          if (radio.checked) {
+            respondida = true;
+          }
+        });
+
+        if (!respondida) {
+          todasRespondidas = false;
+        }
+      });
+
+      if (!todasRespondidas) {
+        e.preventDefault();
+        showAlert(
+          "Por favor responda todas las preguntas antes de enviar la evaluación.",
+          "error"
+        );
+        return false;
+      }
+
+      if (
+        confirm(
+          "¿Está seguro de enviar esta evaluación? Una vez enviada no podrá modificarla."
+        )
+      ) {
+        showLoader();
+        return true;
+      }
+      return false;
+    });
+
+  // Agregar loader al botón de cancelar
+  document
+    .querySelector('button[onclick="history.back()"]')
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      showLoader();
+      history.back();
+    });
+
+  // Función para mostrar alertas personalizadas
+  function showAlert(message, type) {
+    const alertContainer = document.createElement("div");
+    alertContainer.className = `fixed top-4 right-4 z-50 max-w-md p-4 border rounded-lg shadow-lg transform transition-all duration-300 ${
+      type === "error"
+        ? "bg-red-50 border-red-200 text-red-800"
+        : "bg-blue-50 border-blue-200 text-blue-800"
+    }`;
+
+    alertContainer.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 mr-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            ${
+                              type === "error"
+                                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+                                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+                            }
+                        </svg>
+                    </div>
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-auto pl-3">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+    document.body.appendChild(alertContainer);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      if (alertContainer.parentElement) {
+        alertContainer.remove();
+      }
+    }, 5000);
+  }
+  // Inicialización y manejo del sistema de calificación por estrellas
+  document.addEventListener("DOMContentLoaded", function() {
+    // Verificar si el periodo está activo
+    const periodoActivoElement = document.getElementById('periodoActivo');
+    const periodoActivo = periodoActivoElement ? (periodoActivoElement.value === 'true') : false;
+    
+    // Si el periodo no está activo, mostrar mensaje en cada calificación
+    if (!periodoActivo) {
+      document.querySelectorAll('.rating-text').forEach(element => {
+        element.textContent = "Evaluación no disponible";
+        element.classList.add('text-red-500');
+      });
+      
+      // Mostrar mensaje permanente que informe sobre el periodo finalizado
+      showAlert("El periodo de evaluación ha finalizado. No se pueden enviar evaluaciones.", "error");
+    }
+    
+    // Textos descriptivos para las calificaciones
+    const ratingTexts = {
+      1: "Muy Deficiente",
+      2: "Deficiente",
+      3: "Regular", 
+      4: "Bueno",
+      5: "Excelente"
+    };
+
+    // Configurar eventos para todas las estrellas
+    document.querySelectorAll('.star-input').forEach(input => {
+      const rating = input.getAttribute('data-rating');
+      const questionId = input.getAttribute('data-question');
+      
+      // Solo aplicar si el periodo está activo
+      if (periodoActivo) {
+        // Evento al cambiar la selección
+        input.addEventListener('change', function() {
+          // Actualizar texto de calificación
+          const textElement = document.getElementById(`rating-text-${questionId}`);
+          if (textElement) {
+            textElement.textContent = ratingTexts[rating];
+            
+            // Añadir clase para efecto visual
+            textElement.classList.add('text-blue-600', 'font-semibold');
+          }
+          
+          // Actualizar estrellas visuales
+          const starsContainer = this.closest('.star-rating');
+          
+          // Primero, reiniciar todas las estrellas
+          starsContainer.querySelectorAll('.star-svg').forEach(star => {
+            star.style.color = '#d1d5db';
+            star.style.fill = 'none';
+          });
+          
+          // Luego, colorear las estrellas hasta la seleccionada
+          const stars = starsContainer.querySelectorAll('.star-svg');
+          for (let i = 0; i < rating; i++) {
+            if (stars[i]) {
+              stars[i].style.color = '#FBBF24';
+              stars[i].style.fill = '#FBBF24';
+            }
+          }
+          
+          // Efecto visual en el contenedor de la pregunta
+          const questionContainer = this.closest('.border');
+          questionContainer.classList.add('ring-2', 'ring-blue-300');
+          setTimeout(() => {
+            questionContainer.classList.remove('ring-2', 'ring-blue-300');
+          }, 500);
+        });
+      }
+    });
+
+    // Hover effects para las estrellas (solo si el periodo está activo)
+    if (periodoActivo) {
+      document.querySelectorAll('.star-rating label').forEach(label => {
+        const starSvg = label.querySelector('.star-svg');
+        const rating = label.querySelector('input').getAttribute('data-rating');
+        const questionId = label.querySelector('input').getAttribute('data-question');
+        const starsContainer = label.closest('.star-rating');
+        
+        // Hover enter
+        label.addEventListener('mouseenter', function() {
+          // Actualizar texto temporalmente
+          const textElement = document.getElementById(`rating-text-${questionId}`);
+          if (textElement) {
+            textElement.textContent = ratingTexts[rating];
+          }
+          
+          // Efecto visual en las estrellas al hacer hover
+          const stars = starsContainer.querySelectorAll('.star-svg');
+          for (let i = 0; i < stars.length; i++) {
+            if (i < rating) {
+              stars[i].style.color = '#FBBF24';
+              stars[i].style.fill = '#FBBF24';
+            } else {
+              stars[i].style.color = '#d1d5db';
+              stars[i].style.fill = 'none';
+            }
+          }
+        });
+        
+        // Restaurar al salir del hover
+        starsContainer.addEventListener('mouseleave', function() {
+          const selectedRating = this.querySelector('input:checked');
+          const textElement = document.getElementById(`rating-text-${questionId}`);
+          
+          if (!selectedRating) {
+            // Restaurar texto
+            if (textElement) {
+              textElement.textContent = 'Selecciona una calificación';
+              textElement.classList.remove('text-blue-600', 'font-semibold');
+            }
+            
+            // Restaurar estrellas
+            this.querySelectorAll('.star-svg').forEach(star => {
+              star.style.color = '#d1d5db';
+              star.style.fill = 'none';
+            });
+          } else {
+            // Mostrar la calificación seleccionada
+            const selectedValue = selectedRating.value;
+            if (textElement) {
+              textElement.textContent = ratingTexts[selectedValue];
+              textElement.classList.add('text-blue-600', 'font-semibold');
+            }
+            
+            // Actualizar estrellas según la selección
+            const stars = this.querySelectorAll('.star-svg');
+            for (let i = 0; i < stars.length; i++) {              if (i < selectedValue) {
+                stars[i].style.color = '#FBBF24';
+                stars[i].style.fill = '#FBBF24';
+              } else {
+                stars[i].style.color = '#d1d5db';
+                stars[i].style.fill = 'none';
+              }
+            }
+          }
+        });
+      });
+    }
+  });
+</script>
+{% endblock %}

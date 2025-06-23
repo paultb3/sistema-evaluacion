@@ -1,0 +1,85 @@
+{% extends 'base/docente.html' %} {% block title %}Recomendaciones | Docente
+UNAS TINGO{% endblock title %} {% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+  <h1 class="text-3xl font-bold text-emerald-700">💡 Recomendaciones</h1>
+
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <p class="text-gray-600 mb-6">
+      Basado en tus evaluaciones, te presentamos las siguientes recomendaciones
+      para mejorar tu desempeño docente:
+    </p>
+
+    <div class="space-y-6">
+      {% for rec in recomendaciones %}
+      <div class="border-b pb-6 last:border-b-0 last:pb-0">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">{{ rec.modulo }}</h2>
+          <div class="flex items-center gap-2">
+            <span
+              class="text-sm font-medium {% if rec.nivel == 'Bajo' %}text-red-600{% elif rec.nivel == 'Medio' %}text-yellow-600{% else %}text-emerald-600{% endif %}"
+            >
+              {{ rec.nivel }}
+            </span>
+            <div class="flex text-yellow-400">
+              {% for i in "12345" %} {% if forloop.counter <= rec.puntuacion %}
+              <i class="fas fa-star"></i>
+              {% else %}
+              <i class="far fa-star"></i>
+              {% endif %} {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          {% for recomendacion in rec.recomendaciones %}
+          <div class="flex items-start gap-3">
+            <div
+              class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-1"
+            >
+              <i class="fas fa-check text-sm text-emerald-600"></i>
+            </div>
+            <p class="text-gray-700">{{ recomendacion }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Sección de recursos adicionales -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Recursos Adicionales</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <a
+        href="#"
+        class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="fas fa-book text-emerald-600"></i>
+        <span class="text-gray-700">Guía de Buenas Prácticas Docentes</span>
+      </a>
+      <a
+        href="#"
+        class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="fas fa-video text-emerald-600"></i>
+        <span class="text-gray-700">Tutoriales de Metodología</span>
+      </a>
+      <a
+        href="#"
+        class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="fas fa-users text-emerald-600"></i>
+        <span class="text-gray-700">Comunidad de Docentes</span>
+      </a>
+      <a
+        href="#"
+        class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+      >
+        <i class="fas fa-calendar text-emerald-600"></i>
+        <span class="text-gray-700">Próximos Talleres</span>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock content %}

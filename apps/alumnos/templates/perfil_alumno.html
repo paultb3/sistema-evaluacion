@@ -1,0 +1,190 @@
+{% extends 'base/alumno.html' %} {% block title %}Perfil | Sistema de Evaluación
+Docente{% endblock %} {% block content %}
+<div class="space-y-8 animate-fade-in">
+  <!-- Encabezado del perfil -->
+  <div
+    class="flex items-center gap-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover-scale card"
+  >
+    <div class="relative">
+      <div
+        class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center"
+      >
+        <i class="fas fa-user-circle text-5xl text-primary"></i>
+      </div>
+      <div
+        class="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center"
+      >
+        <i class="fas fa-check text-white text-sm"></i>
+      </div>
+    </div>
+
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">
+        {{ alumno.usuario.nombre }}
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+        <i class="fas fa-graduation-cap"></i>
+        Estudiante Activo
+      </p>
+    </div>
+  </div>
+
+  <!-- Información del perfil -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Información personal -->
+    <div class="card p-6">
+      <h2
+        class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center gap-2"
+      >
+        <i class="fas fa-user text-primary"></i>
+        Información Personal
+      </h2>
+
+      <div class="space-y-6">
+        <div class="group">
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400"
+            >Nombre completo</label
+          >
+          <p class="text-gray-800 dark:text-white text-lg font-medium">
+            {{ alumno.usuario.nombre }}
+          </p>
+        </div>
+
+        <div class="group">
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400"
+            >Correo institucional</label
+          >
+          <p
+            class="text-gray-800 dark:text-white text-lg font-medium flex items-center gap-2"
+          >
+            <i class="fas fa-envelope text-primary"></i>
+            {{ alumno.usuario.correo }}
+          </p>
+        </div>
+
+        <div class="group">
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400"
+            >Código de alumno</label
+          >
+          <p
+            class="text-gray-800 dark:text-white text-lg font-medium flex items-center gap-2"
+          >
+            <i class="fas fa-id-card text-primary"></i>
+            {{ alumno.codigo }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información académica -->
+    <div class="card p-6">
+      <h2
+        class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center gap-2"
+      >
+        <i class="fas fa-graduation-cap text-primary"></i>
+        Información Académica
+      </h2>
+
+      <div class="space-y-6">
+        <div class="group">
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400"
+            >Carrera</label
+          >
+          <p
+            class="text-gray-800 dark:text-white text-lg font-medium flex items-center gap-2"
+          >
+            <i class="fas fa-book text-primary"></i>
+            {{ alumno.carrera }}
+          </p>
+        </div>
+
+        <div class="group">
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400"
+            >Estado</label
+          >
+          <div
+            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+          >
+            <i class="fas fa-circle text-xs mr-2"></i>
+            Activo
+          </div>
+        </div>
+
+        <div class="group">
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400"
+            >Curso</label
+          >          <div class="space-y-2">
+            {% if cursos %}
+              {% for curso in cursos %}
+              <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 mb-2">
+                <i class="fas fa-book-open mr-2"></i>
+                {{ curso.codigo }} - {{ curso.nombre }}
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                Sin cursos matriculados
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="card p-6">
+    <h2
+      class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center gap-2"
+    >
+      <i class="fas fa-chart-bar text-primary"></i>
+      Estadísticas de Participación
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div
+        class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 text-center hover-scale"
+      >
+        <div class="text-3xl font-bold text-primary mb-2">
+          {{ evaluaciones_count|default:"0" }}
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">Evaluaciones Realizadas</p>
+      </div>
+
+      <div
+        class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 text-center hover-scale"
+      >        <div class="text-3xl font-bold text-primary mb-2">
+          {{ cursos_evaluados|default:"0" }}
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">Cursos Evaluados</p>
+      </div>
+
+      <div
+        class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 text-center hover-scale"
+      >
+        <div class="text-3xl font-bold text-primary mb-2">
+          {{ cursos_count|default:"0" }}
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">Cursos Matriculados</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acciones rápidas -->
+  <div class="flex gap-4 justify-center">
+    <a
+      href="{% url 'alumno:evaluaciones' usuario_id=usuario_id %}"
+      class="btn btn-primary flex items-center gap-2"
+    >
+      <i class="fas fa-clipboard-check"></i>
+      Realizar nueva evaluación
+    </a>
+
+    <button class="btn btn-secondary flex items-center gap-2">
+      <i class="fas fa-download"></i>
+      Descargar historial
+    </button>
+  </div>
+</div>
+{% endblock %}
