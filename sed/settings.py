@@ -84,9 +84,9 @@ WSGI_APPLICATION = "sed.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "test",
+        "NAME": "sistema_evaluacion",
         "USER": "postgres",
-        "PASSWORD": "123456789",
+        "PASSWORD": "sistema",
         "HOST": "localhost",
         "PORT": "5432",
     }

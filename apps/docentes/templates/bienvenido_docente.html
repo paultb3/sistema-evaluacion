@@ -1,42 +1,63 @@
-{% extends 'base/docente.html' %} {% block title %} Bienvenida | Dashboard
-Docente | UNAS {% endblock title %} {% block content %}
-<div class="max-w-5xl mx-auto mt-10 px-6">
-  <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
-    <h1 class="text-3xl font-bold text-emerald-700 mb-4">
-      Bienvenido(a) al Módulo de Docente
-    </h1>
+{% extends 'base/docente.html' %}
 
-    <p class="text-gray-700 text-lg mb-6">
-      Este panel forma parte del
-      <strong>Sistema de Evaluación Docente (SED)</strong> de la
-      <strong>Universidad Nacional Agraria de la Selva</strong>. Desde aquí
-      podrás gestionar las encuestas de evaluación docente, revisar reportes y
-      acceder a funciones clave para asegurar la calidad académica
-      institucional.
-    </p>
+{% block title %}
+Bienvenida | Dashboard Docente | UNAS
+{% endblock title %}
 
-    <hr class="my-6 border-t border-gray-300" />
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8 space-y-10 text-gray-800 dark:text-white">
 
-    <section class="space-y-4">
-      <h2 class="text-2xl font-semibold text-gray-800">
-        📋 Funciones disponibles
-      </h2>
-      <ul class="list-disc list-inside text-gray-700">
-        <li>Gestionar preguntas de evaluación por módulo.</li>
-        <li>Revisar resultados de encuestas realizadas por estudiantes.</li>
-        <li>Acceder a reportes consolidados por docente y asignatura.</li>        
-      </ul>
-
-      <h2 class="text-2xl font-semibold text-gray-800 mt-8">
-        📌 Normas y recomendaciones
-      </h2>
-      <p class="text-gray-700">
-        Recuerda que el proceso de evaluación se rige por los principios de
-        <strong>objetividad, confidencialidad y transparencia</strong>. Toda
-        información recopilada debe ser tratada con responsabilidad y con fines
-        exclusivamente académicos.
-      </p>
-    </section>
+  <!-- 👋 Saludo -->
+  <div>
+    <h1 class="text-3xl font-bold text-emerald-600">👋 ¡Hola, {{ usuario.nombre }}!</h1>
+    <p class="text-gray-600 dark:text-gray-300 mt-1">Este es tu resumen de desempeño actual en el sistema.</p>
   </div>
+
+  <!-- 📊 Resumen -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow text-center">
+      <p class="text-sm text-gray-500">Evaluaciones Totales</p>
+      <p class="text-2xl font-bold">{{ evaluaciones_totales }}</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow text-center">
+      <p class="text-sm text-gray-500">Promedio General</p>
+      <p class="text-2xl font-bold text-emerald-600">{{ promedio_general }}</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow text-center">
+      <p class="text-sm text-gray-500">Última Evaluación</p>
+      <p class="text-2xl font-bold">{{ ultima_evaluacion }}</p>
+    </div>
+  </div>
+
+  <!-- 🏆 Top Docentes -->
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+    <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">🏆 Top Docentes del Sistema</h2>
+    <ul class="space-y-4">
+      {% for d in top_docentes %}
+      <li class="flex items-center justify-between bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
+            {{ d.nombre|slice:":1" }}
+          </div>
+          <div>
+            <div class="font-semibold">{{ d.nombre }}</div>
+            <div class="text-sm text-gray-500">{{ d.correo }}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          {% if forloop.counter == 1 %}
+            <span class="text-yellow-400 text-xl">🥇</span>
+          {% elif forloop.counter == 2 %}
+            <span class="text-gray-400 text-xl">🥈</span>
+          {% elif forloop.counter == 3 %}
+            <span class="text-orange-500 text-xl">🥉</span>
+          {% endif %}
+          <span class="text-lg font-semibold">{{ d.promedio }}</span>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
 </div>
 {% endblock content %}
