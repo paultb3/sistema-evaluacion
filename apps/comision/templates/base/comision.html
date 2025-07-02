@@ -152,7 +152,7 @@
               class="nav-link flex items-center gap-2"
             >
               <i class="fas fa-pen-to-square"></i>
-              <span>Realizar Encuesta</span>
+              <span>Administración</span>
             </a>
 
             <!-- Dropdown Reportes -->
@@ -175,13 +175,13 @@
                   href="{% url 'comision:reporte_docente' usuario_id=usuario_id %}"
                   class="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  Por Docente
+                  Docentes
                 </a>
                 <a
                   href="{% url 'comision:reporte_curso' usuario_id=usuario_id %}"
                   class="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  Por Curso
+                  Cursos
                 </a>
               </div>
             </div>
@@ -376,13 +376,6 @@
       {% endif %} {% block content %}{% endblock %}
     </main>
 
-    <!-- Loader -->
-    <div id="loaderOverlay" class="loader-overlay">
-      <div class="loader-content">
-        <div class="loader"></div>
-        <div class="loader-text">Cargando...</div>
-      </div>
-    </div>
 
     <script>
       // Variables
