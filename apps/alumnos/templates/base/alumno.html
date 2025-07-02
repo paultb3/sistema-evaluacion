@@ -38,6 +38,9 @@
     <!-- Estilos base -->
     {% include 'base/styles.html' %}
 
+    <!-- Hidden field to store usuario_id for JavaScript -->
+    <input type="hidden" id="current-usuario-id" value="{{ usuario_id.id }}" />
+
     <!-- Tipografía -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
@@ -87,7 +90,8 @@
             >
               <i class="fas fa-user"></i>
               <span>Perfil</span>
-            </a>            <a
+            </a>
+            <a
               href="{% url 'alumno:evaluaciones' usuario_id=usuario_id %}"
               class="nav-link flex items-center gap-2"
             >
@@ -117,10 +121,13 @@
 
             <!-- Notificaciones -->
             <button
+              id="notificaciones-btn"
+              data-usuario-id="{{ usuario_id.id }}"
               class="p-2 rounded-full hover:bg-primary-dark dark:hover:bg-gray-700 transition-colors duration-200 relative"
             >
               <i class="fas fa-bell"></i>
               <span
+                id="notification-count"
                 class="absolute -top-1 -right-1 bg-red-500 text-xs w-4 h-4 flex items-center justify-center rounded-full"
                 >2</span
               >
@@ -221,7 +228,8 @@
             >
               <i class="fas fa-user"></i>
               <span>Perfil</span>
-            </a>            <a
+            </a>
+            <a
               href="{% url 'alumno:evaluaciones' usuario_id=usuario_id %}"
               class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             >
@@ -450,6 +458,49 @@
             }
        });
        */
+
+      // Script para asegurar que el ID de usuario sea correcto
+      document.addEventListener("DOMContentLoaded", function () {
+        // Comprobar si el usuario_id es válido
+        const notificacionesBtn = document.getElementById("notificaciones-btn");
+        const hiddenField = document.getElementById("current-usuario-id");
+
+        if (notificacionesBtn) {
+          const usuarioId = notificacionesBtn.getAttribute("data-usuario-id");
+          console.log("Usuario ID en botón de notificaciones:", usuarioId);
+
+          // Verificar si el formato parece un UUID
+          const isValidUuid =
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+              usuarioId
+            );
+
+          if (!isValidUuid && window.location.pathname.includes("/")) {
+            // Intentar extraer un UUID de la URL
+            const uuidPattern =
+              /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+            const matches = window.location.pathname.match(uuidPattern);
+
+            if (matches && matches[0]) {
+              const uuidFromUrl = matches[0];
+              console.log(
+                "Corrigiendo ID de usuario con valor de URL:",
+                uuidFromUrl
+              );
+
+              // Actualizar el botón
+              notificacionesBtn.setAttribute("data-usuario-id", uuidFromUrl);
+
+              // También actualizar el campo oculto si existe
+              if (hiddenField) {
+                hiddenField.value = uuidFromUrl;
+              }
+            }
+          }
+        }
+      });
     </script>
+
+    {% include 'notificaciones/modal.html' %}
   </body>
 </html>

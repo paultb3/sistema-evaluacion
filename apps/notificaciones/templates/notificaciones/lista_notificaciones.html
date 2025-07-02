@@ -1,0 +1,47 @@
+{% extends 'base/alumno.html' %} {% block title %} Notificaciones - SED
+{%endblock %} {% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">Tus Notificaciones</h1>
+
+  <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+    {% if notificaciones %}
+    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+      {% for notificacion in notificaciones %}
+      <li
+        class="p-4 {% if notificacion.estado == 'enviado' %}bg-blue-50 dark:bg-blue-900/20{% endif %}"
+      >
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-medium text-gray-900 dark:text-gray-100">
+              {{ notificacion.nombre }}
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {{ notificacion.tipo }} - Periodo: {{ notificacion.periodo }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+              {{ notificacion.fecha_creacion|date:"d/m/Y H:i" }}
+            </p>
+          </div>
+          {% if notificacion.estado != 'leido' %}
+          <a
+            href="{% url 'notificaciones:marcar_leida' notificacion_id=notificacion.id_notificaciones %}"
+            class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800"
+          >
+            Marcar como leída
+          </a>
+          {% else %}
+          <span class="text-xs text-gray-400">Leída</span>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="p-8 text-center">
+      <i class="fas fa-bell-slash text-4xl text-gray-400 mb-4"></i>
+      <p class="text-gray-600 dark:text-gray-400">No tienes notificaciones</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

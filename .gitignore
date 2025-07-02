@@ -27,3 +27,4 @@ mi_entorno/
 # Migrations (opcional)
 **/migrations/*.py
 **/migrations/__pycache__/
+.scannerwork/

@@ -24,4 +24,8 @@ urlpatterns = [
     path("comision/", include("apps.comision.urls", namespace="comision")),
     path("alumno/", include("apps.alumnos.urls", namespace="alumno")),
     path("docente/", include("apps.docentes.urls", namespace="docente")),
+    path(
+        "notificaciones/",
+        include("apps.notificaciones.urls", namespace="notificaciones"),
+    ),
 ]

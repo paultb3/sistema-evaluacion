@@ -1,0 +1,482 @@
+<!-- Modal de Notificaciones -->
+<div
+  id="notificaciones-modal"
+  class="fixed inset-0 z-50 overflow-y-auto hidden"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div
+    class="flex items-center justify-center min-h-screen p-4 text-center sm:block sm:p-0"
+  >
+    <!-- Fondo oscuro -->
+    <div
+      id="modal-backdrop"
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+    ></div>
+
+    <!-- Modal -->
+    <div
+      class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+    >
+      <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <!-- Encabezado del modal -->
+        <div
+          class="flex justify-between items-center border-b dark:border-gray-700 pb-3"
+        >
+          <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            Notificaciones
+          </h3>
+          <button
+            id="close-modal"
+            type="button"
+            class="text-gray-400 hover:text-gray-500"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Contenido de notificaciones -->
+        <div class="py-4">
+          <ul
+            id="lista-notificaciones"
+            class="divide-y divide-gray-200 dark:divide-gray-700 max-h-64 overflow-y-auto"
+          >
+            <!-- Las notificaciones se cargan aquí con JavaScript -->
+            <li class="notification-loading text-center py-8">
+              <div
+                class="inline-block w-6 h-6 border-2 border-t-primary border-r-primary border-gray-200 dark:border-gray-600 rounded-full animate-spin"
+              ></div>
+              <p class="mt-2 text-gray-600 dark:text-gray-400">
+                Cargando notificaciones...
+              </p>
+            </li>
+          </ul>
+          <div id="no-notifications" class="hidden text-center py-8">
+            <i class="fas fa-bell-slash text-2xl text-gray-400 mb-2"></i>
+            <p class="text-gray-600 dark:text-gray-400">
+              No tienes notificaciones
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer del modal -->
+      <div
+        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse"
+      >
+        <a
+          id="ver-todas-notificaciones"
+          href="#"
+          class="text-primary hover:text-primary-dark text-sm font-medium"
+        >
+          Ver todas las notificaciones
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript para el modal -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const notificacionesBtn = document.getElementById("notificaciones-btn");
+    const notificacionesModal = document.getElementById("notificaciones-modal");
+    const closeModalBtn = document.getElementById("close-modal");
+    const modalBackdrop = document.getElementById("modal-backdrop");
+    const listaNotificaciones = document.getElementById("lista-notificaciones");
+    const noNotifications = document.getElementById("no-notifications");
+
+    // Función para extraer un ID válido de diferentes formatos
+    function extraerIdValido(posibleId) {
+      if (!posibleId) return null;
+
+      // Si es un string que parece un UUID, devolverlo directamente
+      if (typeof posibleId === 'string' &&
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(posibleId)) {
+          return posibleId;
+      }
+
+      // Si parece ser un objeto de Django (usuario_id.id), buscar UUID dentro
+      const objectUuidMatch = String(posibleId).match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
+      if (objectUuidMatch && objectUuidMatch[0]) {
+          return objectUuidMatch[0];
+      }
+
+      return null;
+    }
+
+    // Obtener el ID del usuario de forma segura
+    function obtenerUsuarioId() {
+      // Verificar múltiples fuentes para el ID de usuario
+      let usuarioId = null;
+
+      // 1. Verificar si hay un elemento HTML con el ID de usuario (más confiable)
+      const usuarioElement = document.getElementById("current-usuario-id");
+      if (usuarioElement) {
+        const valorCampo = usuarioElement.value || usuarioElement.textContent;
+        const idExtraido = extraerIdValido(valorCampo);
+
+        if (idExtraido) {
+          console.log("ID de usuario válido obtenido de campo oculto:", idExtraido);
+          return idExtraido;
+        } else {
+          console.warn("El campo oculto no contiene un UUID válido:", valorCampo);
+        }
+        
+        usuarioId = usuarioElement.value;
+        console.log("ID de usuario obtenido de campo oculto:", usuarioId);
+        // Validar que es un UUID válido (formato aproximado)
+        if (
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            usuarioId
+          )
+        ) {
+          return usuarioId;
+        } else {
+          console.warn(
+            "El ID obtenido no parece ser un UUID válido:",
+            usuarioId
+          );
+        }
+      }
+
+      // 2. Intentar obtener del botón de notificaciones
+      if (notificacionesBtn) {
+        usuarioId = notificacionesBtn.getAttribute("data-usuario-id");
+        console.log("ID de usuario obtenido del botón:", usuarioId);
+        if (
+          usuarioId &&
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            usuarioId
+          )
+        ) {
+          return usuarioId;
+        }
+      }
+
+      // 3. Buscar en la URL, pero solo patrones que parezcan UUIDs
+      const uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+      const matches = window.location.pathname.match(uuidPattern);
+
+      if (matches && matches[0]) {
+        usuarioId = matches[0];
+        console.log("ID de usuario obtenido de URL (patrón UUID):", usuarioId);
+        return usuarioId;
+      }
+
+      // 4. Extraer ID de URL con formato específico para las rutas de la aplicación
+      // Formatos como: /alumno/perfil_alumno/{uuid}/ o /alumno/bienvenido_alumno/{uuid}/
+      const routeMatch = window.location.pathname.match(/\/(alumno|docente|comision)\/[^\/]+\/([^\/]+)\//);
+      if (routeMatch && routeMatch[2] && uuidPattern.test(routeMatch[2])) {
+        usuarioId = routeMatch[2];
+        console.log("ID de usuario obtenido de patrón de ruta:", usuarioId);
+        return usuarioId;
+      }
+
+      console.warn("No se pudo encontrar un ID de usuario válido");
+      return null;
+    }
+
+    // Función para mostrar mensajes de error
+    function mostrarError(mensaje) {
+      listaNotificaciones.innerHTML = `
+                <li class="p-4 text-center">
+                    <p class="text-red-500">${mensaje}</p>
+                    <button class="mt-2 text-blue-600 hover:text-blue-800 text-sm" onclick="cargarNotificaciones()">
+                        Intentar nuevamente
+                    </button>
+                </li>`;
+    }
+
+    // Función para mostrar errores con detalles
+    function mostrarErrorDetallado(titulo, detalle) {
+      listaNotificaciones.innerHTML = `
+                <li class="p-4 text-center">
+                    <p class="text-red-500 font-medium">${titulo}</p>
+                    <p class="text-gray-500 text-sm mt-1">${detalle}</p>
+                    <div class="mt-4 flex justify-center space-x-3">
+                        <button class="text-blue-600 hover:text-blue-800 text-sm px-3 py-1 border border-blue-600 rounded" onclick="cargarNotificaciones()">
+                            Intentar nuevamente
+                        </button>
+                        <button class="text-gray-600 hover:text-gray-800 text-sm px-3 py-1 border border-gray-300 rounded" onclick="window.location.reload()">
+                            Recargar página
+                        </button>
+                    </div>
+                </li>`;
+    }
+
+    // Función para actualizar el contador de notificaciones
+    function actualizarContadorNotificaciones(notificaciones) {
+      const unreadCount = notificaciones.filter(
+        (n) => n.estado !== "leido"
+      ).length;
+      const badgeCount = document.getElementById("notification-count");
+      if (badgeCount) {
+        if (unreadCount > 0) {
+          badgeCount.textContent = unreadCount;
+          badgeCount.classList.remove("hidden");
+        } else {
+          badgeCount.classList.add("hidden");
+        }
+      }
+    }
+
+    // Función para marcar como leída
+    function marcarComoLeida(notifId) {
+      if (!notifId) {
+        console.error("ID de notificación no proporcionado");
+        return;
+      }
+
+      console.log(`Marcando como leída notificación: ${notifId}`);
+
+      fetch(`/notificaciones/marcar-leida/${notifId}/`, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.success) {
+            // Recargar notificaciones
+            console.log("Notificación marcada como leída correctamente");
+            cargarNotificaciones();
+          } else {
+            console.error("Error al marcar como leída:", data);
+            mostrarError("No se pudo marcar la notificación como leída");
+          }
+        })
+        .catch((error) => {
+          console.error("Error marcando notificación:", error);
+          mostrarError("Error al marcar la notificación como leída");
+        });
+    }
+
+    // Cargar notificaciones mediante AJAX
+    function cargarNotificaciones() {
+      const usuarioId = obtenerUsuarioId();
+
+      // Verificar si tenemos el ID de usuario
+      if (!usuarioId) {
+        console.error("No se encontró ID de usuario en ninguna fuente");
+        mostrarErrorDetallado(
+          "No se pudo identificar el usuario actual",
+          "Estás en la URL: " + window.location.pathname
+        );
+        return;
+      }
+
+      // Verificación adicional del formato UUID
+      const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidPattern.test(usuarioId)) {
+        console.error("El ID obtenido no parece ser un UUID válido:", usuarioId);
+        mostrarErrorDetallado(
+          "El ID de usuario no tiene el formato correcto",
+          "ID detectado: " + usuarioId
+        );
+        return;
+      }
+
+      console.log(`Cargando notificaciones para usuario: ${usuarioId}`);
+
+      // Mostrar el spinner de carga
+      listaNotificaciones.innerHTML = `
+                <li class="notification-loading text-center py-8">
+                    <div class="inline-block w-6 h-6 border-2 border-t-primary border-r-primary border-gray-200 dark:border-gray-600 rounded-full animate-spin"></div>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Cargando notificaciones...</p>
+                </li>`;
+
+      fetch(`/notificaciones/obtener/${usuarioId}/`, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Error HTTP: ${response.status} ${response.statusText}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Datos recibidos:", data);
+          // Limpiar la lista
+          listaNotificaciones.innerHTML = "";
+
+          if (data.notificaciones && data.notificaciones.length > 0) {
+            // Actualizar la vista con las notificaciones
+            noNotifications.classList.add("hidden");
+            data.notificaciones.forEach((notif) => {
+              const li = document.createElement("li");
+              li.className = `p-3 ${
+                notif.estado === "enviado"
+                  ? "bg-blue-50 dark:bg-blue-900/20"
+                  : ""
+              }`;
+
+              li.innerHTML = `
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900 dark:text-gray-100">${
+                                      notif.nombre
+                                    }</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">${
+                                      notif.tipo
+                                    }</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">${
+                                      notif.fecha
+                                    }</p>
+                                </div>
+                                ${
+                                  notif.estado !== "leido"
+                                    ? `<button class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 mark-read"
+                                     data-id="${notif.id}">Marcar como leída</button>`
+                                    : '<span class="text-xs text-gray-400">Leída</span>'
+                                }
+                            </div>
+                        `;
+              listaNotificaciones.appendChild(li);
+            });
+
+            // Actualizar contador de notificaciones
+            actualizarContadorNotificaciones(data.notificaciones);
+
+            // Agregar eventos para marcar como leídas
+            document.querySelectorAll(".mark-read").forEach((btn) => {
+              btn.addEventListener("click", function () {
+                marcarComoLeida(this.getAttribute("data-id"));
+              });
+            });
+          } else {
+            // Mostrar mensaje de no notificaciones
+            noNotifications.classList.remove("hidden");
+
+            // Ocultar el contador si no hay notificaciones
+            const badgeCount = document.getElementById("notification-count");
+            if (badgeCount) {
+              badgeCount.classList.add("hidden");
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error cargando notificaciones:", error);
+          const usuarioId = obtenerUsuarioId();
+          mostrarError(
+            `No se pudieron cargar las notificaciones. ID Usuario: ${
+              usuarioId || "No disponible"
+            }`
+          );
+        });
+    }
+
+    // Función para abrir el modal
+    function openModal() {
+      notificacionesModal.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+
+      // Mostrar información de depuración
+      mostrarInfoDepuracion();
+
+      // Cargar notificaciones
+      cargarNotificaciones();
+    }
+
+    // Función para cerrar el modal
+    function closeModal() {
+      notificacionesModal.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+    
+    // Función para mostrar información de depuración
+    function mostrarInfoDepuracion() {
+      const botonInfo = document.getElementById("notification-count");
+      if (botonInfo) {
+        console.group("Depuración de Notificaciones");
+        console.log("URL actual:", window.location.pathname);
+        console.log("Botón notificaciones existe:", notificacionesBtn !== null);
+        if (notificacionesBtn) {
+          console.log(
+            "Data-usuario-id:",
+            notificacionesBtn.getAttribute("data-usuario-id")
+          );
+        }
+
+        const hiddenField = document.getElementById("current-usuario-id");
+        console.log("Campo oculto existe:", hiddenField !== null);
+        if (hiddenField) {
+          console.log("Valor del campo oculto:", hiddenField.value);
+          console.log("Contenido del campo oculto:", hiddenField.textContent);
+        }
+
+        // Intentar obtener usuario_id de la página
+        const scripts = document.querySelectorAll("script");
+        let foundUserIdInScript = false;
+        scripts.forEach((script) => {
+          const content = script.textContent;
+          if (content && content.includes("usuario_id")) {
+            console.log(
+              "Script con usuario_id encontrado:",
+              content.substring(0, 200) + "..."
+            );
+            foundUserIdInScript = true;
+          }
+        });
+        if (!foundUserIdInScript) {
+          console.log("No se encontró usuario_id en ningún script");
+        }
+
+        console.groupEnd();
+      }
+    }
+
+    // Configurar el enlace para ver todas las notificaciones
+    const verTodasBtn = document.getElementById("ver-todas-notificaciones");
+    if (verTodasBtn) {
+      verTodasBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const usuarioId = obtenerUsuarioId();
+        if (usuarioId) {
+          window.location.href = `/notificaciones/obtener/${usuarioId}/`;
+        } else {
+          console.error("No se encontró ID de usuario");
+          alert("No se pudo identificar el usuario actual");
+        }
+      });
+    }
+
+    // Eventos
+    if (notificacionesBtn) {
+      notificacionesBtn.addEventListener("click", openModal);
+    } else {
+      console.error(
+        "No se encontró el botón de notificaciones con ID: notificaciones-btn"
+      );
+    }
+
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener("click", closeModal);
+    }
+
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener("click", closeModal);
+    }
+
+    // Cerrar modal con Escape
+    document.addEventListener("keydown", function (e) {
+      if (
+        e.key === "Escape" &&
+        !notificacionesModal.classList.contains("hidden")
+      ) {
+        closeModal();
+      }
+    });
+  });
+</script>
+</script>
