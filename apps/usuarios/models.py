@@ -11,4 +11,4 @@ class Usuario(models.Model):
     rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nombre + f"{self.rol.nombre}" + f" {self.correo}"
+        return f"{self.correo} ({self.rol})"

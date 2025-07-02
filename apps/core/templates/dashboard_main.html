@@ -4,20 +4,63 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SED | Sistema de Evaluación Docente</title>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ["Inter", "sans-serif"],
+              sans: ["Poppins", "Inter", "sans-serif"],
             },
             colors: {
               primary: {
-                DEFAULT: "#16a34a", // verde principal
-                dark: "#15803d", // verde oscuro para hover
+                50: "#ecfdf5",
+                100: "#d1fae5",
+                200: "#a7f3d0",
+                300: "#6ee7b7",
+                400: "#34d399",
+                500: "#10b981",
+                600: "#059669",
+                700: "#047857",
+                800: "#065f46",
+                900: "#064e3b",
+                DEFAULT: "#059669",
+                dark: "#047857",
+              },
+              fondo: "#f8fafc",
+              accent: {
+                DEFAULT: "#fbbf24",
+                light: "#fde68a",
+                dark: "#f59e0b",
+              },
+            },
+            backgroundImage: {
+              "hero-pattern":
+                "url('https://www.transparenttextures.com/patterns/cubes.png')",
+              "dot-pattern":
+                "url('https://www.transparenttextures.com/patterns/diagmonds-light.png')",
+            },
+            boxShadow: {
+              soft: "0 4px 12px rgba(0,0,0,0.05)",
+              card: "0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.01)",
+            },
+            animation: {
+              "fade-in": "fadeIn 0.5s ease-in",
+              "slide-up": "slideUp 0.5s ease-out",
+              "pulse-slow": "pulse 3s infinite",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+              slideUp: {
+                "0%": { transform: "translateY(20px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
               },
             },
           },
@@ -25,277 +68,583 @@
       };
     </script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <style>
-      /* Loader Styles */
-      .loader-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(5px);
-        z-index: 9999;
-        justify-content: center;
-        align-items: center;
-        transition: all 0.3s ease;
-      }
-
-      .loader-content {
-        text-align: center;
-      }
-
-      .loader {
-        width: 60px;
-        height: 60px;
-        border: 4px solid #e2e8f0;
-        border-top: 4px solid #16a34a;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 1rem auto;
-      }
-
-      .loader-text {
-        color: #16a34a;
-        font-size: 1.1rem;
-        font-weight: 500;
-        margin-top: 1rem;
-        opacity: 0;
-        transform: translateY(10px);
-        animation: fadeInUp 0.5s ease forwards 0.3s;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes fadeInUp {
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* Animación para mostrar el loader */
-      .loader-overlay.show {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      /* Pulse effect para el spinner */
-      .loader-pulse {
-        animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
-      }
-    </style>
   </head>
-  <body class="font-sans bg-gray-50 text-gray-800">
-    <!-- Encabezado / Navegación -->
-    <header class="bg-primary text-white shadow">
-      <div class="container mx-auto px-4 sm:px-6">
-        <div
-          class="flex flex-col sm:flex-row items-center justify-between py-4"
-        >
-          <h1 class="text-xl font-bold tracking-wide mb-4 sm:mb-0">
-            <a href="/" class="hover:underline">SED</a>
-          </h1>
-          <nav class="flex flex-wrap justify-center gap-4">
-            <a href="#inicio" class="hover:underline">Inicio</a>
-            <a href="#vision" class="hover:underline">Visión</a>
-            <a href="#mision" class="hover:underline">Misión</a>
-            <a href="#ingreso" class="hover:underline">¿Cómo ingresar?</a>
 
+  <body class="bg-fondo font-sans text-gray-800">
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <h1
+              class="text-2xl font-bold bg-gradient-to-r from-primary-700 to-primary-500 bg-clip-text text-transparent"
+            >
+              <a
+                href="/"
+                class="flex items-center gap-2 hover:scale-105 transition-transform text-gray-600"
+              >
+                <i class="fas fa-graduation-cap text-primary"></i>
+                <span>SED UNAS</span>
+              </a>
+            </h1>
+          </div>
+
+          <!-- Mobile menu button -->
+          <div class="flex md:hidden">
+            <button
+              type="button"
+              id="mobile-menu-button"
+              class="text-gray-500 hover:text-primary"
+            >
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+
+          <!-- Desktop navigation -->
+          <nav class="hidden md:flex space-x-8 items-center">
+            <a
+              href="#inicio"
+              class="text-gray-600 hover:text-primary transition-colors font-medium"
+            >
+              <i class="fas fa-home mr-1"></i> Inicio
+            </a>
+            <a
+              href="#vision-mision"
+              class="text-gray-600 hover:text-primary transition-colors font-medium"
+            >
+              <i class="fas fa-bullseye mr-1"></i> Objetivos
+            </a>
+            <a
+              href="#ingreso"
+              class="text-gray-600 hover:text-primary transition-colors font-medium"
+            >
+              <i class="fas fa-sign-in-alt mr-1"></i> Ingreso
+            </a>
             {% if user.is_authenticated %}
             <a
               href="{% url 'core:logout' %}"
-              class="bg-red-500 px-3 py-2 rounded hover:bg-red-600 transition"
-              >Cerrar sesión</a
+              class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition-colors"
             >
+              <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
+            </a>
             {% else %}
             <a
               href="{% url 'core:login' %}"
-              class="bg-white text-primary px-3 py-2 rounded hover:bg-primary-dark hover:text-white transition"
-              >Iniciar sesión</a
+              class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark transition-colors"
             >
+              <i class="fas fa-sign-in-alt mr-2"></i> Iniciar sesión
+            </a>
             {% endif %}
           </nav>
         </div>
       </div>
-    </header>
 
-    <!-- Sección Hero / Inicio -->
-    <main id="inicio">
-      <section
-        class="container mx-auto flex flex-col items-center text-center py-12 sm:py-24 px-4 sm:px-6"
-      >
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">
-          ¡Bienvenido a SED!
-        </h2>
-        <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl">
-          La plataforma que impulsa la
-          <span class="font-semibold">mejora continua</span> de la docencia en
-          la Universidad Nacional Agraria de la Selva mediante evaluaciones
-          <span class="font-semibold">anónimas, seguras y estructuradas</span>.
-        </p>
-        <div class="mt-8">
+      <!-- Mobile menu -->
+      <div class="md:hidden hidden" id="mobile-menu">
+        <div class="pt-2 pb-4 space-y-1 border-t border-gray-100 bg-white px-4">
+          <a
+            href="#inicio"
+            class="block py-2 text-gray-600 hover:text-primary transition-colors"
+          >
+            <i class="fas fa-home mr-2"></i> Inicio
+          </a>
+          <a
+            href="#vision-mision"
+            class="block py-2 text-gray-600 hover:text-primary transition-colors"
+          >
+            <i class="fas fa-bullseye mr-2"></i> Objetivos
+          </a>
+          <a
+            href="#ingreso"
+            class="block py-2 text-gray-600 hover:text-primary transition-colors"
+          >
+            <i class="fas fa-sign-in-alt mr-2"></i> Ingreso
+          </a>
+          {% if user.is_authenticated %}
+          <a
+            href="{% url 'core:logout' %}"
+            class="block py-2 text-red-500 hover:text-red-600 transition-colors"
+          >
+            <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
+          </a>
+          {% else %}
           <a
             href="{% url 'core:login' %}"
-            class="inline-block bg-primary text-white px-6 py-3 rounded-lg shadow hover:bg-primary-dark transition"
+            class="block py-2 text-primary hover:text-primary-dark transition-colors"
           >
-            Empezar evaluación
+            <i class="fas fa-sign-in-alt mr-2"></i> Iniciar sesión
           </a>
+          {% endif %}
         </div>
-      </section>
+      </div>
+    </header>
 
-      <!-- Visión -->
-      <section id="vision" class="bg-white py-12 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6">
-          <h3 class="text-2xl sm:text-3xl font-bold mb-4">Visión</h3>
-          <p class="leading-relaxed text-gray-700 text-base sm:text-lg">
-            Ser la plataforma referente en América Latina para la gestión
-            transparente y participativa de la calidad docente universitaria,
-            brindando datos fiables que fortalezcan las decisiones académicas y
-            el crecimiento profesional continuo del profesorado.
-          </p>
+    <!-- Hero -->
+    <main id="inicio">
+      <section class="relative bg-hero-pattern bg-primary-50 overflow-hidden">
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-white/70 to-transparent"
+        ></div>
+        <div
+          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 relative"
+        >
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="animate-slide-up">
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-700 mb-4"
+              >
+                <i class="fas fa-star-half-alt mr-1"></i> Sistema de Evaluación
+              </span>
+              <h2
+                class="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4"
+              >
+                <span class="block">Evalúa y mejora la</span>
+                <span
+                  class="bg-gradient-to-r from-primary-700 to-primary-500 bg-clip-text text-transparent"
+                  >calidad educativa</span
+                >
+              </h2>
+              <p class="mt-4 text-lg text-gray-600 mb-8">
+                Plataforma diseñada para optimizar y transparentar la evaluación
+                docente
+              </p>
+
+              <div class="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="{% url 'core:login' %}"
+                  class="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary hover:bg-primary-dark transition-colors"
+                >
+                  <i class="fas fa-clipboard-list mr-2"></i> Comenzar evaluación
+                </a>
+                <a
+                  href="#ingreso"
+                  class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                >
+                  <i class="fas fa-info-circle mr-2"></i> Más información
+                </a>
+              </div>
+            </div>
+            <div class="hidden md:flex justify-center">
+              <div class="relative w-72 h-72 animate-pulse-slow">
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-primary-300 to-accent-light rounded-full blur-xl opacity-20"
+                ></div>
+                <div class="relative flex items-center justify-center h-full">
+                  <i
+                    class="fas fa-chalkboard-teacher text-9xl text-primary-400"
+                  ></i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
-
-      <!-- Misión -->
-      <section id="mision" class="bg-gray-100 py-12 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6">
-          <h3 class="text-2xl sm:text-3xl font-bold mb-4">Misión</h3>
-          <p class="leading-relaxed text-gray-700 text-base sm:text-lg">
-            Proporcionar a la comunidad universitaria una herramienta digital
-            intuitiva que permita a los estudiantes evaluar, de forma anónima y
-            segura, el desempeño docente; generando información valiosa,
-            filtrable y accionable que promueva la excelencia académica y
-            fortalezca la toma de decisiones institucionales.
-          </p>
-        </div>
-      </section>
-
-      <!-- Instrucciones de ingreso -->
-      <section id="ingreso" class="bg-white py-12 sm:py-20">
-        <div class="container mx-auto px-4 sm:px-6">
-          <h3 class="text-2xl sm:text-3xl font-bold mb-6">¿Cómo ingresar?</h3>
-          <ol
-            class="list-decimal list-inside space-y-4 text-left text-gray-700 text-base sm:text-lg"
+        <!-- Wave divider -->
+        <div class="absolute bottom-0 left-0 right-0">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1440 320"
+            class="w-full h-auto"
           >
-            <li>
-              Abre tu navegador y ve a
-              <span class="font-semibold">https://sed.unas.edu.pe</span>.
-            </li>
-            <li>
-              Haz clic en <strong>"Iniciar sesión"</strong> e ingresa con tus
-              credenciales de la intranet UNAS.
-            </li>
-            <li>
-              Selecciona el <strong>curso</strong> y el
-              <strong>docente</strong> que deseas evaluar.
-            </li>
-            <li>
-              Califica cada criterio con estrellas y, si lo deseas, añade
-              comentarios.
-            </li>
-            <li>
-              Revisa tu evaluación y pulsa <strong>"Enviar"</strong>. ¡Y listo,
-              parce! Tu opinión cuenta.
-            </li>
-          </ol>
-          <p class="mt-6 text-sm text-gray-500">
-            Recuerda que tus respuestas son totalmente anónimas y se utilizarán
-            únicamente para mejorar la calidad de la enseñanza.
-          </p>
+            <path
+              fill="#ffffff"
+              fill-opacity="1"
+              d="M0,192L48,176C96,160,192,128,288,144C384,160,480,224,576,224C672,224,768,160,864,149.3C960,139,1056,181,1152,192C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+            ></path>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Características -->
+      <section class="py-12 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16 max-w-3xl mx-auto">
+            <span
+              class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-700 mb-4"
+            >
+              <i class="fas fa-certificate mr-1"></i> Por qué SED UNAS
+            </span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Una plataforma diseñada para la comunidad universitaria
+            </h2>
+            <p class="text-lg text-gray-600">
+              Facilitamos la recopilación y análisis de evaluaciones para
+              mejorar la calidad educativa.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Característica 1 -->
+            <div
+              class="bg-white rounded-lg shadow-card p-6 hover:shadow-lg transition-shadow flex flex-col items-center text-center"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-user-shield text-2xl text-primary-600"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3 text-gray-900">
+                100% Anónimo
+              </h3>
+              <p class="text-gray-600">
+                Tus evaluaciones son totalmente anónimas, garantizando
+                transparencia y sinceridad.
+              </p>
+            </div>
+
+            <!-- Característica 2 -->
+            <div
+              class="bg-white rounded-lg shadow-card p-6 hover:shadow-lg transition-shadow flex flex-col items-center text-center"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-chart-line text-2xl text-primary-600"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3 text-gray-900">
+                Datos en tiempo real
+              </h3>
+              <p class="text-gray-600">
+                Resultados procesados instantáneamente para una
+                retroalimentación oportuna.
+              </p>
+            </div>
+
+            <!-- Característica 3 -->
+            <div
+              class="bg-white rounded-lg shadow-card p-6 hover:shadow-lg transition-shadow flex flex-col items-center text-center"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-laptop text-2xl text-primary-600"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3 text-gray-900">
+                Fácil de usar
+              </h3>
+              <p class="text-gray-600">
+                Interfaz intuitiva que permite completar evaluaciones
+                rápidamente desde cualquier dispositivo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visión + Misión -->
+      <section id="vision-mision" class="py-16 bg-dot-pattern bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <span
+              class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-700 mb-4"
+            >
+              <i class="fas fa-bullseye mr-1"></i> Objetivos
+            </span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+              Nuestra visión y misión
+            </h2>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-10">
+            <!-- Visión -->
+            <div
+              class="bg-gradient-to-br from-primary-50 to-white rounded-xl shadow-card p-8 border border-primary-100"
+            >
+              <div class="flex items-center gap-4 mb-6">
+                <div
+                  class="w-14 h-14 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0"
+                >
+                  <i class="fas fa-binoculars text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900">Visión</h3>
+              </div>
+              <p class="text-lg text-gray-700 leading-relaxed">
+                Ser la plataforma referente en América Latina en gestión de
+                calidad docente participativa, promoviendo una cultura de
+                evaluación constante y mejora continua en la educación superior.
+              </p>
+            </div>
+
+            <!-- Misión -->
+            <div
+              class="bg-gradient-to-br from-accent-light/30 to-white rounded-xl shadow-card p-8 border border-accent-light"
+            >
+              <div class="flex items-center gap-4 mb-6">
+                <div
+                  class="w-14 h-14 rounded-full bg-accent flex items-center justify-center flex-shrink-0"
+                >
+                  <i class="fas fa-rocket text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900">Misión</h3>
+              </div>
+              <p class="text-lg text-gray-700 leading-relaxed">
+                Brindar a la comunidad universitaria una herramienta confiable,
+                intuitiva y segura para evaluar la docencia universitaria,
+                facilitando la toma de decisiones basadas en datos para mejorar
+                la calidad educativa.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ingreso -->
+      <section
+        id="ingreso"
+        class="py-16 bg-gradient-to-b from-white to-gray-50"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12">
+            <span
+              class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-700 mb-4"
+            >
+              <i class="fas fa-sign-in-alt mr-1"></i> Guía
+            </span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              ¿Cómo ingresar y evaluar?
+            </h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              Sigue estos sencillos pasos para realizar tus evaluaciones
+              docentes
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-10">
+            <!-- Pasos -->
+            <div class="bg-white rounded-xl shadow-card p-8 order-2 md:order-1">
+              <h3
+                class="text-2xl font-bold mb-6 text-gray-900 flex items-center"
+              >
+                <span
+                  class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white mr-3"
+                >
+                  <i class="fas fa-list-ol"></i>
+                </span>
+                Pasos a seguir
+              </h3>
+
+              <div class="space-y-6">
+                <!-- Paso 1 -->
+                <div class="flex items-start">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0 mr-4 mt-1"
+                  >
+                    <span class="font-bold text-primary-700">1</span>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-gray-900">
+                      Accede a la plataforma
+                    </h4>
+                    <p class="text-gray-600">
+                      Visita
+                      <span class="font-semibold">sed.unas.edu.pe</span> desde
+                      cualquier navegador.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Paso 2 -->
+                <div class="flex items-start">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0 mr-4 mt-1"
+                  >
+                    <span class="font-bold text-primary-700">2</span>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-gray-900">Inicia sesión</h4>
+                    <p class="text-gray-600">
+                      Utiliza tu correo institucional y contraseña para acceder.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Paso 3 -->
+                <div class="flex items-start">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0 mr-4 mt-1"
+                  >
+                    <span class="font-bold text-primary-700">3</span>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-gray-900">
+                      Selecciona el curso y docente
+                    </h4>
+                    <p class="text-gray-600">
+                      Elige el curso y docente que deseas evaluar de tu lista de
+                      asignaturas.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Paso 4 -->
+                <div class="flex items-start">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0 mr-4 mt-1"
+                  >
+                    <span class="font-bold text-primary-700">4</span>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-gray-900">
+                      Completa la evaluación
+                    </h4>
+                    <p class="text-gray-600">
+                      Valora con estrellas los diferentes criterios y añade
+                      comentarios si lo deseas.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Paso 5 -->
+                <div class="flex items-start">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0 mr-4 mt-1"
+                  >
+                    <span class="font-bold text-primary-700">5</span>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-gray-900">
+                      Envía tu evaluación
+                    </h4>
+                    <p class="text-gray-600">
+                      Revisa tus respuestas y haz clic en "Enviar" para
+                      completar el proceso.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Beneficios -->
+            <div class="order-1 md:order-2 flex flex-col gap-6">
+              <!-- Beneficio 1 -->
+              <div
+                class="bg-primary-700 text-white rounded-xl shadow-card p-8 relative overflow-hidden"
+              >
+                <div class="absolute right-0 bottom-0 opacity-10 text-9xl">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">✅ 100% Anónimo y Seguro</h3>
+                <p class="text-primary-100 relative z-10">
+                  Tus evaluaciones son totalmente anónimas. Ni los docentes ni
+                  las autoridades podrán saber quién realizó cada evaluación,
+                  garantizando sinceridad y protección.
+                </p>
+              </div>
+
+              <!-- Beneficio 2 -->
+              <div
+                class="bg-accent text-gray-900 rounded-xl shadow-card p-8 relative overflow-hidden"
+              >
+                <div class="absolute right-0 bottom-0 opacity-10 text-9xl">
+                  <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">
+                  🚀 Mejora la calidad educativa
+                </h3>
+                <p class="text-gray-800 relative z-10">
+                  Tu participación es crucial para mejorar la calidad de la
+                  enseñanza. Cada evaluación ayuda a identificar fortalezas y
+                  áreas de mejora de los docentes.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-12 text-center">
+            <a
+              href="{% url 'core:login' %}"
+              class="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary hover:bg-primary-dark transition-colors"
+            >
+              <i class="fas fa-user-graduate mr-2"></i> Comenzar ahora
+            </a>
+          </div>
         </div>
       </section>
     </main>
 
-    <!-- Pie de página -->
-    <footer class="bg-primary text-white py-6">
-      <div class="container mx-auto px-4 sm:px-6 text-center text-sm">
-        © 2025 Universidad Nacional Agraria de la Selva · Sistema de Evaluación
-        Docente
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          <!-- Logo y descripción -->
+          <div class="col-span-1 md:col-span-1">
+            <h2 class="text-2xl font-bold mb-4 flex items-center">
+              <i class="fas fa-graduation-cap text-primary mr-2"></i> SED UNAS
+            </h2>
+            <p class="text-gray-400 mb-4">
+              Sistema de Evaluación Docente de la Universidad Nacional Agraria
+              de la Selva.
+            </p>
+          </div>
+
+          <!-- Enlaces útiles -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4 text-gray-200">
+              Enlaces útiles
+            </h3>
+            <ul class="space-y-2 text-gray-400">
+              <li>
+                <a href="#" class="hover:text-primary transition-colors"
+                  >Política de privacidad</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-primary transition-colors"
+                  >Términos y condiciones</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-primary transition-colors"
+                  >Preguntas frecuentes</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contacto -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4 text-gray-200">Contacto</h3>
+            <ul class="space-y-2 text-gray-400">
+              <li class="flex items-center">
+                <i class="fas fa-map-marker-alt mr-2 text-primary-400"></i>
+                Tingo María, Perú
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-envelope mr-2 text-primary-400"></i>
+                sed@unas.edu.pe
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-phone mr-2 text-primary-400"></i>
+                (062) 562341
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-gray-800 pt-6 text-center text-sm text-gray-500"
+        >
+          <p>
+            © 2025 SED - Sistema de Evaluación Docente | Universidad Nacional
+            Agraria de la Selva
+          </p>
+        </div>
       </div>
     </footer>
 
-    <!-- Loader Overlay -->
-    <div id="loaderOverlay" class="loader-overlay">
-      <div class="loader-content">
-        <div class="loader loader-pulse"></div>
-        <div class="loader-text">Cargando...</div>
-      </div>
-    </div>
-
+    <!-- Mobile menu toggle script -->
     <script>
-      // Función mejorada para mostrar el loader
-      function showLoader(message = "Cargando...") {
-        const loader = document.getElementById("loaderOverlay");
-        const loaderText = loader.querySelector(".loader-text");
+      document.addEventListener("DOMContentLoaded", () => {
+        const menuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
 
-        if (loader && loaderText) {
-          loaderText.textContent = message;
-          loader.style.display = "flex";
-          document.body.style.overflow = "hidden"; // Previene el scroll
-
-          setTimeout(() => {
-            loader.classList.add("show");
-          }, 10);
-        }
-      }
-
-      // Función para ocultar el loader
-      function hideLoader() {
-        const loader = document.getElementById("loaderOverlay");
-        if (loader) {
-          loader.classList.remove("show");
-          setTimeout(() => {
-            loader.style.display = "none";
-            document.body.style.overflow = ""; // Restaura el scroll
-          }, 300);
-        }
-      }
-
-      // Intercepta todos los clicks en enlaces
-      document.addEventListener("click", (e) => {
-        const link = e.target.closest("a");
-        if (link && !link.hasAttribute("data-no-loader")) {
-          showLoader("Redirigiendo...");
-        }
-      });
-
-      // Intercepta envíos de formularios
-      document.addEventListener("submit", (e) => {
-        if (!e.target.hasAttribute("data-no-loader")) {
-          showLoader("Procesando...");
-        }
-      });
-
-      // Muestra loader al cargar la página
-      window.addEventListener("load", () => {
-        hideLoader();
-      });
-
-      // Muestra loader al recargar la página
-      window.addEventListener("beforeunload", () => {
-        showLoader();
+        menuButton.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
       });
     </script>
   </body>
