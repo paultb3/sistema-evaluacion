@@ -1,0 +1,37 @@
+services:
+  web:
+    build: .
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+    # Variables de entorno para la aplicacion
+    # puedes cambiar el nombre de la aplicacion si lo deseas
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/sistemas_evaluacion
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --no-input &&
+             gunicorn sed.wsgi --bind 0.0.0.0:8000"
+
+  db:
+    image: postgres:14
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+    # Variables de entorno para la base de datos 
+    # puedes cambiar la contraseña, usuario y nombre de la base de datos si lo deseas
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      # puedes cambiar el nombre de la base de datos si lo deseas
+      - POSTGRES_DB=sistemas_evaluacion 
+    ports:
+    # Exponer el puerto 5432 para la base de datos y tambien el puerto 5433 para acceder desde el host
+      - "5433:5432"
+
+volumes:
+  postgres_data:
