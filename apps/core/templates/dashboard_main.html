@@ -28,84 +28,15 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"/>
+  {% load static %}
    <style>
-
-  /* Capa superpuesta del loader que cubre toda la pantalla */
-  .loader-overlay {
-    display: none; /* Oculto por defecto */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.95); /* Blanco semitransparente */
-    backdrop-filter: blur(5px); /* Difumina el fondo */
-    z-index: 9999; /* Por encima de todo */
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease;
-  }
-
-  /* Contenedor del contenido interno del loader */
-  .loader-content {
-    text-align: center;
-  }
-
-  /* Estilo del spinner circular */
-  .loader {
-    width: 60px;
-    height: 60px;
-    border: 4px solid #e2e8f0;         /* gris claro */
-    border-top: 4px solid #16a34a;      /* verde principal */
-    border-radius: 50%;                /* círculo */
-    animation: spin 1s linear infinite; /* animación de rotación */
-    margin: 0 auto 1rem auto;
-  }
-
-  /* Texto animado del loader ("Cargando...") */
-  .loader-text {
-    color: #16a34a; /* verde principal */
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-top: 1rem;
-    opacity: 0; /* comienza invisible */
-    transform: translateY(10px); /* levemente desplazado hacia abajo */
-    animation: fadeInUpLoader 0.5s ease forwards 0.3s; /* animación hacia arriba */
-  }
-
-  /* Animación: rotación */
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  /* Animación: fadeIn hacia arriba (loader) */
-  @keyframes fadeInUpLoader {
-    to {
-      opacity: 1;
-      transform: translateY(0); /* vuelve a posición original */
+html{
+      height: 100vh;
     }
-  }
-
-  /* Cuando se añade la clase 'show' al loader: se hace visible */
-  .loader-overlay.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  /* Animación tipo "latido" (pulse)*/
-  .loader-pulse {
-    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5; /* se desvanece al 50% de opacidad */
-    }
-  }
+    
+html, body {
+  min-height: 100%;
+}
 
   /* Animación para mostrar el panel de Visión*/
   #vision-panel.show > div {
@@ -139,23 +70,169 @@
     animation: fadeInUpSection 1s ease-out forwards;
   }
 
+    html{
+          scroll-behavior: smooth;
+    }
   /* Comportamiento de scroll suave*/
-  html {
-    scroll-behavior: smooth;
+  body {
+    height: 100%;
+    background-color: #ffffff;
   }
-</style>
-  <style>
     .show {
       opacity: 1 !important;
       transform: scale(1) !important;
     }
+
+    header{
+    background-image: url("{% static 'core/header.svg' %}");
+    background-size: cover;
+    background-position: center ;
+    background-repeat: no-repeat;
+
+    }
+
+   
+/*ESTILOS*/
+
+#inicio {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  animation: fadeInUp 0.8s ease-out forwards;
+  margin: auto;
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.texto {
+  text-align: center;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .texto {
+    text-align: left;
+    width: 50%;
+  }
+}
+
+.texto h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #16a34a;
+  line-height: 1.2;
+}
+
+.texto .verde {
+  color: #16a34a;
+}
+
+.texto p {
+  font-size: 1.125rem;
+  color: #374151;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .texto p {
+    margin: 0;
+  }
+}
+
+.resaltado {
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.boton-contenedor {
+  margin-top: 2.5rem;
+}
+
+.boton {
+  display: inline-block;
+  background-color: #16a34a;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-decoration: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.boton:hover {
+  background-color: #15803d;
+  transform: scale(1.05);
+}
+
+.imagen {
+  width: 100%;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .imagen {
+    width: 50%;
+    justify-content: flex-start;
+  }
+}
+
+.imagen img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .imagen img {
+    width: 66%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .imagen img {
+    width: 50%;
+  }
+}
+
+/* Animación */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
     
+
   </style>
   </head>
-</head>
-<body class="min-h-screen flex flex-col font-sans bg-gray-50 text-gray-800">
+<body class="flex flex-col h-screen min-h-screen">
 
-  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+  <header class="sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between">
 
       <!-- Logo / nombre -->
@@ -165,10 +242,7 @@
 
       <!-- Navegación -->
       <nav class="flex flex-wrap items-center justify-center gap-6 mt-4 sm:mt-0 text-gray-800 text-base font-medium">
-        <a href="#inicio" class="relative group">
-          <span class="group-hover:text-primary transition-colors">Inicio</span>
-          <span class="block h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
-        </a>
+      
         <a href="#" id="toggle-vision" class="relative group" data-no-loader>
           <span class="group-hover:text-primary transition-colors">Visión</span>
           <span class="block h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
@@ -178,7 +252,7 @@
           <span class="block h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
         </a>
         <a href="#" id="toggle-ingreso" class="relative group" data-no-loader>
-          <span class="group-hover:text-primary transition-colors">¿Cómo ingresar?</span>
+          <span class="group-hover:text-primary transition-colors">Explorar</span>
           <span class="block h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
         </a>
 
@@ -195,95 +269,136 @@
     </div>
   </header>
 
-    <main class="flex-grow h-screen w-full">
-<!-- AGREGE RECIEN : Panel  de Visión (tipo mega menú) -->
-  <div id="vision-panel" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
-      <div class="bg-white max-w-4xl w-full mx-4 p-8 rounded-xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out overflow-y-auto max-h-[90vh] relative">
-        <!-- Botón Cerrar -->
+    <main id="main" class="flex-grow">
+<div id="vision-panel" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+  <div class="bg-white max-w-4xl w-full mx-4 p-6 md:p-8 rounded-xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out overflow-y-auto max-h-[90vh] relative">
+    
+    <!-- Botón Cerrar -->
     <button id="close-vision"
       class="absolute top-4 right-4 text-gray-500 hover:text-primary text-2xl font-bold focus:outline-none">
       &times;
     </button>
+
+    <!-- Contenido dividido -->
+    <div class="flex flex-col md:flex-row items-center gap-6">
+      
+      <!-- Texto -->
+      <div class="md:w-2/3">
         <h2 class="text-3xl font-bold text-primary mb-4">Visión</h2>
         <p class="text-gray-700 text-lg leading-relaxed">
           Ser la plataforma referente en América Latina para la gestión transparente y participativa de la calidad docente universitaria, brindando datos fiables que fortalezcan las decisiones académicas y el crecimiento profesional continuo del profesorado.
         </p>
-        <div class="mt-6 flex justify-center">
-          {% load static %}
-          <img src="{% static 'core/vision.png' %}" alt="Visión" class="w-52 h-52 object-contain opacity-90 hover:opacity-100 transition duration-300" />
-        </div>
       </div>
+
+      <!-- Imagen -->
+      <div class="md:w-1/3">
+        <img src="{% static 'core/vision.svg' %}" alt="Ilustración visión"
+             class="w-full h-auto rounded-lg">
+      </div>
+
     </div>
+
+  </div>
+</div>
+
       <!-- PANEL MISIÓN -->
-    <div id="mision-panel" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
-  <div class="bg-white max-w-4xl w-full mx-4 p-8 rounded-xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out overflow-y-auto max-h-[90vh] relative">
-    <button id="close-mision" class="absolute top-4 right-4 text-gray-500 hover:text-primary text-2xl font-bold focus:outline-none">
+<div id="mision-panel" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+  <div class="bg-white max-w-4xl w-full mx-4 p-6 md:p-8 rounded-xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out overflow-y-auto max-h-[90vh] relative">
+    
+    <!-- Botón cerrar -->
+    <button id="close-mision"
+      class="absolute top-4 right-4 text-gray-500 hover:text-primary text-2xl font-bold focus:outline-none">
       &times;
     </button>
-    <h2 class="text-3xl font-bold text-primary mb-4">Misión</h2>
-    <p class="text-gray-700 text-lg leading-relaxed">
-      Proporcionar a la comunidad universitaria una herramienta digital intuitiva que permita a los estudiantes evaluar, de forma anónima y segura, el desempeño docente; generando información valiosa, 
-      filtrable y accionable que promueva la excelencia académica y fortalezca la toma de decisiones institucionales.
-    </p>
-    <div class="mt-6 flex justify-center">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Misión" class="w-52 h-52 object-contain opacity-90 hover:opacity-100 transition duration-300" />
+
+    <!-- Contenido dividido -->
+    <div class="flex flex-col md:flex-row items-center gap-6">
+      
+      <!-- Texto -->
+      <div class="md:w-2/3">
+        <h2 class="text-3xl font-bold text-primary mb-4">Misión</h2>
+        <p class="text-gray-700 text-lg leading-relaxed">
+          Proporcionar a la comunidad universitaria una herramienta digital intuitiva que permita a los estudiantes evaluar, de forma anónima y segura, el desempeño docente; generando información valiosa, 
+          filtrable y accionable que promueva la excelencia académica y fortalezca la toma de decisiones institucionales.
+        </p>
+      </div>
+
+      <!-- Imagen (misma que visión) -->
+      <div class="md:w-1/3">
+        <img src="{% static 'core/mision.svg' %}" alt="Ilustración misión"
+             class="w-full h-auto">
+      </div>
+
     </div>
   </div>
 </div>
+
  <!-- PANEL COMO INGRESAR -->
 <div id="ingreso-panel" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
-  <div class="bg-white max-w-4xl w-full mx-4 p-8 rounded-xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out overflow-y-auto max-h-[90vh] relative">
+  <div class="bg-white max-w-4xl w-full mx-4 p-6 md:p-8 rounded-xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out overflow-y-auto max-h-[90vh] relative">
+
+    <!-- Botón cerrar -->
     <button id="close-ingreso" class="absolute top-4 right-4 text-gray-500 hover:text-primary text-2xl font-bold focus:outline-none">
       &times;
     </button>
-    <h2 class="text-3xl font-bold text-primary mb-4">¿Cómo ingresar?</h2>
-    <ol class="list-decimal list-inside space-y-4 text-gray-700 text-base sm:text-lg leading-relaxed">
-  <li>Ingresa a <strong>https://sed.unas.edu.pe</strong> desde tu navegador.</li>
-  <li>Presiona <strong>"Iniciar sesión"</strong> e inicia con tu cuenta UNAS.</li>
-  <li>Selecciona el <strong>curso</strong> y <strong>docente</strong> que deseas evaluar.</li>
-  <li>Evalúa con estrellas y agrega comentarios si lo deseas.</li>
-  <li>Haz clic en <strong>"Enviar"</strong> para completar. ¡Listo!</li>
-</ol>
-    <div class="mt-6 flex justify-center">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png" alt="Ingreso" class="w-52 h-52 object-contain opacity-90 hover:opacity-100 transition duration-300" />
+
+    <!-- Contenido dividido -->
+    <div class="flex flex-col md:flex-row items-center gap-6">
+
+      <!-- Texto -->
+      <div class="md:w-2/3">
+        <h2 class="text-3xl font-bold text-primary mb-4">¿Cómo ingresar?</h2>
+        <ol class="list-decimal list-inside space-y-4 text-gray-700 text-base sm:text-lg leading-relaxed">
+          <li>Ingresa a <strong>https://sed.pautb.com</strong> desde tu navegador.</li>
+          <li>Presiona <strong>"Iniciar sesión"</strong> e inicia sesión con tu cuenta.</li>
+          <li>Selecciona el <strong>curso</strong> y <strong>docente</strong> que deseas evaluar.</li>
+          <li>Evalúa con estrellas y agrega comentarios si lo deseas.</li>
+          <li>Haz clic en <strong>"Enviar"</strong> para completar. ¡Listo!</li>
+        </ol>
+      </div>
+
+      <!-- Imagen -->
+      <div class="md:w-1/3">
+        <img src="{% static 'core/explore.svg' %}" alt="Ilustración misión"
+             class="w-full h-auto">
+      </div>
+
     </div>
+
   </div>
 </div>
 
-    <!-- Sección Hero / Inicio -->
-    <section id="inicio"
-  class="container mx-auto flex flex-col items-center text-center py-12 sm:py-24 px-4 sm:px-6 animate-fade-in-up">
-  <h2 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 text-primary leading-tight">
-    ¡Bienvenido a <span class="text-primary">SED</span>!
-  </h2>
-  <p class="text-lg sm:text-xl md:text-2xl text-gray-700 max-w-2xl">
-    Mejora continua de la docencia en la UNAS con evaluaciones 
-    <span class="font-semibold text-primary">anónimas, seguras y efectivas</span>.
-  </p>
-  <div class="mt-10">
-    <a
-      href="{% url 'core:login' %}"
-      class="inline-block bg-primary text-white px-8 py-4 rounded-full shadow-lg hover:scale-105 hover:bg-primary-dark transition transform duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-dark"
-    >
-      Empezar evaluación
-    </a>
+
+<section id="inicio">
+  <div class="container">
+    
+    <!-- Texto a la izquierda -->
+    <div class="texto">
+      <h2>
+        ¡Bienvenido al <span class="verde">Sistema de Evaluación Docente</span>!
+      </h2>
+      <p>
+        Mejora continua de la docencia en tu universidad con evaluaciones 
+        <span class="resaltado">anónimas, seguras y efectivas</span>.
+      </p>
+      <div class="boton-contenedor">
+        <a href="{% url 'core:login' %}" class="boton">
+          Empezar evaluación
+        </a>
+      </div>
+    </div>
+
   </div>
+   <!-- Imagen a la derecha -->
+    <div class="imagen">
+      <img src="{% static 'core/back.svg' %}" alt="Evaluación Docente" />
+    </div>
 </section>
+
+
 </main>
-    <!-- Pie de página -->
-  <footer class="bg-primary text-white py-6">
-      <div class="container mx-auto px-4 sm:px-6 text-center text-sm">
 
-        © 2025 Universidad Nacional Agraria de la Selva - Sistema de Evaluación Docente
-      </div>
-    </footer>
-        © 2025 Universidad Nacional Agraria de la Selva · Sistema de Evaluación
-        Docente
-      </div>
-    </footer>
-</body>
-
-    <script>
+<script>
       // Función mejorada para mostrar el loader
       function showLoader(message = "Cargando...") {
   const loader     = document.getElementById("loaderOverlay");
@@ -296,18 +411,6 @@
           setTimeout(() => {
             loader.classList.add("show");
           }, 10);
-        }
-      }
-
-      // Función para ocultar el loader
-      function hideLoader() {
-        const loader = document.getElementById("loaderOverlay");
-        if (loader) {
-          loader.classList.remove("show");
-          setTimeout(() => {
-            loader.style.display = "none";
-            document.body.style.overflow = ""; // Restaura el scroll
-          }, 300);
         }
       }
       
@@ -354,9 +457,6 @@ function configurarPanel(idBoton, idPanel, idCerrar) {
       window.addEventListener("beforeunload", () => {
         showLoader();
       });
-    </script>
-  </body>
- <script>
   function configurarPanel(idBoton, idPanel, idCerrar) {
     const toggle = document.getElementById(idBoton);
     const panel = document.getElementById(idPanel);
@@ -400,6 +500,5 @@ function configurarPanel(idBoton, idPanel, idCerrar) {
   configurarPanel("toggle-mision", "mision-panel", "close-mision");
   configurarPanel("toggle-ingreso", "ingreso-panel", "close-ingreso");
 </script>
-
 </body>
 </html>
