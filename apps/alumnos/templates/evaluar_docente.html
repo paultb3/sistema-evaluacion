@@ -283,7 +283,7 @@ SISTEMA DE EVALUACION A DOCENTE{% endblock title %}
     {% if cursos_disponibles %}
     <!-- Módulos y Preguntas -->
     {% for modulo, preguntas in modulo_dict.items %}
-    <div class="bg-white rounded-xl shadow-md overflow-hidden transform transition-all hover:shadow-lg">
+    <div class="container mx-auto px-4 py-8 max-w-4xl bg-white rounded-xl shadow-md overflow-hidden transform transition-all hover:shadow-lg mb-4">
       <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6">
         <h3 class="text-xl font-semibold flex items-center">
           <div
@@ -350,7 +350,7 @@ SISTEMA DE EVALUACION A DOCENTE{% endblock title %}
     {% endif %}
 
     <!-- Comentario General -->
-    <div class="bg-white rounded-xl shadow-md p-6">
+    <div class="container mx-auto px-4 py-8 max-w-4xl bg-white rounded-xl shadow-md p-6 mb-4">
       <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
         <div
           class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3"
@@ -408,7 +408,7 @@ SISTEMA DE EVALUACION A DOCENTE{% endblock title %}
         <button
           type="button"
           onclick="history.back()"
-          class="px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transform hover:scale-105 transition-all duration-200 flex items-center justify-center"
+          class="px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md transform hover:scale-105 transition-all duration-200 flex items-center justify-center"
         >
           <svg
             class="w-5 h-5 mr-2"
