@@ -15,7 +15,7 @@ class PreguntaModuloForm(forms.ModelForm):
             ),
         }
         labels = {
-            "pregunta": "Texto de la Pregunta",
+            "pregunta": "",
         }
 
 

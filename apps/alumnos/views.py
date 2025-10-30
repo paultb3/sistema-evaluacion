@@ -17,7 +17,11 @@ from apps.evaluacion.models import PeriodoEvaluacion
 
 def bienvenida_alumnos(request, usuario_id):
     print(f"Usuario recibido: {usuario_id}")
-    return render(request, "bienvenida_alumno.html", {"usuario_id": usuario_id})
+    alumno = get_object_or_404(Estudiante, usuario__id=usuario_id)
+    return render(request, "bienvenida_alumno.html",
+                   {"alumno": alumno,
+                     "usuario_id": usuario_id
+                    })
 
 
 def perfil_alumno(request, usuario_id):
